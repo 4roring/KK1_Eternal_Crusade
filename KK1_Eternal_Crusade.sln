@@ -1,0 +1,80 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{7EAE5D7F-1C32-4788-BFC5-B2493C3F0EE5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{6F20F8D2-0418-4D29-956A-BD15F42E132D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client", "Client\Include\Client.vcxproj", "{842CE7F0-4A2B-460C-BE32-683C0B580D0F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Headers", "Headers", "{5F800805-D87E-403E-80DD-8DA4339D023F}"
+	ProjectSection(SolutionItems) = preProject
+		Reference\Headers\Engine_Enum.h = Reference\Headers\Engine_Enum.h
+		Reference\Headers\Engine_Function.h = Reference\Headers\Engine_Function.h
+		Reference\Headers\Engine_Include.h = Reference\Headers\Engine_Include.h
+		Reference\Headers\Engine_Macro.h = Reference\Headers\Engine_Macro.h
+		Reference\Headers\Engine_Singleton.h = Reference\Headers\Engine_Singleton.h
+		Reference\Headers\Engine_Struct.h = Reference\Headers\Engine_Struct.h
+		Reference\Headers\Engine_Typedef.h = Reference\Headers\Engine_Typedef.h
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "System", "Engine\System\Include\System.vcxproj", "{807DC320-6A51-4CF9-BE20-E958F678157D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Utility", "Engine\Utility\Include\Utility.vcxproj", "{0102F401-78A0-4235-A185-4C83E193D1A6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Export", "Export", "{923818D7-20BC-4FBD-B26B-DC8D41E3110E}"
+	ProjectSection(SolutionItems) = preProject
+		Engine\Export\Export_Function.h = Engine\Export\Export_Function.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shader", "Shader", "{4FEF042B-3FE1-46A9-B349-D37617A28560}"
+	ProjectSection(SolutionItems) = preProject
+		Reference\Shader\BaseShader.hlsl = Reference\Shader\BaseShader.hlsl
+		Reference\Shader\DefaultShader.hlsl = Reference\Shader\DefaultShader.hlsl
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{842CE7F0-4A2B-460C-BE32-683C0B580D0F}.Debug|x64.ActiveCfg = Debug|x64
+		{842CE7F0-4A2B-460C-BE32-683C0B580D0F}.Debug|x64.Build.0 = Debug|x64
+		{842CE7F0-4A2B-460C-BE32-683C0B580D0F}.Debug|x86.ActiveCfg = Debug|Win32
+		{842CE7F0-4A2B-460C-BE32-683C0B580D0F}.Debug|x86.Build.0 = Debug|Win32
+		{842CE7F0-4A2B-460C-BE32-683C0B580D0F}.Release|x64.ActiveCfg = Release|x64
+		{842CE7F0-4A2B-460C-BE32-683C0B580D0F}.Release|x64.Build.0 = Release|x64
+		{842CE7F0-4A2B-460C-BE32-683C0B580D0F}.Release|x86.ActiveCfg = Release|Win32
+		{842CE7F0-4A2B-460C-BE32-683C0B580D0F}.Release|x86.Build.0 = Release|Win32
+		{807DC320-6A51-4CF9-BE20-E958F678157D}.Debug|x64.ActiveCfg = Debug|x64
+		{807DC320-6A51-4CF9-BE20-E958F678157D}.Debug|x64.Build.0 = Debug|x64
+		{807DC320-6A51-4CF9-BE20-E958F678157D}.Debug|x86.ActiveCfg = Debug|Win32
+		{807DC320-6A51-4CF9-BE20-E958F678157D}.Debug|x86.Build.0 = Debug|Win32
+		{807DC320-6A51-4CF9-BE20-E958F678157D}.Release|x64.ActiveCfg = Release|x64
+		{807DC320-6A51-4CF9-BE20-E958F678157D}.Release|x64.Build.0 = Release|x64
+		{807DC320-6A51-4CF9-BE20-E958F678157D}.Release|x86.ActiveCfg = Release|Win32
+		{807DC320-6A51-4CF9-BE20-E958F678157D}.Release|x86.Build.0 = Release|Win32
+		{0102F401-78A0-4235-A185-4C83E193D1A6}.Debug|x64.ActiveCfg = Debug|x64
+		{0102F401-78A0-4235-A185-4C83E193D1A6}.Debug|x64.Build.0 = Debug|x64
+		{0102F401-78A0-4235-A185-4C83E193D1A6}.Debug|x86.ActiveCfg = Debug|Win32
+		{0102F401-78A0-4235-A185-4C83E193D1A6}.Debug|x86.Build.0 = Debug|Win32
+		{0102F401-78A0-4235-A185-4C83E193D1A6}.Release|x64.ActiveCfg = Release|x64
+		{0102F401-78A0-4235-A185-4C83E193D1A6}.Release|x64.Build.0 = Release|x64
+		{0102F401-78A0-4235-A185-4C83E193D1A6}.Release|x86.ActiveCfg = Release|Win32
+		{0102F401-78A0-4235-A185-4C83E193D1A6}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{842CE7F0-4A2B-460C-BE32-683C0B580D0F} = {6F20F8D2-0418-4D29-956A-BD15F42E132D}
+		{807DC320-6A51-4CF9-BE20-E958F678157D} = {7EAE5D7F-1C32-4788-BFC5-B2493C3F0EE5}
+		{0102F401-78A0-4235-A185-4C83E193D1A6} = {7EAE5D7F-1C32-4788-BFC5-B2493C3F0EE5}
+		{923818D7-20BC-4FBD-B26B-DC8D41E3110E} = {7EAE5D7F-1C32-4788-BFC5-B2493C3F0EE5}
+	EndGlobalSection
+EndGlobal

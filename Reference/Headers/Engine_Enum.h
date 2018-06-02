@@ -1,0 +1,8 @@
+#pragma once
+
+namespace Engine
+{
+	enum class TEXTURETYPE { NORMAL, CUBE };
+	enum RENDERLAYER { LAYER_PRIORITY, LAYER_NONEALPHA, LAYER_ALPHA, LAYER_UI, LAYER_END };
+	enum class OBJECTSTATE { ENABLE, DISABLE, DESTROY };
+}
