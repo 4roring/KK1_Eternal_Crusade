@@ -27,14 +27,44 @@
     <Filter Include="소스 파일\01.Scene\01.Title">
       <UniqueIdentifier>{522cfd24-2b54-42f4-9ce1-4aadbde602a9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\01.Scene\02.Stage_PvE">
-      <UniqueIdentifier>{d4e65528-4ddd-4d71-a61e-47eb3731ce5a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\01.Scene\03.Special_Island">
       <UniqueIdentifier>{07645524-43ae-423a-96bc-01a07a2b6241}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\02.GameObject\Screen">
+    <Filter Include="소스 파일\01.Scene\99.Loading">
+      <UniqueIdentifier>{3fbf6f4c-ecd1-4e84-99e9-a7d90b8ff4c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\01.Scene\02.Stage">
+      <UniqueIdentifier>{d4e65528-4ddd-4d71-a61e-47eb3731ce5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObject\UI">
+      <UniqueIdentifier>{331ed709-bcdc-4d69-bb19-025bd012155c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObject\Environment">
+      <UniqueIdentifier>{846e4bd0-2649-45f5-85b0-ab6d1a42e1fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObject\GameLogic">
+      <UniqueIdentifier>{bba5964b-579d-4974-a9ed-559c8fb6cd35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObject\GameLogic\SpaceMarin">
+      <UniqueIdentifier>{52e5ba68-2c8b-4ec4-9fef-1853df618add}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObject\GameLogic\TestObject">
+      <UniqueIdentifier>{b1be8709-f969-48da-a0ed-03adc17bfd20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObject\GameLogic\TestObject\TestPlane">
+      <UniqueIdentifier>{957b2783-0cc5-422c-b2f2-10ccf936ecf4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObject\GameLogic\Screen">
       <UniqueIdentifier>{c0e2e4e6-189f-4904-a374-ff521478feeb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObject\UI\Camera">
+      <UniqueIdentifier>{71d9a552-905f-4903-9fc1-491fe5d3d51f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObject\UI\Camera\DynamicCamera">
+      <UniqueIdentifier>{0f8c5987-fa25-4891-b362-b4d0bb7b1361}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.GameObject\UI\Camera\PlayerCamera">
+      <UniqueIdentifier>{5066d90b-a1c9-4d73-8e29-e09c20b5e699}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -69,7 +99,22 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="..\Code\ScreenImage.h">
-      <Filter>소스 파일\02.GameObject\Screen</Filter>
+      <Filter>소스 파일\02.GameObject\GameLogic\Screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\DynamicCamera.h">
+      <Filter>소스 파일\02.GameObject\UI\Camera\DynamicCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="TestPlane.h">
+      <Filter>소스 파일\02.GameObject\GameLogic\TestObject\TestPlane</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Loading.h">
+      <Filter>소스 파일\01.Scene\99.Loading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\SpaceMarin.h">
+      <Filter>소스 파일\02.GameObject\GameLogic\SpaceMarin</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Stage.h">
+      <Filter>소스 파일\01.Scene\02.Stage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -86,7 +131,22 @@
       <Filter>소스 파일\01.Scene\00.Logo</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\ScreenImage.cpp">
-      <Filter>소스 파일\02.GameObject\Screen</Filter>
+      <Filter>소스 파일\02.GameObject\GameLogic\Screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\DynamicCamera.cpp">
+      <Filter>소스 파일\02.GameObject\UI\Camera\DynamicCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="TestPlane.cpp">
+      <Filter>소스 파일\02.GameObject\GameLogic\TestObject\TestPlane</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Loading.cpp">
+      <Filter>소스 파일\01.Scene\99.Loading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\SpaceMarin.cpp">
+      <Filter>소스 파일\02.GameObject\GameLogic\SpaceMarin</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Stage.cpp">
+      <Filter>소스 파일\01.Scene\02.Stage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

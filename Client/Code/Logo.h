@@ -2,6 +2,11 @@
 
 #include "Scene.h"
 
+namespace Engine
+{
+	class CFont;
+}
+
 class CLoading;
 
 class CLogo
@@ -21,6 +26,7 @@ public:
 
 public:
 	virtual void Update(float delta_time) override;
+	virtual void Render();
 	
 public:
 	static CLogo* Create(LPDIRECT3DDEVICE9 ptr_device);
@@ -31,4 +37,5 @@ private:
 
 private:
 	CLoading* ptr_loading_ = nullptr;
+	Engine::CFont* ptr_loading_text_ = nullptr;
 };

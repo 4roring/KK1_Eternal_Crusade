@@ -16,6 +16,9 @@
     <Filter Include="02.InputManager">
       <UniqueIdentifier>{39e5c5cd-d0a3-4883-96e5-3f1969167dd7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.FontManager\Font">
+      <UniqueIdentifier>{5f772d27-ab6c-46c6-9cd2-892199d9a9ed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Code\GraphicDevice.h">
@@ -30,6 +33,15 @@
     <ClInclude Include="..\Code\InputManager.h">
       <Filter>02.InputManager</Filter>
     </ClInclude>
+    <ClInclude Include="..\Code\InputSetting.h">
+      <Filter>02.InputManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\FontManager.h">
+      <Filter>03.FontManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Font.h">
+      <Filter>03.FontManager\Font</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\GraphicDevice.cpp">
@@ -40,6 +52,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\InputManager.cpp">
       <Filter>02.InputManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\FontManager.cpp">
+      <Filter>03.FontManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Font.cpp">
+      <Filter>03.FontManager\Font</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

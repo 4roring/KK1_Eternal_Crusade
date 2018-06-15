@@ -26,7 +26,7 @@ VS_OUT VS_MAIN(VS_IN In)
 {
 	VS_OUT Out = (VS_OUT)0;
 	
-	Matrix mat_wv, mat_transform;
+	Matrix mat_transform;
 
 	mat_transform = mul(mul(g_mat_world, g_mat_view), g_mat_projection);
 
@@ -61,8 +61,9 @@ technique Default_Technique
 		ALPHABLENDENABLE = TRUE;
 		SRCBLEND = SRCALPHA;
 		DESTBLEND = INVSRCALPHA;
+        CULLMODE = NONE;
 
-		VertexShader = compile vs_3_0 VS_MAIN();
+        VertexShader = compile vs_3_0 VS_MAIN();
 		PixelShader = compile ps_3_0 PS_MAIN();
 	}
 }

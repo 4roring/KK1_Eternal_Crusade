@@ -21,6 +21,7 @@ public:
 public:
 	virtual HRESULT InitScene() PURE;
 	virtual void Update(float delta_time) PURE;
+	virtual void Render();
 
 private:
 	void Release();

@@ -155,31 +155,47 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Export\Export_Utility.h" />
+    <ClInclude Include="..\Code\AnimController.h" />
+    <ClInclude Include="..\Code\Camera.h" />
     <ClInclude Include="..\Code\Component.h" />
     <ClInclude Include="..\Code\ComponentManager.h" />
+    <ClInclude Include="..\Code\CubeColor.h" />
+    <ClInclude Include="..\Code\CubeTexture.h" />
+    <ClInclude Include="..\Code\DynamicMesh.h" />
     <ClInclude Include="..\Code\GameManager.h" />
     <ClInclude Include="..\Code\GameObject.h" />
     <ClInclude Include="..\Code\Layer.h" />
+    <ClInclude Include="..\Code\Loader.h" />
+    <ClInclude Include="..\Code\Mesh.h" />
     <ClInclude Include="..\Code\RectTexture.h" />
     <ClInclude Include="..\Code\Renderer.h" />
     <ClInclude Include="..\Code\Resources.h" />
     <ClInclude Include="..\Code\Scene.h" />
     <ClInclude Include="..\Code\Shader.h" />
+    <ClInclude Include="..\Code\StaticMesh.h" />
     <ClInclude Include="..\Code\Texture.h" />
     <ClInclude Include="..\Code\Transform.h" />
     <ClInclude Include="..\Code\VIBuffer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Code\AnimController.cpp" />
+    <ClCompile Include="..\Code\Camera.cpp" />
     <ClCompile Include="..\Code\Component.cpp" />
     <ClCompile Include="..\Code\ComponentManager.cpp" />
+    <ClCompile Include="..\Code\CubeColor.cpp" />
+    <ClCompile Include="..\Code\CubeTexture.cpp" />
+    <ClCompile Include="..\Code\DynamicMesh.cpp" />
     <ClCompile Include="..\Code\GameManager.cpp" />
     <ClCompile Include="..\Code\GameObject.cpp" />
     <ClCompile Include="..\Code\Layer.cpp" />
+    <ClCompile Include="..\Code\Loader.cpp" />
+    <ClCompile Include="..\Code\Mesh.cpp" />
     <ClCompile Include="..\Code\RectTexture.cpp" />
     <ClCompile Include="..\Code\Renderer.cpp" />
     <ClCompile Include="..\Code\Resources.cpp" />
     <ClCompile Include="..\Code\Scene.cpp" />
     <ClCompile Include="..\Code\Shader.cpp" />
+    <ClCompile Include="..\Code\StaticMesh.cpp" />
     <ClCompile Include="..\Code\Texture.cpp" />
     <ClCompile Include="..\Code\Transform.cpp" />
     <ClCompile Include="..\Code\VIBuffer.cpp" />

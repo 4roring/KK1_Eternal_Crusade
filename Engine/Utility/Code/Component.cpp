@@ -10,9 +10,7 @@ Engine::CComponent::~CComponent()
 
 Engine::CComponent * Engine::CComponent::CloneComponent()
 {
-#ifdef _DEBUG
 	assert(!"Clone Base Component");
-#endif
 	return nullptr;
 }
 

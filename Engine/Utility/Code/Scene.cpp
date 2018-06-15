@@ -26,6 +26,10 @@ void Engine::CScene::Update(float delta_time)
 		pair.second->Update(delta_time);
 }
 
+void Engine::CScene::Render()
+{
+}
+
 void Engine::CScene::Release()
 {
 	for (auto& pair : map_layer_)

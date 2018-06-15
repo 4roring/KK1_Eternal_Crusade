@@ -34,7 +34,7 @@ private:
 	LPDIRECT3DDEVICE9 ptr_device_ = nullptr;
 
 private:
-	std::list<CGameObject*> render_layer_[LAYER_END];
+	std::vector<CGameObject*> render_layer_[LAYER_END];
 };
 
 END

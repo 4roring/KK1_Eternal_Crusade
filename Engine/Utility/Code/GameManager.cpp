@@ -39,8 +39,10 @@ void Engine::CGameManager::Update(float delta_time)
 
 void Engine::CGameManager::Render()
 {
-	assert(nullptr != ptr_renderer_ && "Scene is nullptr");
+	assert(nullptr != ptr_renderer_ && "Renderer is nullptr");
 	ptr_renderer_->Render();
+	assert(nullptr != ptr_scene_ && "Scene is nullptr");
+	ptr_scene_->Render();
 }
 
 void Engine::CGameManager::Release()

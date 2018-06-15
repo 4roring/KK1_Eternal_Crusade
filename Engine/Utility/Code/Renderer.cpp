@@ -26,6 +26,8 @@ void Engine::CRenderer::Render()
 	Render_NoneAlpha();
 	Render_Alpha();
 	Render_UI();
+
+	Release();
 }
 
 void Engine::CRenderer::Release()

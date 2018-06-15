@@ -17,7 +17,7 @@ public:
 	virtual CComponent* CloneComponent();
 
 public:
-	virtual void Update();
+	virtual void Update(float delta_time) override;
 	virtual int Release() override;
 
 public:

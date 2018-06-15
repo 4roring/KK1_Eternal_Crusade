@@ -46,8 +46,21 @@ void Engine::CLayer::Update(float delta_time)
 {
 	for (auto& pair : map_object_list_)
 	{
-		for (auto& object : pair.second)
-			object->Update(delta_time);
+		auto iter = pair.second.begin();
+		auto iter_end = pair.second.end();
+
+		for (; iter != iter_end; )
+		{
+			if (true == (*iter)->destroy())
+				iter = pair.second.erase(iter);
+			else if (false == (*iter)->active())
+				continue;
+			else
+			{
+				(*iter)->Update(delta_time);
+				++iter;
+			}
+		}
 	}
 }
 

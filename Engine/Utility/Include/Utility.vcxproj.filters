@@ -64,6 +64,21 @@
     <Filter Include="04.Component\Shader">
       <UniqueIdentifier>{cd1e24f7-c2cd-43f6-8a1b-af733c18ab7f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05.Resources\Mesh\StaticMesh">
+      <UniqueIdentifier>{c9f471ac-c1fe-4c91-aacd-95314902cb64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05.Resources\Mesh\DynamicMesh">
+      <UniqueIdentifier>{4698792e-0fbe-48d3-8026-e32c723655eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05.Resources\Mesh\DynamicMesh\Loader">
+      <UniqueIdentifier>{7807d546-b17d-41f0-a11d-c344e844f2ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05.Resources\Mesh\DynamicMesh\AnimController">
+      <UniqueIdentifier>{d50c63f7-0441-47cc-a4d5-8f26e2a78151}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.GameObject\Camera">
+      <UniqueIdentifier>{4fb59925-4447-42b6-b590-78a456678dd6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Code\GameManager.h">
@@ -108,6 +123,30 @@
     <ClInclude Include="..\Code\Shader.h">
       <Filter>04.Component\Shader</Filter>
     </ClInclude>
+    <ClInclude Include="..\Code\CubeTexture.h">
+      <Filter>05.Resources\VIBuffer\CubeTexture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\CubeColor.h">
+      <Filter>05.Resources\VIBuffer\CubeColor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Mesh.h">
+      <Filter>05.Resources\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\StaticMesh.h">
+      <Filter>05.Resources\Mesh\StaticMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\DynamicMesh.h">
+      <Filter>05.Resources\Mesh\DynamicMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Loader.h">
+      <Filter>05.Resources\Mesh\DynamicMesh\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\AnimController.h">
+      <Filter>05.Resources\Mesh\DynamicMesh\AnimController</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Camera.h">
+      <Filter>03.GameObject\Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\GameManager.cpp">
@@ -148,6 +187,30 @@
     </ClCompile>
     <ClCompile Include="..\Code\Shader.cpp">
       <Filter>04.Component\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CubeTexture.cpp">
+      <Filter>05.Resources\VIBuffer\CubeTexture</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CubeColor.cpp">
+      <Filter>05.Resources\VIBuffer\CubeColor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Mesh.cpp">
+      <Filter>05.Resources\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\StaticMesh.cpp">
+      <Filter>05.Resources\Mesh\StaticMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\DynamicMesh.cpp">
+      <Filter>05.Resources\Mesh\DynamicMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Loader.cpp">
+      <Filter>05.Resources\Mesh\DynamicMesh\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\AnimController.cpp">
+      <Filter>05.Resources\Mesh\DynamicMesh\AnimController</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Camera.cpp">
+      <Filter>03.GameObject\Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

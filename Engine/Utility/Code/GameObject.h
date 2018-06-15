@@ -6,6 +6,7 @@ BEGIN(Engine)
 
 class CComponent;
 class CTransform;
+class CShader;
 
 class ENGINE_DLL CGameObject
 {
@@ -19,8 +20,15 @@ public:
 	const CComponent* GetComponent(const std::wstring& component_key);
 
 public:
+	void SetActive(bool active);
+	void Destroy();
+
+public:
 	void ComputeViewZ(const Matrix& mat_view);
-	const float view_z() const;
+	float view_z() const;
+	bool active() const;
+	bool destroy() const;
+	Engine::CTransform* transform();
 
 public:
 	virtual ~CGameObject();
@@ -39,12 +47,15 @@ protected:
 protected:
 	LPDIRECT3DDEVICE9 ptr_device_ = nullptr;
 	CTransform* ptr_transform_ = nullptr;
+	CShader* ptr_shader_ = nullptr;
 
 protected:
 	std::map<std::wstring, CComponent*> map_component_;
 
 protected:
 	float view_z_ = 0.f;
+	bool active_ = true;
+	bool destroy_ = false;
 };
 
 template<typename T>

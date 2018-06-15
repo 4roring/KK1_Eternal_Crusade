@@ -1,5 +1,5 @@
 #include "GameObject.h"
-#include "Transform.h"
+#include "Component.h"
 
 Engine::CGameObject::CGameObject(LPDIRECT3DDEVICE9 ptr_device)
 	: ptr_device_(ptr_device)
@@ -20,20 +20,49 @@ const Engine::CComponent * Engine::CGameObject::GetComponent(const std::wstring 
 	return iter->second;
 }
 
+void Engine::CGameObject::SetActive(bool active)
+{
+	active_ = active;
+}
+
+void Engine::CGameObject::Destroy()
+{
+	destroy_ = true;
+}
+
 void Engine::CGameObject::ComputeViewZ(const Matrix & mat_view)
 {
 
 }
 
-const float Engine::CGameObject::view_z() const
+float Engine::CGameObject::view_z() const
 {
 	return view_z_;
+}
+
+bool Engine::CGameObject::active() const
+{
+	return active_;
+}
+
+bool Engine::CGameObject::destroy() const
+{
+	return destroy_;
+}
+
+Engine::CTransform * Engine::CGameObject::transform()
+{
+	return ptr_transform_;
 }
 
 void Engine::CGameObject::Update(float delta_time)
 {
 	for (auto& pair : map_component_)
+	{
+		if (false == pair.second->enable_)
+			continue;
 		pair.second->Update(delta_time);
+	}
 }
 
 void Engine::CGameObject::Render()

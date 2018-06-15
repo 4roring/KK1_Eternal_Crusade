@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "ScreenImage.h"
 
-#include "Transform.h"
 #include "Texture.h"
 #include "VIBuffer.h"
 #include "Shader.h"
@@ -16,8 +15,14 @@ CScreenImage::~CScreenImage()
 	Release();
 }
 
+HRESULT CScreenImage::Initialize()
+{
+	return AddComponent();
+}
+
 void CScreenImage::Update(float delta_time)
 {
+	Engine::GameManager()->AddRenderLayer(Engine::RENDERLAYER::LAYER_NONEALPHA, this);
 	Engine::CGameObject::Update(delta_time);
 }
 
@@ -48,12 +53,6 @@ CScreenImage * CScreenImage::Create(LPDIRECT3DDEVICE9 ptr_device)
 		assert(!"ScreenImage Object Create Failed");
 	}
 	return ptr_object;
-}
-
-HRESULT CScreenImage::Initialize()
-{
-	Engine::GameManager()->AddRenderLayer(Engine::RENDERLAYER::LAYER_NONEALPHA, this);
-	return AddComponent();
 }
 
 HRESULT CScreenImage::AddComponent()

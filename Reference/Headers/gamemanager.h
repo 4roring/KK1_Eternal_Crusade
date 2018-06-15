@@ -45,11 +45,12 @@ private:
 template<typename T>
 HRESULT Engine::CGameManager::SceneChange(T& Functor)
 {
-	if (ptr_scene_ != nullptr)
+	if (nullptr != ptr_scene_)
 		Safe_Delete(ptr_scene_);
 
 	HRESULT hr = Functor(&ptr_scene_, ptr_device_);
 	assert(hr == S_OK && "SceneChange Error");
+	ptr_renderer_->Release();
 
 	return S_OK;
 }

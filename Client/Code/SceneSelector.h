@@ -2,11 +2,12 @@
 
 #include "Engine_Include.h"
 #include "Logo.h"
+#include "Stage.h"
 
 class CSceneSelector
 {
 public:
-	enum class SCENE { LOGO, TITLE, STAGE_PVE, SPECIAL_ISLAND };
+	enum class SCENE { LOGO, TITLE, STAGE, SPECIAL_ISLAND };
 
 public:
 	explicit CSceneSelector(SCENE scene_id)
@@ -23,7 +24,8 @@ public:
 			break;
 		case SCENE::TITLE:
 			break;
-		case SCENE::STAGE_PVE:
+		case SCENE::STAGE:
+			*pp_scene = CStage::Create(ptr_device);
 			break;
 		case SCENE::SPECIAL_ISLAND:
 			break;
