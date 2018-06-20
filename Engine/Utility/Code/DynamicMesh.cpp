@@ -50,9 +50,7 @@ void Engine::CDynamicMesh::FrameMove(float delta_time, CAnimController* ptr_anim
 void Engine::CDynamicMesh::RenderMesh(LPD3DXEFFECT ptr_effect)
 {
 	ptr_effect->Begin(nullptr, 0);
-	ptr_effect->BeginPass(0);
 	FindMeshContainer((DerivedFrame*)ptr_root_bone_, ptr_effect);
-	ptr_effect->EndPass();
 	ptr_effect->End();
 }
 
@@ -102,11 +100,11 @@ void Engine::CDynamicMesh::UpdateFrameMatrix(DerivedFrame * ptr_frame, const Mat
 {
 	if (nullptr != ptr_frame)
 		ptr_frame->combined_matrix = ptr_frame->TransformationMatrix * (*ptr_parent_matrix);
-	
+
 	if (nullptr != ptr_frame->pFrameFirstChild)
 		UpdateFrameMatrix((DerivedFrame*)ptr_frame->pFrameFirstChild, &ptr_frame->combined_matrix);
 
-	if(nullptr != ptr_frame->pFrameSibling)
+	if (nullptr != ptr_frame->pFrameSibling)
 		UpdateFrameMatrix((DerivedFrame*)ptr_frame->pFrameSibling, ptr_parent_matrix);
 }
 
@@ -125,8 +123,8 @@ void Engine::CDynamicMesh::SetUpFrameMatrixPointer(DerivedFrame * ptr_frame)
 		((DerivedMeshContainer*)ptr_mesh)->pp_frame_combined_matrix = new Matrix*[num_frame];
 		ZeroMemory(((DerivedMeshContainer*)ptr_mesh)->pp_frame_combined_matrix
 			, sizeof(Matrix*) * num_frame);
-			
-			
+
+
 		for (DWORD i = 0; i < num_frame; ++i)
 		{
 			((DerivedMeshContainer*)ptr_mesh)->pp_frame_combined_matrix[i] =
@@ -136,7 +134,7 @@ void Engine::CDynamicMesh::SetUpFrameMatrixPointer(DerivedFrame * ptr_frame)
 
 	if (nullptr != ptr_frame->pFrameFirstChild)
 		SetUpFrameMatrixPointer((DerivedFrame*)ptr_frame->pFrameFirstChild);
-	
+
 	if (nullptr != ptr_frame->pFrameSibling)
 		SetUpFrameMatrixPointer((DerivedFrame*)ptr_frame->pFrameSibling);
 }
@@ -158,8 +156,50 @@ void Engine::CDynamicMesh::FindMeshContainer(DerivedFrame * ptr_frame, LPD3DXEFF
 
 void Engine::CDynamicMesh::RenderMeshContainer(DerivedMeshContainer * ptr_mesh_container, LPD3DXEFFECT ptr_effect)
 {
+	//if (nullptr != ptr_mesh_container->pSkinInfo)
+	//{
+	//	DWORD num_bones = ptr_mesh_container->pSkinInfo->GetNumBones();
+
+	//	if (nullptr == ptr_mesh_container->ptr_result_matrix)
+	//		ptr_mesh_container->ptr_result_matrix = new Matrix[num_bones];
+
+	//	for (DWORD i = 0; i < num_bones; ++i)
+	//	{
+	//		ptr_mesh_container->ptr_result_matrix[i] = ptr_mesh_container->ptr_frame_offset_matrix[i]
+	//			* (*ptr_mesh_container->pp_frame_combined_matrix[i]);
+	//	}
+
+	//	BYTE* ptr_src;
+	//	BYTE* ptr_dst;
+
+	//	ptr_mesh_container->ptr_original_mesh->LockVertexBuffer(0, (void**)&ptr_src);
+	//	ptr_mesh_container->MeshData.pMesh->LockVertexBuffer(0, (void**)&ptr_dst);
+	//
+	//	ptr_mesh_container->pSkinInfo->UpdateSkinnedMesh(ptr_mesh_container->ptr_result_matrix
+	//		, nullptr, ptr_src, ptr_dst);
+
+	//	ptr_mesh_container->ptr_original_mesh->UnlockVertexBuffer();
+	//	ptr_mesh_container->MeshData.pMesh->UnlockVertexBuffer();
+
+	//	for (DWORD i = 0; i < ptr_mesh_container->NumMaterials; ++i)
+	//	{
+	//		ptr_device_->SetMaterial(&ptr_mesh_container->pMaterials[i].MatD3D);
+	//		if(nullptr == ptr_effect)
+	//			ptr_device_->SetTexture(0, ptr_mesh_container->pp_texture[i]);
+	//		else
+	//		{
+	//			ptr_effect->SetTexture("g_base_texture", ptr_mesh_container->pp_texture[i]);
+	//			ptr_effect->CommitChanges();
+	//		}
+	//		ptr_mesh_container->MeshData.pMesh->DrawSubset(i);
+	//	}
+	//}
+
 	if (nullptr != ptr_mesh_container->pSkinInfo)
 	{
+		LPD3DXBONECOMBINATION ptr_bone_comb =
+			(LPD3DXBONECOMBINATION)(ptr_mesh_container->ptr_bone_combination_buf->GetBufferPointer());
+
 		DWORD num_bones = ptr_mesh_container->pSkinInfo->GetNumBones();
 
 		if (nullptr == ptr_mesh_container->ptr_result_matrix)
@@ -170,23 +210,14 @@ void Engine::CDynamicMesh::RenderMeshContainer(DerivedMeshContainer * ptr_mesh_c
 			ptr_mesh_container->ptr_result_matrix[i] = ptr_mesh_container->ptr_frame_offset_matrix[i]
 				* (*ptr_mesh_container->pp_frame_combined_matrix[i]);
 		}
+		
+		ptr_effect->SetMatrixArray("matrix_palette", ptr_mesh_container->ptr_result_matrix, num_bones);
 
-		BYTE* ptr_src;
-		BYTE* ptr_dst;
-
-		ptr_mesh_container->ptr_original_mesh->LockVertexBuffer(0, (void**)&ptr_src);
-		ptr_mesh_container->MeshData.pMesh->LockVertexBuffer(0, (void**)&ptr_dst);
-	
-		ptr_mesh_container->pSkinInfo->UpdateSkinnedMesh(ptr_mesh_container->ptr_result_matrix
-			, nullptr, ptr_src, ptr_dst);
-
-		ptr_mesh_container->ptr_original_mesh->UnlockVertexBuffer();
-		ptr_mesh_container->MeshData.pMesh->UnlockVertexBuffer();
-
+		ptr_effect->BeginPass(0);
 		for (DWORD i = 0; i < ptr_mesh_container->NumMaterials; ++i)
 		{
-			ptr_device_->SetMaterial(&ptr_mesh_container->pMaterials[i].MatD3D);
-			if(nullptr == ptr_effect)
+			//ptr_device_->SetMaterial(&ptr_mesh_container->pMaterials[i].MatD3D);
+			if (nullptr == ptr_effect)
 				ptr_device_->SetTexture(0, ptr_mesh_container->pp_texture[i]);
 			else
 			{
@@ -195,6 +226,7 @@ void Engine::CDynamicMesh::RenderMeshContainer(DerivedMeshContainer * ptr_mesh_c
 			}
 			ptr_mesh_container->MeshData.pMesh->DrawSubset(i);
 		}
+		ptr_effect->EndPass();
 	}
 }
 

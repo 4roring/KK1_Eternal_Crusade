@@ -9,6 +9,7 @@ namespace Engine
 
 	typedef struct tagMeshContainer_Derived : public D3DXMESHCONTAINER
 	{
+		LPD3DXBUFFER ptr_bone_combination_buf;
 		LPDIRECT3DTEXTURE9* pp_texture;
 		LPD3DXMESH ptr_original_mesh;
 		Matrix* ptr_frame_offset_matrix;

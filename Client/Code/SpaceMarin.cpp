@@ -35,7 +35,8 @@ void CSpaceMarin::Update(float delta_time)
 
 	if (ptr_anim_ctrl_->GetPeriod() <= ptr_anim_ctrl_->GetTrackPosition())
 	{
-		//ptr_anim_ctrl_->SetAnimationTrack(anim_track_);
+		anim_track_ = rand() % 34;
+		ptr_anim_ctrl_->SetAnimationTrack(anim_track_);
 		ptr_anim_ctrl_->SetTrackPosition(0.0);
 	}
 
@@ -76,7 +77,7 @@ HRESULT CSpaceMarin::AddComponent()
 
 	hr = Ready_Component(MAINTAIN_STATIC, TEXT("Component_Transform"), TEXT("Transform"), ptr_transform_);
 	assert(hr == S_OK && "Tranform Component ReadyComponent Failed");
-	hr = Ready_Component(MAINTAIN_STATIC, TEXT("Shader_Mesh"), TEXT("Shader"), ptr_shader_);
+	hr = Ready_Component(MAINTAIN_STATIC, TEXT("Shader_DynamicMesh"), TEXT("Shader"), ptr_shader_);
 	assert(hr == S_OK && "ScreenImage Shader ReadyComponent Failed");
 	hr = Ready_Component(MAINTAIN_STAGE, TEXT("SpaceMarin_Mesh"), TEXT("Mesh"), ptr_mesh_);
 	assert(hr == S_OK && "Mesh ReadyComponent Failed");

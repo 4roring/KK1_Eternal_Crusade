@@ -48,23 +48,23 @@ STDOVERRIDEMETHODIMP Engine::CLoader::CreateMeshContainer(LPCSTR ptr_name
 	ptr_mesh_container->pAdjacency = new DWORD[num_faces * 3];
 	memcpy(ptr_mesh_container->pAdjacency, ptr_adjacency, sizeof(DWORD) * num_faces * 3);
 
-	// Normal Data
-	if (!(ptr_mesh->GetFVF() & D3DFVF_NORMAL))
-	{
-		hr = ptr_mesh->CloneMeshFVF(ptr_mesh->GetOptions(), ptr_mesh->GetFVF() | D3DFVF_NORMAL
-			, ptr_device_, &ptr_mesh_container->MeshData.pMesh);
-		assert(!FAILED(hr) && "CloneMeshFVF Failed");
+	//// Normal Data
+	//if (!(ptr_mesh->GetFVF() & D3DFVF_NORMAL))
+	//{
+	//	hr = ptr_mesh->CloneMeshFVF(ptr_mesh->GetOptions(), ptr_mesh->GetFVF() | D3DFVF_NORMAL
+	//		, ptr_device_, &ptr_mesh_container->MeshData.pMesh);
+	//	assert(!FAILED(hr) && "CloneMeshFVF Failed");
 
-		D3DXComputeNormals(ptr_mesh_container->MeshData.pMesh, ptr_mesh_container->pAdjacency);
-	}
-	else
-	{
-		hr = ptr_mesh->CloneMeshFVF(ptr_mesh->GetOptions(), ptr_mesh->GetFVF() | D3DFVF_NORMAL
-			, ptr_device_, &ptr_mesh_container->MeshData.pMesh);
-		assert(!FAILED(hr) && "CloneMeshFVF Failed");
+	//	D3DXComputeNormals(ptr_mesh_container->MeshData.pMesh, ptr_mesh_container->pAdjacency);
+	//}
+	//else
+	//{
+	//	hr = ptr_mesh->CloneMeshFVF(ptr_mesh->GetOptions(), ptr_mesh->GetFVF() | D3DFVF_NORMAL
+	//		, ptr_device_, &ptr_mesh_container->MeshData.pMesh);
+	//	assert(!FAILED(hr) && "CloneMeshFVF Failed");
 
-		ptr_mesh->AddRef();
-	}
+	//	ptr_mesh->AddRef();
+	//}
 
 	// Subset Data
 	ptr_mesh_container->NumMaterials = max(num_materials, 1);
@@ -105,13 +105,49 @@ STDOVERRIDEMETHODIMP Engine::CLoader::CreateMeshContainer(LPCSTR ptr_name
 		ptr_mesh_container->pMaterials[0].pTextureFilename = nullptr;
 	}
 
-	// Skin Info
+	// Skin Info (Software Skinning)
+	//if (nullptr != ptr_skin_info)
+	//{
+	//	ptr_mesh_container->pSkinInfo = ptr_skin_info;
+	//	ptr_skin_info->AddRef();
+
+	//	ptr_mesh_container->ptr_original_mesh = ptr_mesh;
+
+	//	DWORD num_bones = ptr_skin_info->GetNumBones();
+	//	ptr_mesh_container->ptr_frame_offset_matrix = new Matrix[num_bones];
+	//	ZeroMemory(ptr_mesh_container->ptr_frame_offset_matrix, sizeof(Matrix) * num_bones);
+
+	//	for (DWORD i = 0; i < num_bones; ++i)
+	//		ptr_mesh_container->ptr_frame_offset_matrix[i] = *(ptr_skin_info->GetBoneOffsetMatrix(i));
+	//}
+	//else
+	//{
+	//	ptr_mesh_container->pSkinInfo = nullptr;
+	//	ptr_mesh_container->ptr_frame_offset_matrix = nullptr;
+	//	ptr_mesh_container->ptr_original_mesh = nullptr;
+	//}
+
+	// Skin Info (Hardware Skinning)
 	if (nullptr != ptr_skin_info)
 	{
 		ptr_mesh_container->pSkinInfo = ptr_skin_info;
 		ptr_skin_info->AddRef();
 
-		ptr_mesh_container->ptr_original_mesh = ptr_mesh;
+		DWORD max_vertex_in_fluences = 0;
+		DWORD num_bone_combo_entries = 0;
+
+		ptr_skin_info->ConvertToIndexedBlendedMesh(ptr_mesh_data->pMesh
+			, D3DXMESH_MANAGED | D3DXMESH_WRITEONLY
+			, 30
+			, nullptr, nullptr, nullptr, nullptr
+			, &max_vertex_in_fluences
+			, &num_bone_combo_entries
+			, &ptr_mesh_container->ptr_bone_combination_buf
+			, &ptr_mesh_container->MeshData.pMesh);
+
+		// Normal Data
+		if (!(ptr_mesh->GetFVF() & D3DFVF_NORMAL))
+			D3DXComputeNormals(ptr_mesh_container->MeshData.pMesh, ptr_mesh_container->pAdjacency);
 
 		DWORD num_bones = ptr_skin_info->GetNumBones();
 		ptr_mesh_container->ptr_frame_offset_matrix = new Matrix[num_bones];
@@ -119,12 +155,6 @@ STDOVERRIDEMETHODIMP Engine::CLoader::CreateMeshContainer(LPCSTR ptr_name
 
 		for (DWORD i = 0; i < num_bones; ++i)
 			ptr_mesh_container->ptr_frame_offset_matrix[i] = *(ptr_skin_info->GetBoneOffsetMatrix(i));
-	}
-	else
-	{
-		ptr_mesh_container->pSkinInfo = nullptr;
-		ptr_mesh_container->ptr_frame_offset_matrix = nullptr;
-		ptr_mesh_container->ptr_original_mesh = nullptr;
 	}
 
 	*pp_new_mesh_containder = ptr_mesh_container;

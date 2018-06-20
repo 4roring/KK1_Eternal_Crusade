@@ -6,6 +6,7 @@
 #include "CubeTexture.h"
 #include "StaticMesh.h"
 #include "DynamicMesh.h"
+#include "Shader.h"
 
 
 CLoading::CLoading(LOADINGID loading_id)
@@ -41,6 +42,8 @@ HRESULT CLoading::Stage_Loading()
 {
 	lstrcpy(loading_message_, TEXT("Texture Loading"));
 	HRESULT hr = E_FAIL;
+
+	// Texture
 	hr = Engine::Component()->Add_Prototype(MAINTAIN_STAGE
 		, TEXT("Texture_TestPlane_Color")
 		, Engine::CTexture::Create(ptr_device_
@@ -57,6 +60,15 @@ HRESULT CLoading::Stage_Loading()
 			, 1));
 	assert(hr == S_OK && "Add Texture Failed");
 
+	hr = Engine::Component()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("Floor_6x12_1_Texture_Normal")
+		, Engine::CTexture::Create(ptr_device_
+			, Engine::TEXTURETYPE::NORMAL
+			, TEXT("../bin/Resources/Mesh/MapData/Floor_6x12_1/T_Bundle_J_var1_N.tga")
+			, 1));
+	assert(hr == S_OK && "Add Texture Failed");
+
+	// Mesh
 	lstrcpy(loading_message_, TEXT("Mesh Loading"));
 	hr = Engine::Component()->Add_Prototype(MAINTAIN_STAGE
 		, TEXT("SpaceMarin_Mesh")
@@ -64,6 +76,34 @@ HRESULT CLoading::Stage_Loading()
 			, TEXT("../bin/Resources/Mesh/SpaceMarin/")
 			, TEXT("SpaceMarin.X")));
 	assert(hr == S_OK && "SpaceMarin Mesh Add Failed");
+
+	lstrcpy(loading_message_, TEXT("Mesh Loading"));
+	hr = Engine::Component()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("Floor_6x12_1_Mesh")
+		, Engine::CStaticMesh::Create(ptr_device_
+			, TEXT("../bin/Resources/Mesh/MapData/Floor_6x12_1/")
+			, TEXT("Floor_6x12_1.X")));
+	assert(hr == S_OK && "Floor_6x12_1 Mesh Add Failed");
+
+	// Shader
+	lstrcpy(loading_message_, TEXT("Shader Loading"));
+	hr = Engine::Component()->Add_Prototype(MAINTAIN_STATIC
+		, TEXT("Shader_Mesh")
+		, Engine::CShader::Create(ptr_device_
+			, TEXT("../../Reference/Shader/MeshShader.hlsl")));
+	assert(hr == S_OK && "Shader_Mesh Component Add Failed");
+
+	hr = Engine::Component()->Add_Prototype(MAINTAIN_STATIC
+		, TEXT("Shader_DynamicMesh")
+		, Engine::CShader::Create(ptr_device_
+			, TEXT("../../Reference/Shader/DynamicMeshShader.hlsl")));
+	assert(hr == S_OK && "Shader_DynamicMesh Component Add Failed");
+
+	hr = Engine::Component()->Add_Prototype(MAINTAIN_STATIC
+		, TEXT("Shader_NormalMap")
+		, Engine::CShader::Create(ptr_device_
+			, TEXT("../../Reference/Shader/NormalMapShader.hlsl")));
+	assert(hr == S_OK && "Shader_DynamicMesh Component Add Failed");
 
 	lstrcpy(loading_message_, TEXT("Loading Complete"));
 	return S_OK;

@@ -4,7 +4,7 @@
 
 BEGIN(Engine)
 
-class CStaticMesh
+class ENGINE_DLL CStaticMesh
 	: public CMesh
 {
 private:

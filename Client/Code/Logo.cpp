@@ -45,15 +45,10 @@ HRESULT CLogo::InitScene()
 			, TEXT("../../Reference/Shader/DefaultShader.hlsl")));
 	assert(hr == S_OK && "Shader_Default Component Add Failed");
 
-	hr = Engine::Component()->Add_Prototype(MAINTAIN_STATIC
-		, TEXT("Shader_Mesh")
-		, Engine::CShader::Create(ptr_device_
-			, TEXT("../../Reference/Shader/MeshShader.hlsl")));
-	assert(hr == S_OK && "Shader_Default Component Add Failed");
-
 
 	hr = Add_GameLogic_Layer();
 	assert(hr == S_OK && "Add_GameLogic_Layer Call Failed");
+
 
 	ptr_loading_ = CLoading::Create(CLoading::LOADINGID::STAGE);
 

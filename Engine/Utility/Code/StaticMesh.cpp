@@ -100,7 +100,7 @@ Engine::CStaticMesh * Engine::CStaticMesh::Create(LPDIRECT3DDEVICE9 ptr_device, 
 		assert(!"StaticMesh Create Failed");
 	}
 
-	return nullptr;
+	return ptr_mesh;
 }
 
 bool Engine::CStaticMesh::CheckAlpha(int subset_index, const char * find_tag)

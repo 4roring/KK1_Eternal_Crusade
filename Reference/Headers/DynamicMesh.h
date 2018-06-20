@@ -24,7 +24,6 @@ public:
 public:
 	virtual CResources* CloneComponent() override;
 	CAnimController* CloneAnimController() const;
-	CAnimController* GetAnimController() const;
 
 public:
 	void FrameMove(float delta_time, CAnimController* ptr_anim_ctrl);

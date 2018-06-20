@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{7EAE5D7F-1C32-4788-BFC5-B2493C3F0EE5}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01.Engine", "01.Engine", "{7EAE5D7F-1C32-4788-BFC5-B2493C3F0EE5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{6F20F8D2-0418-4D29-956A-BD15F42E132D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00.Client", "00.Client", "{6F20F8D2-0418-4D29-956A-BD15F42E132D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client", "Client\Include\Client.vcxproj", "{842CE7F0-4A2B-460C-BE32-683C0B580D0F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Headers", "Headers", "{5F800805-D87E-403E-80DD-8DA4339D023F}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "99.Headers", "99.Headers", "{5F800805-D87E-403E-80DD-8DA4339D023F}"
 	ProjectSection(SolutionItems) = preProject
 		Reference\Headers\Engine_Enum.h = Reference\Headers\Engine_Enum.h
 		Reference\Headers\Engine_Function.h = Reference\Headers\Engine_Function.h
@@ -29,12 +29,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Export", "Export", "{923818
 		Engine\Export\Export_Function.h = Engine\Export\Export_Function.h
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shader", "Shader", "{4FEF042B-3FE1-46A9-B349-D37617A28560}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "98.Shader", "98.Shader", "{4FEF042B-3FE1-46A9-B349-D37617A28560}"
 	ProjectSection(SolutionItems) = preProject
 		Reference\Shader\BaseShader.hlsl = Reference\Shader\BaseShader.hlsl
 		Reference\Shader\DefaultShader.hlsl = Reference\Shader\DefaultShader.hlsl
+		Reference\Shader\DynamicMeshShader.hlsl = Reference\Shader\DynamicMeshShader.hlsl
 		Reference\Shader\MeshShader.hlsl = Reference\Shader\MeshShader.hlsl
+		Reference\Shader\NormalMapShader.hlsl = Reference\Shader\NormalMapShader.hlsl
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02.Tool", "02.Tool", "{4A792490-EA8C-44F5-8864-BDCB14242600}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MapTool", "MapTool\Include\MapTool.vcxproj", "{74F841BD-EDA5-47A4-8274-09A355A00F48}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -68,6 +74,14 @@ Global
 		{0102F401-78A0-4235-A185-4C83E193D1A6}.Release|x64.Build.0 = Release|x64
 		{0102F401-78A0-4235-A185-4C83E193D1A6}.Release|x86.ActiveCfg = Release|Win32
 		{0102F401-78A0-4235-A185-4C83E193D1A6}.Release|x86.Build.0 = Release|Win32
+		{74F841BD-EDA5-47A4-8274-09A355A00F48}.Debug|x64.ActiveCfg = Debug|x64
+		{74F841BD-EDA5-47A4-8274-09A355A00F48}.Debug|x64.Build.0 = Debug|x64
+		{74F841BD-EDA5-47A4-8274-09A355A00F48}.Debug|x86.ActiveCfg = Debug|Win32
+		{74F841BD-EDA5-47A4-8274-09A355A00F48}.Debug|x86.Build.0 = Debug|Win32
+		{74F841BD-EDA5-47A4-8274-09A355A00F48}.Release|x64.ActiveCfg = Release|x64
+		{74F841BD-EDA5-47A4-8274-09A355A00F48}.Release|x64.Build.0 = Release|x64
+		{74F841BD-EDA5-47A4-8274-09A355A00F48}.Release|x86.ActiveCfg = Release|Win32
+		{74F841BD-EDA5-47A4-8274-09A355A00F48}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -77,5 +91,6 @@ Global
 		{807DC320-6A51-4CF9-BE20-E958F678157D} = {7EAE5D7F-1C32-4788-BFC5-B2493C3F0EE5}
 		{0102F401-78A0-4235-A185-4C83E193D1A6} = {7EAE5D7F-1C32-4788-BFC5-B2493C3F0EE5}
 		{923818D7-20BC-4FBD-B26B-DC8D41E3110E} = {7EAE5D7F-1C32-4788-BFC5-B2493C3F0EE5}
+		{74F841BD-EDA5-47A4-8274-09A355A00F48} = {4A792490-EA8C-44F5-8864-BDCB14242600}
 	EndGlobalSection
 EndGlobal

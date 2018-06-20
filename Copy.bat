@@ -6,7 +6,10 @@ xcopy /y	.\Engine\System\Code\*.h				.\Reference\Headers\
 xcopy /y	.\Engine\System\bin\System.lib			.\Reference\Library\
 xcopy /y	.\Engine\System\bin\System.dll			.\Client\bin\
 
-
 xcopy /y	.\Engine\Utility\Code\*.h				.\Reference\Headers\
 xcopy /y	.\Engine\Utility\bin\Utility.lib		.\Reference\Library\
 xcopy /y	.\Engine\Utility\bin\Utility.dll		.\Client\bin\
+
+
+xcopy /y	.\Engine\System\bin\System.dll			.\MapTool\bin\
+xcopy /y	.\Engine\Utility\bin\Utility.dll		.\MapTool\bin\

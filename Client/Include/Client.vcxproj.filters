@@ -66,6 +66,9 @@
     <Filter Include="소스 파일\02.GameObject\UI\Camera\PlayerCamera">
       <UniqueIdentifier>{5066d90b-a1c9-4d73-8e29-e09c20b5e699}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\02.GameObject\GameLogic\TestObject\TestPlane2">
+      <UniqueIdentifier>{b2a0e722-a16c-44ef-b234-31e985c1162a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -116,6 +119,9 @@
     <ClInclude Include="..\Code\Stage.h">
       <Filter>소스 파일\01.Scene\02.Stage</Filter>
     </ClInclude>
+    <ClInclude Include="TestPlane2.h">
+      <Filter>소스 파일\02.GameObject\GameLogic\TestObject\TestPlane2</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -147,6 +153,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\Stage.cpp">
       <Filter>소스 파일\01.Scene\02.Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="TestPlane2.cpp">
+      <Filter>소스 파일\02.GameObject\GameLogic\TestObject\TestPlane2</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

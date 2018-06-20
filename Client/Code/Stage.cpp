@@ -5,8 +5,11 @@
 #include "Transform.h"
 
 // Game Logic
-#include "TestPlane.h"
 #include "SpaceMarin.h"
+
+// Test
+#include "TestPlane.h"
+#include "TestPlane2.h"
 
 // UI
 #include "DynamicCamera.h"
@@ -61,13 +64,17 @@ HRESULT CStage::Add_GameLogic_Layer()
 	Engine::CGameObject* ptr_obj = nullptr;
 	map_layer_.emplace(LAYER_GAMELOGIC, ptr_layer);
 
-	ptr_obj = CTestPlane::Create(ptr_device_);
-	assert(nullptr != ptr_obj && "Test Plane Create Failed");
-	ptr_layer->AddObject(TEXT("TestPlane"), ptr_obj);
+	//ptr_obj = CTestPlane::Create(ptr_device_);
+	//assert(nullptr != ptr_obj && "Test Plane Create Failed");
+	//ptr_layer->AddObject(TEXT("TestPlane"), ptr_obj);
 
-	for (int i = 0; i < 5; ++i)
+	ptr_obj = CTestPlane2::Create(ptr_device_);
+	assert(nullptr != ptr_obj && "Test Plane2 Create Failed");
+	ptr_layer->AddObject(TEXT("TestPlane2"), ptr_obj);
+
+	for (int i = 0; i < 10; ++i)
 	{
-		for (int j = 0; j < 5; ++j)
+		for (int j = 0; j < 10; ++j)
 		{
 			ptr_obj = CSpaceMarin::Create(ptr_device_);
 			assert(nullptr != ptr_obj && "SpaceMarin Create Failed");

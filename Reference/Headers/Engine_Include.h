@@ -27,5 +27,7 @@
 #include <assert.h>
 
 #ifdef _DEBUG
+#ifndef _TOOL
 #define new new(_CLIENT_BLOCK, __FILE__, __LINE__)
+#endif
 #endif
