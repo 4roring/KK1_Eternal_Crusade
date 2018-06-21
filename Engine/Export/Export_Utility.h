@@ -6,7 +6,6 @@
 BEGIN(Engine)
 
 inline CGameManager* GameManager();
-inline CComponentManager* Component();
 
 #include "Export_Utility.inl"
 

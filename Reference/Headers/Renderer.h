@@ -6,7 +6,7 @@ BEGIN(Engine)
 
 class CGameObject;
 
-class ENGINE_DLL CRenderer
+class CRenderer
 {
 private:
 	explicit CRenderer(LPDIRECT3DDEVICE9 ptr_device);
@@ -18,8 +18,10 @@ public:
 	static CRenderer* Create(LPDIRECT3DDEVICE9 ptr_device);
 
 public:
+	void RenderGroupRelease();
+
+public:
 	void Render();
-	void Release();
 
 public:
 	void AddRenderLayer(RENDERLAYER render_id, CGameObject* ptr_object);
@@ -29,6 +31,10 @@ private:
 	void Render_NoneAlpha();
 	void Render_Alpha();
 	void Render_UI();
+
+
+private:
+	void Release();
 
 private:
 	LPDIRECT3DDEVICE9 ptr_device_ = nullptr;

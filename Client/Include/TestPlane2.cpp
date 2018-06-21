@@ -18,8 +18,12 @@ CTestPlane2::~CTestPlane2()
 
 HRESULT CTestPlane2::Initialize()
 {
-	HRESULT hr = AddComponent();
-	assert(!FAILED(hr) && "Test Plane AddComponent Failed");
+	HRESULT hr = CGameObject::Initialize();
+	assert(!FAILED(hr) && "CGameObject::Initialize call failed in TestPlane2");
+
+	hr = AddComponent();
+	assert(!FAILED(hr) && "AddComponent call failed in TestPlane2");
+
 	ptr_transform_->scale_ = Vector3(0.01f, 0.01f, 0.01f);
 	return S_OK;
 }

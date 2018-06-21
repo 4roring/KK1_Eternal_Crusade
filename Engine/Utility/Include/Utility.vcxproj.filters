@@ -55,12 +55,6 @@
     <Filter Include="05.Resources\VIBuffer\CubeColor">
       <UniqueIdentifier>{57510354-293a-4729-acd4-829a501bfa4f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="99.Managers">
-      <UniqueIdentifier>{16205ae9-f3dc-4d8b-8726-f40e35b771d1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="99.Managers\ComponentManager">
-      <UniqueIdentifier>{5706b1ab-fddf-4ec4-be0e-11612c978d31}</UniqueIdentifier>
-    </Filter>
     <Filter Include="04.Component\Shader">
       <UniqueIdentifier>{cd1e24f7-c2cd-43f6-8a1b-af733c18ab7f}</UniqueIdentifier>
     </Filter>
@@ -78,6 +72,9 @@
     </Filter>
     <Filter Include="03.GameObject\Camera">
       <UniqueIdentifier>{4fb59925-4447-42b6-b590-78a456678dd6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Managers\GameManager\ComponentManager">
+      <UniqueIdentifier>{5706b1ab-fddf-4ec4-be0e-11612c978d31}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -118,7 +115,7 @@
       <Filter>05.Resources\Texture</Filter>
     </ClInclude>
     <ClInclude Include="..\Code\ComponentManager.h">
-      <Filter>99.Managers\ComponentManager</Filter>
+      <Filter>00.Managers\GameManager\ComponentManager</Filter>
     </ClInclude>
     <ClInclude Include="..\Code\Shader.h">
       <Filter>04.Component\Shader</Filter>
@@ -146,6 +143,9 @@
     </ClInclude>
     <ClInclude Include="..\Code\Camera.h">
       <Filter>03.GameObject\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\ComponentMap.h">
+      <Filter>03.GameObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -183,7 +183,7 @@
       <Filter>05.Resources\Texture</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\ComponentManager.cpp">
-      <Filter>99.Managers\ComponentManager</Filter>
+      <Filter>00.Managers\GameManager\ComponentManager</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Shader.cpp">
       <Filter>04.Component\Shader</Filter>
@@ -211,6 +211,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\Camera.cpp">
       <Filter>03.GameObject\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\ComponentMap.cpp">
+      <Filter>03.GameObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

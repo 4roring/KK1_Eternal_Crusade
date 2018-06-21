@@ -17,7 +17,13 @@ CScreenImage::~CScreenImage()
 
 HRESULT CScreenImage::Initialize()
 {
-	return AddComponent();
+	HRESULT hr = CGameObject::Initialize();
+	assert(!FAILED(hr) && "CGameObject::Initialize call failed in ScreenImage");
+
+	hr = AddComponent();
+	assert(!FAILED(hr) && "AddComponent call failed in ScreenImage");
+
+	return S_OK;
 }
 
 void CScreenImage::Update(float delta_time)

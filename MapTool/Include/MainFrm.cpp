@@ -90,10 +90,24 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 
 	main_splitter_.CreateStatic(this, 1, 2);
 	main_splitter_.CreateView(0, 0, RUNTIME_CLASS(CMapToolView), CSize(g_kWinCx, g_kWinCy), pContext);
-	main_splitter_.CreateView(0, 1, RUNTIME_CLASS(EditorTab), CSize(g_kWinCx, g_kWinCy), pContext);
+	main_splitter_.CreateView(0, 1, RUNTIME_CLASS(EditorTab), CSize(300, g_kWinCy), pContext);
 
 	ptr_main_view_ = static_cast<CMapToolView*>(main_splitter_.GetPane(0, 0));
 
+	RECT rc_frame_window;
+	GetWindowRect(&rc_frame_window);
+	SetRect(&rc_frame_window, 0, 0
+		, rc_frame_window.right - rc_frame_window.left
+		, rc_frame_window.bottom - rc_frame_window.top);
+
+	RECT rc_main_view;
+	GetClientRect(&rc_main_view);
+
+	int row_frame = rc_frame_window.right - rc_main_view.right;
+	int col_frame = rc_frame_window.bottom - rc_main_view.bottom;
+
+	SetWindowPos(nullptr, 100, 100
+		, int(g_kWinCx + 300 + row_frame), int(g_kWinCy + col_frame), SWP_NOZORDER);
 
 	return TRUE;
 }

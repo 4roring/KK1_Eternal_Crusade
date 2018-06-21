@@ -56,6 +56,11 @@ void Engine::CComponentManager::PrototypeClearances(int container_index)
 	ptr_map_component_[container_index].clear();
 }
 
+Engine::CComponentManager * Engine::CComponentManager::Create()
+{
+	return new CComponentManager;
+}
+
 void Engine::CComponentManager::Release()
 {
 	for (int i = 0; i < container_size_; ++i)

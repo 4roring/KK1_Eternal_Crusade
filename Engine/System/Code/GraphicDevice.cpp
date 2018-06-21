@@ -1,4 +1,6 @@
 #include "GraphicDevice.h"
+#include "FontManager.h"
+#include "Font.h"
 
 Engine::CGraphicDevice::CGraphicDevice()
 {
@@ -46,7 +48,19 @@ HRESULT Engine::CGraphicDevice::InitGraphicDevice(WINMODE mode, HWND hwnd, WORD 
 		return E_FAIL;
 	}
 
+	ptr_font_manager_ = CFontManager::Create();
+
 	return S_OK;
+}
+
+HRESULT Engine::CGraphicDevice::AddFont(const std::wstring font_key, int height, UINT width, UINT weight)
+{
+	return ptr_font_manager_->AddFont(ptr_device_, font_key, height, width, weight);
+}
+
+Engine::CFont * Engine::CGraphicDevice::GetFont(const std::wstring font_key)
+{
+	return ptr_font_manager_->GetFont(font_key);
 }
 
 void Engine::CGraphicDevice::SetParameters(D3DPRESENT_PARAMETERS & d3dpp, WINMODE mode, HWND hwnd, WORD size_x, WORD size_y)
@@ -72,6 +86,13 @@ void Engine::CGraphicDevice::SetParameters(D3DPRESENT_PARAMETERS & d3dpp, WINMOD
 
 void Engine::CGraphicDevice::Release()
 {
-	Engine::Safe_Release(ptr_device_);
-	Engine::Safe_Release(ptr_sdk_);
+	Engine::Safe_Delete(ptr_font_manager_);
+
+	UINT reference_count = 0;
+
+	if (reference_count = ptr_device_->Release())
+		assert(!"The Reference count for the Device remains");
+	
+	if (reference_count = ptr_sdk_->Release())
+		assert(!"The Reference count for the SDK remains");
 }

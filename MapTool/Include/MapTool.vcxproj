@@ -186,6 +186,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Code\ResourceLoader.h" />
     <ClInclude Include="..\Code\ToolManager.h" />
     <ClInclude Include="EditorTab.h" />
     <ClInclude Include="KK1Sheet.h" />
@@ -201,6 +202,7 @@
     <ClInclude Include="TerrainEditor.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Code\ResourceLoader.cpp" />
     <ClCompile Include="..\Code\ToolManager.cpp" />
     <ClCompile Include="EditorTab.cpp" />
     <ClCompile Include="KK1Sheet.cpp" />

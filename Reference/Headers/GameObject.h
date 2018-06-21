@@ -7,6 +7,7 @@ BEGIN(Engine)
 class CComponent;
 class CTransform;
 class CShader;
+class CComponentMap;
 
 class ENGINE_DLL CGameObject
 {
@@ -18,6 +19,7 @@ private:
 
 public:
 	const CComponent* GetComponent(const std::wstring& component_key);
+	void AddComponent(const std::wstring& instance_key, CComponent* ptr_component);
 
 public:
 	void SetActive(bool active);
@@ -33,6 +35,9 @@ public:
 public:
 	virtual ~CGameObject();
 	
+protected:
+	virtual HRESULT Initialize();
+
 public:
 	virtual void Update(float delta_time);
 	virtual void Render();
@@ -50,12 +55,12 @@ protected:
 	CShader* ptr_shader_ = nullptr;
 
 protected:
-	std::map<std::wstring, CComponent*> map_component_;
-
-protected:
 	float view_z_ = 0.f;
 	bool active_ = true;
 	bool destroy_ = false;
+
+private:
+	CComponentMap* ptr_component_map_ = nullptr;
 };
 
 template<typename T>
@@ -65,10 +70,10 @@ inline HRESULT CGameObject::Ready_Component(const int container_index
 	, T & ptr_object)
 {
 	CComponent* ptr_component = nullptr;
-	ptr_component = Engine::Component()->CloneComponent(container_index, component_key);
+	ptr_component = Engine::GameManager()->CloneComponent(container_index, component_key);
 	ptr_object = dynamic_cast<T>(ptr_component);
 	assert(nullptr != ptr_object && "Ready_Component dynamic_cast Error");
-	map_component_.emplace(instance_key, ptr_component);
+	AddComponent(instance_key, ptr_component);
 	return S_OK;
 }
 

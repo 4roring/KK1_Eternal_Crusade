@@ -159,6 +159,7 @@
     <ClInclude Include="..\Code\Camera.h" />
     <ClInclude Include="..\Code\Component.h" />
     <ClInclude Include="..\Code\ComponentManager.h" />
+    <ClInclude Include="..\Code\ComponentMap.h" />
     <ClInclude Include="..\Code\CubeColor.h" />
     <ClInclude Include="..\Code\CubeTexture.h" />
     <ClInclude Include="..\Code\DynamicMesh.h" />
@@ -182,6 +183,7 @@
     <ClCompile Include="..\Code\Camera.cpp" />
     <ClCompile Include="..\Code\Component.cpp" />
     <ClCompile Include="..\Code\ComponentManager.cpp" />
+    <ClCompile Include="..\Code\ComponentMap.cpp" />
     <ClCompile Include="..\Code\CubeColor.cpp" />
     <ClCompile Include="..\Code\CubeTexture.cpp" />
     <ClCompile Include="..\Code\DynamicMesh.cpp" />

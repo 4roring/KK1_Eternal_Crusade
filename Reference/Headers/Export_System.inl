@@ -13,8 +13,3 @@ inline Engine::CInputManager* Input()
 {
 	return CInputManager::GetInstance();
 }
-
-inline Engine::CFontManager* Font()
-{
-	return CFontManager::GetInstance();
-}

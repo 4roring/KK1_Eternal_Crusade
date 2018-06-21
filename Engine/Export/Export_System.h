@@ -10,7 +10,6 @@ BEGIN(Engine)
 inline CGraphicDevice* GraphicDevice();
 inline CTimeManager* Time();
 inline CInputManager* Input();
-inline CFontManager* Font();
 
 #include "Export_System.inl"
 

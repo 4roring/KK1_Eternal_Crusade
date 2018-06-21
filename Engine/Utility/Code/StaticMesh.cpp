@@ -47,14 +47,19 @@ void Engine::CStaticMesh::RenderMesh(LPD3DXEFFECT ptr_effect)
 
 int Engine::CStaticMesh::Release()
 {
-	Safe_Delete_Array(ptr_material_);
-	for (DWORD i = 0; i < subset_count_; ++i)
-		Safe_Release(pp_texture_[i]);
-	Safe_Delete_Array(pp_texture_);
-	Safe_Release(ptr_subset_buffer_);
-	Safe_Release(ptr_mesh_);
+	if (--reference_count_ == 0)
+	{
+		Safe_Delete_Array(ptr_material_);
+		for (DWORD i = 0; i < subset_count_; ++i)
+			Safe_Release(pp_texture_[i]);
+		Safe_Delete_Array(pp_texture_);
+		Safe_Release(ptr_subset_buffer_);
+		Safe_Release(ptr_mesh_);
 
-	return 0;
+		return 0;
+	}
+
+	return reference_count_;
 }
 
 HRESULT Engine::CStaticMesh::LoadMeshFromFile(const TCHAR * path, const TCHAR * file_name)
@@ -99,7 +104,7 @@ Engine::CStaticMesh * Engine::CStaticMesh::Create(LPDIRECT3DDEVICE9 ptr_device, 
 		Safe_Release_Delete(ptr_mesh);
 		assert(!"StaticMesh Create Failed");
 	}
-
+	ptr_mesh->AddReferenceCount();
 	return ptr_mesh;
 }
 

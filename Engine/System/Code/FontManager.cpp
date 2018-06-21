@@ -32,6 +32,11 @@ Engine::CFont * Engine::CFontManager::GetFont(const std::wstring font_key)
 	return iter->second;
 }
 
+Engine::CFontManager * Engine::CFontManager::Create()
+{
+	return new CFontManager;
+}
+
 void Engine::CFontManager::Release()
 {
 	for (auto& pair : map_font_)

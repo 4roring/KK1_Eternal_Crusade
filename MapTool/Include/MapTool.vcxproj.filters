@@ -28,6 +28,9 @@
     <Filter Include="02.EditorTab\01.TerrainEditor">
       <UniqueIdentifier>{00c6d88b-67b6-4303-90c6-50af4687cae4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.ResourceLoader">
+      <UniqueIdentifier>{dec29da1-8182-4abf-9e96-9388d1a5a61f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainFrm.h">
@@ -67,6 +70,9 @@
     <ClInclude Include="EditorTab.h">
       <Filter>02.EditorTab</Filter>
     </ClInclude>
+    <ClInclude Include="..\Code\ResourceLoader.h">
+      <Filter>03.ResourceLoader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainFrm.cpp">
@@ -101,6 +107,9 @@
     </ClCompile>
     <ClCompile Include="EditorTab.cpp">
       <Filter>02.EditorTab</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\ResourceLoader.cpp">
+      <Filter>03.ResourceLoader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Logo.h"
 #include "SceneSelector.h"
-#include "Layer.h"
 #include "Loading.h"
 #include "Font.h"
 
@@ -26,7 +25,11 @@ CLogo::~CLogo()
 HRESULT CLogo::InitScene()
 {
 	HRESULT hr = E_FAIL;
-	hr = Engine::Component()->Add_Prototype(MAINTAIN_LOGO
+	
+	hr = CScene::InitScene();
+	assert(hr == S_OK && "CScnen Class InitScene Failed");
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_LOGO
 		, TEXT("Logo_Texture")
 		, Engine::CTexture::Create(ptr_device_
 			, Engine::TEXTURETYPE::NORMAL
@@ -34,12 +37,12 @@ HRESULT CLogo::InitScene()
 			, 1));
 	assert(hr == S_OK && "Add Texture Failed");
 
-	hr = Engine::Component()->Add_Prototype(MAINTAIN_STATIC
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
 		, TEXT("Component_Transform")
 		, Engine::CTransform::Create(g_kLook));
 	assert(hr == S_OK && "Add Transform Component Failed");
 
-	hr = Engine::Component()->Add_Prototype(MAINTAIN_STATIC
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
 		, TEXT("Shader_Default")
 		, Engine::CShader::Create(ptr_device_
 			, TEXT("../../Reference/Shader/DefaultShader.hlsl")));
@@ -52,7 +55,7 @@ HRESULT CLogo::InitScene()
 
 	ptr_loading_ = CLoading::Create(CLoading::LOADINGID::STAGE);
 
-	ptr_loading_text_ = Engine::Font()->GetFont(TEXT("¹ÙÅÁ"));
+	ptr_loading_text_ = Engine::GraphicDevice()->GetFont(TEXT("¹ÙÅÁ"));
 	assert(nullptr != ptr_loading_text_ && "Get FPS Font Failed");
 
 	return S_OK;
@@ -82,13 +85,9 @@ CLogo * CLogo::Create(LPDIRECT3DDEVICE9 ptr_device)
 
 HRESULT CLogo::Add_GameLogic_Layer()
 {
-	Engine::CLayer* ptr_layer = Engine::CLayer::Create();
-	assert(nullptr != ptr_layer && "Game Logic Layer Create Failed");
-	map_layer_.emplace(LAYER_GAMELOGIC, ptr_layer);
-
 	Engine::CGameObject* ptr_object = CScreenImage::Create(ptr_device_);
 	assert(nullptr != ptr_object && "ScreenImage Object Create Failed");
-	ptr_layer->AddObject(TEXT("LogoImage"), ptr_object);
+	AddObject(LAYER_GAMELOGIC, TEXT("LogoImage"), ptr_object);
 
 	return S_OK;
 }
@@ -96,5 +95,5 @@ HRESULT CLogo::Add_GameLogic_Layer()
 void CLogo::Release()
 {
 	Engine::Safe_Delete(ptr_loading_);
-	Engine::Component()->PrototypeClearances(MAINTAIN_LOGO);
+	Engine::GameManager()->PrototypeClearances(MAINTAIN_LOGO);
 }

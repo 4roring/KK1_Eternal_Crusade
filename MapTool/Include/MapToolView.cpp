@@ -116,22 +116,7 @@ void CMapToolView::OnInitialUpdate()
 
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
 
-	CMainFrame* ptr_mainframe = (CMainFrame*)AfxGetMainWnd();
 
-	RECT rc_frame_window;
-	ptr_mainframe->GetWindowRect(&rc_frame_window);
-	SetRect(&rc_frame_window, 0, 0
-		, rc_frame_window.right - rc_frame_window.left
-		, rc_frame_window.bottom - rc_frame_window.top);
-
-	RECT rc_main_view;
-	GetClientRect(&rc_main_view);
-
-	int row_frame = rc_frame_window.right - rc_main_view.right;
-	int col_frame = rc_frame_window.bottom - rc_main_view.bottom;
-
-	ptr_mainframe->SetWindowPos(nullptr, 100, 100
-		, int(g_kWinCx + row_frame), int(g_kWinCy + col_frame), SWP_NOZORDER);
 
 	g_hwnd = m_hWnd;
 

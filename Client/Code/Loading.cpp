@@ -44,7 +44,7 @@ HRESULT CLoading::Stage_Loading()
 	HRESULT hr = E_FAIL;
 
 	// Texture
-	hr = Engine::Component()->Add_Prototype(MAINTAIN_STAGE
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
 		, TEXT("Texture_TestPlane_Color")
 		, Engine::CTexture::Create(ptr_device_
 			, Engine::TEXTURETYPE::NORMAL
@@ -52,7 +52,7 @@ HRESULT CLoading::Stage_Loading()
 			, 1));
 	assert(hr == S_OK && "Add Texture Failed");
 
-	hr = Engine::Component()->Add_Prototype(MAINTAIN_STAGE
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
 		, TEXT("Texture_TestPlane_Normal")
 		, Engine::CTexture::Create(ptr_device_
 			, Engine::TEXTURETYPE::NORMAL
@@ -60,7 +60,7 @@ HRESULT CLoading::Stage_Loading()
 			, 1));
 	assert(hr == S_OK && "Add Texture Failed");
 
-	hr = Engine::Component()->Add_Prototype(MAINTAIN_STAGE
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
 		, TEXT("Floor_6x12_1_Texture_Normal")
 		, Engine::CTexture::Create(ptr_device_
 			, Engine::TEXTURETYPE::NORMAL
@@ -70,7 +70,7 @@ HRESULT CLoading::Stage_Loading()
 
 	// Mesh
 	lstrcpy(loading_message_, TEXT("Mesh Loading"));
-	hr = Engine::Component()->Add_Prototype(MAINTAIN_STAGE
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
 		, TEXT("SpaceMarin_Mesh")
 		, Engine::CDynamicMesh::Create(ptr_device_
 			, TEXT("../bin/Resources/Mesh/SpaceMarin/")
@@ -78,7 +78,7 @@ HRESULT CLoading::Stage_Loading()
 	assert(hr == S_OK && "SpaceMarin Mesh Add Failed");
 
 	lstrcpy(loading_message_, TEXT("Mesh Loading"));
-	hr = Engine::Component()->Add_Prototype(MAINTAIN_STAGE
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
 		, TEXT("Floor_6x12_1_Mesh")
 		, Engine::CStaticMesh::Create(ptr_device_
 			, TEXT("../bin/Resources/Mesh/MapData/Floor_6x12_1/")
@@ -87,19 +87,19 @@ HRESULT CLoading::Stage_Loading()
 
 	// Shader
 	lstrcpy(loading_message_, TEXT("Shader Loading"));
-	hr = Engine::Component()->Add_Prototype(MAINTAIN_STATIC
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
 		, TEXT("Shader_Mesh")
 		, Engine::CShader::Create(ptr_device_
 			, TEXT("../../Reference/Shader/MeshShader.hlsl")));
 	assert(hr == S_OK && "Shader_Mesh Component Add Failed");
 
-	hr = Engine::Component()->Add_Prototype(MAINTAIN_STATIC
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
 		, TEXT("Shader_DynamicMesh")
 		, Engine::CShader::Create(ptr_device_
 			, TEXT("../../Reference/Shader/DynamicMeshShader.hlsl")));
 	assert(hr == S_OK && "Shader_DynamicMesh Component Add Failed");
 
-	hr = Engine::Component()->Add_Prototype(MAINTAIN_STATIC
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
 		, TEXT("Shader_NormalMap")
 		, Engine::CShader::Create(ptr_device_
 			, TEXT("../../Reference/Shader/NormalMapShader.hlsl")));

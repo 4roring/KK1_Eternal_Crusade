@@ -31,15 +31,15 @@ HRESULT CMainGame::InitGame()
 	hr = Engine::GameManager()->InitManager(ptr_device_);
 	assert(hr == S_OK && "Init GameManager Failed");
 
-	hr = Engine::Component()->InitComponentManager(MAINTAIN_END);
+	hr = Engine::GameManager()->InitComponentManager(MAINTAIN_END);
 	assert(hr == S_OK && "Init Component Manager Failed");
 
-	hr = Engine::Font()->AddFont(ptr_device_, TEXT("¹ÙÅÁ"), 28, 20, FW_NORMAL);
+	hr = Engine::GraphicDevice()->AddFont(TEXT("¹ÙÅÁ"), 28, 20, FW_NORMAL);
 	assert(hr == S_OK && "Add FPS Font Failed");
-	ptr_fps_font_ = Engine::Font()->GetFont(TEXT("¹ÙÅÁ"));
+	ptr_fps_font_ = Engine::GraphicDevice()->GetFont(TEXT("¹ÙÅÁ"));
 	assert(nullptr != ptr_fps_font_ && "Get FPS Font Failed");
 
-	hr = Engine::Component()->Add_Prototype(MAINTAIN_STATIC, TEXT("Buffer_RectTexture")
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC, TEXT("Buffer_RectTexture")
 		, Engine::CRectTexture::Create(ptr_device_));
 	assert(hr == S_OK && "Add RectTexture Component Failed");
 
@@ -110,10 +110,8 @@ void CMainGame::Render_FPS()
 void CMainGame::Release()
 {
 	Engine::Input()->DestroyInstance();
-	Engine::Font()->DestroyInstance();
 
 	Engine::GameManager()->DestroyInstance();
 	Engine::Time()->DestroyInstance();
-	Engine::Component()->DestroyInstance();
 	Engine::GraphicDevice()->DestroyInstance();
 }

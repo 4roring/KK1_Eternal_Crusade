@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Stage.h"
 #include "SceneSelector.h"
-#include "Layer.h"
 #include "Transform.h"
 
 // Game Logic
@@ -26,6 +25,9 @@ CStage::~CStage()
 HRESULT CStage::InitScene()
 {
 	HRESULT hr = E_FAIL;
+
+	hr = CScene::InitScene();
+	assert(hr == S_OK && "CScnen Class InitScene Failed");
 
 	hr = Add_Environmemt_Layer();
 	assert(!FAILED(hr) && "Add_Environmemt_Layer Call Failed");
@@ -59,27 +61,24 @@ HRESULT CStage::Add_Environmemt_Layer()
 
 HRESULT CStage::Add_GameLogic_Layer()
 {
-	Engine::CLayer* ptr_layer = Engine::CLayer::Create();
-	assert(nullptr != ptr_layer && "Layer Create Failed");
 	Engine::CGameObject* ptr_obj = nullptr;
-	map_layer_.emplace(LAYER_GAMELOGIC, ptr_layer);
 
 	//ptr_obj = CTestPlane::Create(ptr_device_);
 	//assert(nullptr != ptr_obj && "Test Plane Create Failed");
-	//ptr_layer->AddObject(TEXT("TestPlane"), ptr_obj);
+	//AddObject(LAYER_GAMELOGIC,TEXT("TestPlane"), ptr_obj);
 
 	ptr_obj = CTestPlane2::Create(ptr_device_);
 	assert(nullptr != ptr_obj && "Test Plane2 Create Failed");
-	ptr_layer->AddObject(TEXT("TestPlane2"), ptr_obj);
+	AddObject(LAYER_GAMELOGIC, TEXT("TestPlane2"), ptr_obj);
 
-	for (int i = 0; i < 10; ++i)
+	for (int i = 0; i < 5; ++i)
 	{
-		for (int j = 0; j < 10; ++j)
+		for (int j = 0; j < 5; ++j)
 		{
 			ptr_obj = CSpaceMarin::Create(ptr_device_);
 			assert(nullptr != ptr_obj && "SpaceMarin Create Failed");
 
-			ptr_layer->AddObject(TEXT("SpaceMarin"), ptr_obj);
+			AddObject(LAYER_GAMELOGIC, TEXT("SpaceMarin"), ptr_obj);
 			ptr_obj->transform()->position_ = Vector3(i * 5.f, 0.f, j * 5.f);
 		}
 	}
@@ -89,15 +88,11 @@ HRESULT CStage::Add_GameLogic_Layer()
 
 HRESULT CStage::Add_UI_Layer()
 {
-	Engine::CLayer* ptr_layer = Engine::CLayer::Create();
-	assert(nullptr != ptr_layer && "Layer Create Failed");
 	Engine::CGameObject* ptr_obj = nullptr;
-	map_layer_.emplace(LAYER_UI, ptr_layer);
-
 	ptr_obj = CDynamicCamera::Create(ptr_device_, Vector3(0.f, 10.f, -20.f)
 		, Vector3(0.f, 0.f, 0.f));
 	assert(nullptr != ptr_obj && "Dynamic Camera Create Failed");
-	ptr_layer->AddObject(TEXT("DynamicCamera"), ptr_obj);
+	AddObject(LAYER_UI, TEXT("DynamicCamera"), ptr_obj);
 
 	return S_OK;
 }
@@ -118,5 +113,5 @@ HRESULT CStage::Add_Light()
 
 void CStage::Release()
 {
-	Engine::Component()->PrototypeClearances(MAINTAIN_STAGE);
+	Engine::GameManager()->PrototypeClearances(MAINTAIN_STAGE);
 }

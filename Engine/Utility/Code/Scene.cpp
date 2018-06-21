@@ -13,27 +13,34 @@ Engine::CScene::~CScene()
 
 const Engine::CComponent * Engine::CScene::GetComponent(int layer_id, const std::wstring & object_key, const std::wstring component_key)
 {
-	auto iter = map_layer_.find(layer_id);
-	if (iter == map_layer_.end())
-		return nullptr;
+	return ptr_layer_->GetComponent(layer_id, object_key, component_key);
+}
 
-	return iter->second->GetComponent(object_key, component_key);
+HRESULT Engine::CScene::InitScene()
+{
+	ptr_layer_ = CLayer::Create();
+	
+	if (nullptr == ptr_layer_)
+		return E_FAIL;
+
+	return S_OK;
 }
 
 void Engine::CScene::Update(float delta_time)
 {
-	for (auto& pair : map_layer_)
-		pair.second->Update(delta_time);
+	ptr_layer_->Update(delta_time);
 }
 
 void Engine::CScene::Render()
 {
 }
 
+void Engine::CScene::AddObject(int layer_id, const std::wstring & object_key, CGameObject * ptr_object)
+{
+	ptr_layer_->AddObject(layer_id, object_key, ptr_object);
+}
+
 void Engine::CScene::Release()
 {
-	for (auto& pair : map_layer_)
-		Safe_Delete(pair.second);
-
-	map_layer_.clear();
+	Safe_Delete(ptr_layer_);
 }

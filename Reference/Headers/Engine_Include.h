@@ -21,7 +21,6 @@
 #pragma comment(lib,"d3d9.lib")
 #pragma comment(lib,"d3dx9.lib")
 
-#pragma warning(disable : 4251)
 
 #include <crtdbg.h>
 #include <assert.h>

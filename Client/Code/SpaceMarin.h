@@ -18,7 +18,7 @@ public:
 	virtual ~CSpaceMarin();
 
 private:
-	HRESULT Initialize();
+	virtual HRESULT Initialize() override;
 
 public:
 	virtual void Update(float delta_time) override;

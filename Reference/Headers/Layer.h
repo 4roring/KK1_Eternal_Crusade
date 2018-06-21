@@ -7,7 +7,7 @@ BEGIN(Engine)
 class CGameObject;
 class CComponent;
 
-class ENGINE_DLL CLayer
+class CLayer
 {
 private:
 	CLayer();
@@ -16,10 +16,10 @@ public:
 	~CLayer();
 
 public:
-	const CComponent* GetComponent(const std::wstring& object_key, const std::wstring& component_key);
+	const CComponent* GetComponent(int layer_id, const std::wstring& object_key, const std::wstring& component_key);
 
 public:
-	HRESULT AddObject(const std::wstring& object_key, CGameObject* ptr_object);
+	HRESULT AddObject(int layer_id, const std::wstring& object_key, CGameObject* ptr_object);
 
 public:
 	void Update(float delta_time);
@@ -32,8 +32,8 @@ public:
 
 private:
 	typedef std::list<CGameObject*> ObjectList;
-	typedef std::map<std::wstring, ObjectList> MapObjectList;
-	MapObjectList map_object_list_;
+	typedef std::unordered_map<std::wstring, ObjectList> MapObjectList;
+	std::unordered_map<int, MapObjectList> object_layer_;
 };
 
 END

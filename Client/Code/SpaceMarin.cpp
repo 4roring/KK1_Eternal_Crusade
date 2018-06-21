@@ -18,8 +18,11 @@ CSpaceMarin::~CSpaceMarin()
 
 HRESULT CSpaceMarin::Initialize()
 {
-	HRESULT hr = AddComponent();
-	assert(!FAILED(hr) && "SpaceMarin AddComponent Failed");
+	HRESULT hr = CGameObject::Initialize();
+	assert(!FAILED(hr) && "CGameObject::Initialize call failed in SpaceMarin");
+
+	hr = AddComponent();
+	assert(!FAILED(hr) && "AddComponent call failed in SpaceMarin");
 
 	anim_track_ = rand() % 34;
 	ptr_anim_ctrl_->SetAnimationTrack(anim_track_);

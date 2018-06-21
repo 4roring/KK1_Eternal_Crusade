@@ -18,8 +18,11 @@ CTestPlane::~CTestPlane()
 
 HRESULT CTestPlane::Initialize()
 {
-	HRESULT hr = AddComponent();
-	assert(!FAILED(hr) && "Test Plane AddComponent Failed");
+	HRESULT hr = CGameObject::Initialize();
+	assert(!FAILED(hr) && "CGameObject::Initialize call failed in TestPlane1");
+
+	hr = AddComponent();
+	assert(!FAILED(hr) && "AddComponent call failed in TestPlane1");
 
 	ptr_transform_->position_ = Vector3(10.f, 0.f, 10.f);
 	ptr_transform_->rotation_.x = D3DXToRadian(90.f);

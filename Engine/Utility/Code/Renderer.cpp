@@ -20,6 +20,11 @@ Engine::CRenderer * Engine::CRenderer::Create(LPDIRECT3DDEVICE9 ptr_device)
 	return ptr_renderer;
 }
 
+void Engine::CRenderer::RenderGroupRelease()
+{
+	Release();
+}
+
 void Engine::CRenderer::Render()
 {
 	Render_Priority();

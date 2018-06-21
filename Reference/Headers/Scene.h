@@ -6,6 +6,7 @@ BEGIN(Engine)
 
 class CLayer;
 class CComponent;
+class CGameObject;
 
 class ENGINE_DLL CScene
 {
@@ -23,14 +24,17 @@ public:
 	virtual void Update(float delta_time) PURE;
 	virtual void Render();
 
+public:
+	void AddObject(int layer_id, const std::wstring& object_key, CGameObject* ptr_object);
+	
 private:
 	void Release();
 
 protected:
 	LPDIRECT3DDEVICE9 ptr_device_ = nullptr;
 
-protected:
-	std::unordered_map<int, CLayer*> map_layer_;
+private:
+	CLayer* ptr_layer_ = nullptr;
 };
 
 END

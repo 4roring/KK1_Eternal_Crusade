@@ -7,17 +7,15 @@ BEGIN(Engine)
 
 class CComponent;
 
-class ENGINE_DLL CComponentManager
-	: public CSingleton<CComponentManager>
+class CComponentManager
 {
 private:
-	friend CSingleton;
 	CComponentManager();
-	virtual ~CComponentManager();
 
 public:
-	template<typename T>
-	const CComponent* GetComponent(int container_index, const std::wstring& component_key);
+	~CComponentManager();
+
+public:
 	CComponent* FindComponent(int container_index, const std::wstring& component_key);
 	CComponent* CloneComponent(int container_index, const std::wstring& component_key);
 
@@ -27,6 +25,9 @@ public:
 
 public:
 	void PrototypeClearances(int container_index);
+
+public:
+	static CComponentManager* Create();
 
 private:
 	void Release();
@@ -38,18 +39,5 @@ private:
 	typedef std::map<std::wstring, CComponent*> MapComponent;
 	MapComponent* ptr_map_component_ = nullptr;
 };
-
-template <typename T>
-const Engine::CComponent * Engine::CComponentManager::GetComponent(int container_index, const std::wstring & component_key)
-{
-	const CComponent* ptr_component = FindComponent(container_index, component_key);
-	if (ptr_component == nullptr)
-		return nullptr;
-
-	dynamic_cast<T>(ptr_component);
-	assert(nullptr != ptr_component && "GetComponent Dynamic_cast Error");
-
-	return ptr_component;
-}
 
 END

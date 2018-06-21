@@ -7,17 +7,20 @@ BEGIN(Engine)
 
 class CFont;
 
-class ENGINE_DLL CFontManager
-	: public CSingleton<CFontManager>
+class CFontManager
 {
 private:
-	friend CSingleton;
 	CFontManager();
-	virtual ~CFontManager();
+
+public:
+	~CFontManager();
 
 public:
 	HRESULT AddFont(LPDIRECT3DDEVICE9 ptr_device, const std::wstring font_key, int height, UINT width, UINT weight);
 	CFont* GetFont(const std::wstring font_key);
+
+public:
+	static CFontManager* Create();
 
 private:
 	void Release();
