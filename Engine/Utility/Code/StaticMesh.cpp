@@ -33,7 +33,10 @@ void Engine::CStaticMesh::RenderMesh(LPD3DXEFFECT ptr_effect)
 			pass_index = 0;
 
 		ptr_effect->BeginPass(pass_index);
-		ptr_effect->SetTexture("g_base_texture", pp_texture_[i]);
+	
+		ptr_effect->SetTexture("g_base_texture", pp_color_texture_[i]);
+		ptr_effect->SetTexture("g_normal_texture", pp_normal_texture_[i]);
+
 		ptr_effect->SetVector("g_material_diffuse", (Vector4*)&ptr_material_[i].Diffuse);
 		ptr_effect->SetVector("g_material_ambient", &Vector4(1.f, 1.f, 1.f, 1.f));
 		ptr_effect->SetVector("g_material_specular", &Vector4(1.f, 1.f, 1.f, 1.f));
@@ -51,8 +54,14 @@ int Engine::CStaticMesh::Release()
 	{
 		Safe_Delete_Array(ptr_material_);
 		for (DWORD i = 0; i < subset_count_; ++i)
-			Safe_Release(pp_texture_[i]);
-		Safe_Delete_Array(pp_texture_);
+		{
+			Safe_Release(pp_color_texture_[i]);
+			Safe_Release(pp_normal_texture_[i]);
+			Safe_Release(pp_specular_texture_[i]);
+		}
+		Safe_Delete_Array(pp_color_texture_);
+		Safe_Delete_Array(pp_normal_texture_);
+		Safe_Delete_Array(pp_specular_texture_);
 		Safe_Release(ptr_subset_buffer_);
 		Safe_Release(ptr_mesh_);
 
@@ -65,33 +74,44 @@ int Engine::CStaticMesh::Release()
 HRESULT Engine::CStaticMesh::LoadMeshFromFile(const TCHAR * path, const TCHAR * file_name)
 {
 	HRESULT hr = E_FAIL;
-	TCHAR full_path[MAX_PATH] = TEXT("");
+	std::wstring full_path;
+	full_path += path;
+	full_path += file_name;
 
-	lstrcpy(full_path, path);
-	lstrcat(full_path, file_name);
-
-	hr = D3DXLoadMeshFromXW(full_path, D3DXMESH_MANAGED, ptr_device_
+	hr = D3DXLoadMeshFromXW(full_path.c_str(), D3DXMESH_MANAGED, ptr_device_
 		, nullptr, &ptr_subset_buffer_, nullptr, &subset_count_, &ptr_mesh_);
 	assert(!FAILED(hr) && "Static Mesh Load Failed");
 
 	ptr_subset_ = (D3DXMATERIAL*)ptr_subset_buffer_->GetBufferPointer();
 
 	ptr_material_ = new D3DMATERIAL9[subset_count_];
-	pp_texture_ = new LPDIRECT3DTEXTURE9[subset_count_];
+	pp_color_texture_ = new LPDIRECT3DTEXTURE9[subset_count_];
+	pp_normal_texture_ = new LPDIRECT3DTEXTURE9[subset_count_];
+	pp_specular_texture_ = new LPDIRECT3DTEXTURE9[subset_count_];
+
+	full_path.clear();
+	full_path = path;
 
 	for (DWORD i = 0; i < subset_count_; ++i)
 	{
 		TCHAR file_name[128] = TEXT("");
 
 		ptr_material_[i] = ptr_subset_[i].MatD3D;
-		lstrcpy(full_path, path);
+
 		MultiByteToWideChar(CP_ACP, 0, ptr_subset_[i].pTextureFilename
 			, strlen(ptr_subset_[i].pTextureFilename)
 			, file_name, 128);
-		lstrcat(full_path, file_name);
 
-		hr = D3DXCreateTextureFromFileW(ptr_device_, full_path, &pp_texture_[i]);
-		assert(!FAILED(hr) && "Static Mesh Texture Load Failed");
+		full_path += file_name;
+		auto iter = full_path.rfind(TEXT("_"));
+		full_path = full_path.substr(0, ++iter);
+
+		hr = D3DXCreateTextureFromFileW(ptr_device_, (full_path + TEXT("BC.tga")).c_str(), &pp_color_texture_[i]);
+		if (FAILED(hr)) pp_color_texture_[i] = nullptr;
+		hr = D3DXCreateTextureFromFileW(ptr_device_, (full_path + TEXT("N.tga")).c_str(), &pp_normal_texture_[i]);
+		if (FAILED(hr)) pp_normal_texture_[i] = nullptr;
+		hr = D3DXCreateTextureFromFileW(ptr_device_, (full_path + TEXT("R.tga")).c_str(), &pp_specular_texture_[i]);
+		if (FAILED(hr)) pp_specular_texture_[i] = nullptr;
 	}
 	return S_OK;
 }

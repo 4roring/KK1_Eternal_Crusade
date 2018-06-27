@@ -5,23 +5,25 @@ namespace Engine
 	typedef struct tagFrame_Derived : public D3DXFRAME
 	{
 		Matrix combined_matrix;
-	}DerivedFrame;
+	}BoneFrame;
 
 	typedef struct tagMeshContainer_Derived : public D3DXMESHCONTAINER
 	{
 		LPD3DXBUFFER ptr_bone_combination_buf;
-		LPDIRECT3DTEXTURE9* pp_texture;
+		LPDIRECT3DTEXTURE9* pp_color_texture;
+		LPDIRECT3DTEXTURE9* pp_normal_texture;
+		LPDIRECT3DTEXTURE9* pp_specular_texture;
 		LPD3DXMESH ptr_original_mesh;
 		Matrix* ptr_frame_offset_matrix;
 		Matrix** pp_frame_combined_matrix;
 		Matrix* ptr_result_matrix;
-	}DerivedMeshContainer;
+	}BoneMesh;
 
 	typedef struct tagVertexColor
 	{
 		Vector3 position;
 		DWORD color;
-	} VertexColor;
+	}VertexColor;
 
 	const DWORD VertexColor_FVF = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX0;
 

@@ -79,7 +79,7 @@ HRESULT CStage::Add_GameLogic_Layer()
 			assert(nullptr != ptr_obj && "SpaceMarin Create Failed");
 
 			AddObject(LAYER_GAMELOGIC, TEXT("SpaceMarin"), ptr_obj);
-			ptr_obj->transform()->position_ = Vector3(i * 5.f, 0.f, j * 5.f);
+			ptr_obj->transform()->position() = Vector3(i * 5.f, 0.f, j * 5.f);
 		}
 	}
 

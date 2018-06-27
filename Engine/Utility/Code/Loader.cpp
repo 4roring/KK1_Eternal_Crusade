@@ -11,8 +11,8 @@ Engine::CLoader::~CLoader()
 
 STDOVERRIDEMETHODIMP Engine::CLoader::CreateFrame(LPCSTR ptr_name, LPD3DXFRAME * pp_new_frame)
 {
-	DerivedFrame* ptr_new_frame = new DerivedFrame;
-	ZeroMemory(ptr_new_frame, sizeof(DerivedFrame));
+	BoneFrame* ptr_new_frame = new BoneFrame;
+	ZeroMemory(ptr_new_frame, sizeof(BoneFrame));
 
 	if (nullptr != ptr_name)
 		AllocateName(&ptr_new_frame->Name, ptr_name);
@@ -34,12 +34,11 @@ STDOVERRIDEMETHODIMP Engine::CLoader::CreateMeshContainer(LPCSTR ptr_name
 	, LPD3DXMESHCONTAINER * pp_new_mesh_containder)
 {
 	LPD3DXMESH ptr_mesh = ptr_mesh_data->pMesh;
-	if (ptr_mesh->GetFVF() == 0)
-		return E_FAIL;
+
 
 	HRESULT hr = E_FAIL;
-	DerivedMeshContainer* ptr_mesh_container = new DerivedMeshContainer;
-	ZeroMemory(ptr_mesh_container, sizeof(DerivedMeshContainer));
+	BoneMesh* ptr_mesh_container = new BoneMesh;
+	ZeroMemory(ptr_mesh_container, sizeof(BoneMesh));
 
 	if (nullptr != ptr_name)
 		AllocateName(&ptr_mesh_container->Name, ptr_name);
@@ -48,30 +47,20 @@ STDOVERRIDEMETHODIMP Engine::CLoader::CreateMeshContainer(LPCSTR ptr_name
 	ptr_mesh_container->pAdjacency = new DWORD[num_faces * 3];
 	memcpy(ptr_mesh_container->pAdjacency, ptr_adjacency, sizeof(DWORD) * num_faces * 3);
 
-	//// Normal Data
-	//if (!(ptr_mesh->GetFVF() & D3DFVF_NORMAL))
-	//{
-	//	hr = ptr_mesh->CloneMeshFVF(ptr_mesh->GetOptions(), ptr_mesh->GetFVF() | D3DFVF_NORMAL
-	//		, ptr_device_, &ptr_mesh_container->MeshData.pMesh);
-	//	assert(!FAILED(hr) && "CloneMeshFVF Failed");
 
-	//	D3DXComputeNormals(ptr_mesh_container->MeshData.pMesh, ptr_mesh_container->pAdjacency);
-	//}
-	//else
-	//{
-	//	hr = ptr_mesh->CloneMeshFVF(ptr_mesh->GetOptions(), ptr_mesh->GetFVF() | D3DFVF_NORMAL
-	//		, ptr_device_, &ptr_mesh_container->MeshData.pMesh);
-	//	assert(!FAILED(hr) && "CloneMeshFVF Failed");
-
-	//	ptr_mesh->AddRef();
-	//}
 
 	// Subset Data
 	ptr_mesh_container->NumMaterials = max(num_materials, 1);
 	ptr_mesh_container->pMaterials = new D3DXMATERIAL[ptr_mesh_container->NumMaterials];
-	ptr_mesh_container->pp_texture = new LPDIRECT3DTEXTURE9[ptr_mesh_container->NumMaterials];
 	ZeroMemory(ptr_mesh_container->pMaterials, sizeof(D3DXMATERIAL) * ptr_mesh_container->NumMaterials);
-	ZeroMemory(ptr_mesh_container->pp_texture, sizeof(LPDIRECT3DTEXTURE9) * ptr_mesh_container->NumMaterials);
+
+	// Texture
+	ptr_mesh_container->pp_color_texture = new LPDIRECT3DTEXTURE9[ptr_mesh_container->NumMaterials];
+	ptr_mesh_container->pp_normal_texture = new LPDIRECT3DTEXTURE9[ptr_mesh_container->NumMaterials];
+	ptr_mesh_container->pp_specular_texture = new LPDIRECT3DTEXTURE9[ptr_mesh_container->NumMaterials];
+	ZeroMemory(ptr_mesh_container->pp_color_texture, sizeof(LPDIRECT3DTEXTURE9) * ptr_mesh_container->NumMaterials);
+	ZeroMemory(ptr_mesh_container->pp_normal_texture, sizeof(LPDIRECT3DTEXTURE9) * ptr_mesh_container->NumMaterials);
+	ZeroMemory(ptr_mesh_container->pp_specular_texture, sizeof(LPDIRECT3DTEXTURE9) * ptr_mesh_container->NumMaterials);
 
 	if (num_materials > 0)
 	{
@@ -82,17 +71,28 @@ STDOVERRIDEMETHODIMP Engine::CLoader::CreateMeshContainer(LPCSTR ptr_name
 			if (nullptr == ptr_mesh_container->pMaterials[i].pTextureFilename)
 				continue;
 
-			TCHAR full_path[MAX_PATH] = TEXT("");
+			std::wstring full_path;
 			TCHAR file_name[128] = TEXT("");
 
-			lstrcpy(full_path, path_);
+			ptr_mesh_container->pMaterials[i].MatD3D = ptr_mesh_container->pMaterials[i].MatD3D;
+			full_path += path_;
 			MultiByteToWideChar(CP_ACP, 0, ptr_mesh_container->pMaterials[i].pTextureFilename
 				, strlen(ptr_mesh_container->pMaterials[i].pTextureFilename)
 				, file_name, 128);
-			lstrcat(full_path, file_name);
+			full_path += file_name;
+			
+			auto iter = full_path.rfind(TEXT("_"));
+			full_path = full_path.substr(0, ++iter);
 
-			hr = D3DXCreateTextureFromFileW(ptr_device_, full_path, &ptr_mesh_container->pp_texture[i]);
+			hr = D3DXCreateTextureFromFileW(ptr_device_, (full_path + TEXT("Mk.tga")).c_str(), &ptr_mesh_container->pp_color_texture[i]);
+			if(FAILED(hr))
+				hr = D3DXCreateTextureFromFileW(ptr_device_, (full_path + TEXT("M.tga")).c_str(), &ptr_mesh_container->pp_color_texture[i]);
 			assert(!FAILED(hr) && "mesh_container Texture Create Failed");
+
+			hr = D3DXCreateTextureFromFileW(ptr_device_, (full_path + TEXT("N.tga")).c_str(), &ptr_mesh_container->pp_normal_texture[i]);
+			if (FAILED(hr)) ptr_mesh_container->pp_normal_texture[i] = nullptr;
+			hr = D3DXCreateTextureFromFileW(ptr_device_, (full_path + TEXT("R.tga")).c_str(), &ptr_mesh_container->pp_specular_texture[i]);
+			if (FAILED(hr)) ptr_mesh_container->pp_specular_texture[i] = nullptr;
 		}
 	}
 	else
@@ -146,8 +146,8 @@ STDOVERRIDEMETHODIMP Engine::CLoader::CreateMeshContainer(LPCSTR ptr_name
 			, &ptr_mesh_container->MeshData.pMesh);
 
 		// Normal Data
-		if (!(ptr_mesh->GetFVF() & D3DFVF_NORMAL))
-			D3DXComputeNormals(ptr_mesh_container->MeshData.pMesh, ptr_mesh_container->pAdjacency);
+		//if (!(ptr_mesh->GetFVF() & D3DFVF_NORMAL))
+		//	D3DXComputeNormals(ptr_mesh_container->MeshData.pMesh, ptr_mesh_container->pAdjacency);
 
 		DWORD num_bones = ptr_skin_info->GetNumBones();
 		ptr_mesh_container->ptr_frame_offset_matrix = new Matrix[num_bones];
@@ -182,11 +182,17 @@ STDOVERRIDEMETHODIMP Engine::CLoader::DestroyFrame(LPD3DXFRAME ptr_frame_to_free
 
 STDOVERRIDEMETHODIMP Engine::CLoader::DestroyMeshContainer(LPD3DXMESHCONTAINER ptr_mesh_container_to_free)
 {
-	DerivedMeshContainer* ptr_mesh_container = static_cast<DerivedMeshContainer*>(ptr_mesh_container_to_free);
+	BoneMesh* ptr_mesh_container = static_cast<BoneMesh*>(ptr_mesh_container_to_free);
 	for (DWORD i = 0; i < ptr_mesh_container_to_free->NumMaterials; ++i)
-		Safe_Release(ptr_mesh_container->pp_texture[i]);
+	{
+		Safe_Release(ptr_mesh_container->pp_color_texture[i]);
+		Safe_Release(ptr_mesh_container->pp_normal_texture[i]);
+		Safe_Release(ptr_mesh_container->pp_specular_texture[i]);
+	}
 
-	Safe_Delete_Array(ptr_mesh_container->pp_texture);
+	Safe_Delete_Array(ptr_mesh_container->pp_color_texture);
+	Safe_Delete_Array(ptr_mesh_container->pp_normal_texture);
+	Safe_Delete_Array(ptr_mesh_container->pp_specular_texture);
 	Safe_Delete_Array(ptr_mesh_container->pMaterials);
 	Safe_Delete_Array(ptr_mesh_container->Name);
 	Safe_Delete_Array(ptr_mesh_container->ptr_frame_offset_matrix);

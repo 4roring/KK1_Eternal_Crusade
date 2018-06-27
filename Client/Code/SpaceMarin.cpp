@@ -25,9 +25,11 @@ HRESULT CSpaceMarin::Initialize()
 	assert(!FAILED(hr) && "AddComponent call failed in SpaceMarin");
 
 	anim_track_ = rand() % 34;
+	//anim_track_ = 0;
+
 	ptr_anim_ctrl_->SetAnimationTrack(anim_track_);
 
-	ptr_transform_->scale_ = Vector3(0.01f, 0.01f, 0.01f);
+	ptr_transform_->scale() = Vector3(0.01f, 0.01f, 0.01f);
 
 	return S_OK;
 }
@@ -38,7 +40,6 @@ void CSpaceMarin::Update(float delta_time)
 
 	if (ptr_anim_ctrl_->GetPeriod() <= ptr_anim_ctrl_->GetTrackPosition())
 	{
-		anim_track_ = rand() % 34;
 		ptr_anim_ctrl_->SetAnimationTrack(anim_track_);
 		ptr_anim_ctrl_->SetTrackPosition(0.0);
 	}
@@ -54,10 +55,14 @@ void CSpaceMarin::Render()
 	ptr_device_->GetTransform(D3DTS_VIEW, &mat_view);
 	ptr_device_->GetTransform(D3DTS_PROJECTION, &mat_proj);
 
-	ptr_effect->SetMatrix("g_mat_world", &ptr_transform_->mat_world_);
+	ptr_effect->SetMatrix("g_mat_world", &ptr_transform_->mat_world());
 	ptr_effect->SetMatrix("g_mat_view", &mat_view);
 	ptr_effect->SetMatrix("g_mat_projection", &mat_proj);
 	
+	ptr_effect->SetVector("g_light_diffuse", &Vector4(1.f, 1.f, 1.f, 1.f));
+	ptr_effect->SetVector("g_light_ambient", &Vector4(1.f, 1.f, 1.f, 1.f));
+	ptr_effect->SetVector("g_light_dir", &Vector4(0.f, -1.f, 1.f, 0.f));
+
 	ptr_mesh_->FrameMove(Engine::Time()->GetDeltaTime(), ptr_anim_ctrl_);
 	ptr_mesh_->RenderMesh(ptr_effect);
 }

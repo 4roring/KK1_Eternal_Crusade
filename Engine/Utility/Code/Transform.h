@@ -4,6 +4,15 @@
 
 BEGIN(Engine)
 
+struct Transform
+{
+	Vector3 position;
+	Vector3 rotation;
+	Vector3 scale;
+	Vector3 direction;
+	Matrix mat_world;
+};
+
 class ENGINE_DLL CTransform
 	: public CComponent
 {
@@ -17,18 +26,21 @@ public:
 	virtual CComponent* CloneComponent();
 
 public:
+	Vector3& position();
+	Vector3& rotation();
+	Vector3& scale();
+	Vector3& direction();
+	Matrix& mat_world();
+
+public:
 	virtual void Update(float delta_time) override;
 	virtual int Release() override;
 
 public:
 	static CTransform* Create(const Vector3& look);
 
-public:
-	Vector3 position_ = Vector3(0.f, 0.f, 0.f);
-	Vector3 rotation_ = Vector3(0.f, 0.f, 0.f);
-	Vector3 scale_ = Vector3(1.f, 1.f, 1.f);
-	Vector3 direction_ = Vector3(0.f, 0.f, 0.f);
-	Matrix mat_world_;
+private:
+	Transform transform_;
 };
 
 END

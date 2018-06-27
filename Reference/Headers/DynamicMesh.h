@@ -38,10 +38,10 @@ private:
 	HRESULT LoadMeshFromFile(const TCHAR* path, const TCHAR* file_name);
 
 private:
-	void UpdateFrameMatrix(DerivedFrame* ptr_frame, const Matrix* ptr_parent_matrix);
-	void SetUpFrameMatrixPointer(DerivedFrame* ptr_frame);
-	void FindMeshContainer(DerivedFrame* ptr_frame, LPD3DXEFFECT ptr_effect);
-	void RenderMeshContainer(DerivedMeshContainer* ptr_mesh_container, LPD3DXEFFECT ptr_effect);
+	void UpdateFrameMatrix(BoneFrame* ptr_frame, const Matrix* ptr_parent_matrix);
+	void SetUpFrameMatrixPointer(BoneFrame* ptr_frame);
+	void FindMeshContainer(BoneFrame* ptr_frame, LPD3DXEFFECT ptr_effect);
+	void RenderMeshContainer(BoneMesh* ptr_mesh_container, LPD3DXEFFECT ptr_effect);
 
 public:
 	static CDynamicMesh* Create(LPDIRECT3DDEVICE9 ptr_device

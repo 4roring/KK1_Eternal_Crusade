@@ -24,9 +24,9 @@ HRESULT CTestPlane::Initialize()
 	hr = AddComponent();
 	assert(!FAILED(hr) && "AddComponent call failed in TestPlane1");
 
-	ptr_transform_->position_ = Vector3(10.f, 0.f, 10.f);
-	ptr_transform_->rotation_.x = D3DXToRadian(90.f);
-	ptr_transform_->scale_ = Vector3(10.f, 10.f, 1.f);
+	ptr_transform_->position() = Vector3(10.f, 0.f, 10.f);
+	ptr_transform_->rotation().x = D3DXToRadian(90.f);
+	ptr_transform_->scale() = Vector3(10.f, 10.f, 1.f);
 
 	return S_OK;
 }
@@ -46,7 +46,7 @@ void CTestPlane::Render()
 	ptr_device_->GetTransform(D3DTS_VIEW, &mat_view);
 	ptr_device_->GetTransform(D3DTS_PROJECTION, &mat_proj);
 
-	ptr_effect->SetMatrix("g_mat_world", &ptr_transform_->mat_world_);
+	ptr_effect->SetMatrix("g_mat_world", &ptr_transform_->mat_world());
 	ptr_effect->SetMatrix("g_mat_view", &mat_view);
 	ptr_effect->SetMatrix("g_mat_projection", &mat_proj);
 	ptr_effect->SetTexture("g_base_texture", ptr_color_texture_->GetTexture(0));

@@ -4,6 +4,11 @@
 
 BEGIN(Engine)
 
+struct VecTexture
+{
+	std::vector<IDirect3DBaseTexture9*> vec_texture;
+};
+
 class ENGINE_DLL CTexture
 	: public CResources
 {
@@ -32,7 +37,7 @@ public:
 		, int count);
 
 private:
-	std::vector<IDirect3DBaseTexture9*> vec_texture_;
+	VecTexture texture_;
 
 private:
 	int container_size = 0;

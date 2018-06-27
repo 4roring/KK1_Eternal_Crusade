@@ -31,15 +31,6 @@
     <Filter Include="02.GameObject\UI">
       <UniqueIdentifier>{331ed709-bcdc-4d69-bb19-025bd012155c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\UI\Camera">
-      <UniqueIdentifier>{71d9a552-905f-4903-9fc1-491fe5d3d51f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\UI\Camera\DynamicCamera">
-      <UniqueIdentifier>{0f8c5987-fa25-4891-b362-b4d0bb7b1361}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\UI\Camera\PlayerCamera">
-      <UniqueIdentifier>{5066d90b-a1c9-4d73-8e29-e09c20b5e699}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\Environment">
       <UniqueIdentifier>{846e4bd0-2649-45f5-85b0-ab6d1a42e1fd}</UniqueIdentifier>
     </Filter>
@@ -64,6 +55,15 @@
     <Filter Include="Headers">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="02.GameObject\Camera">
+      <UniqueIdentifier>{71d9a552-905f-4903-9fc1-491fe5d3d51f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Camera\DynamicCamera">
+      <UniqueIdentifier>{0f8c5987-fa25-4891-b362-b4d0bb7b1361}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Camera\PlayerCamera">
+      <UniqueIdentifier>{5066d90b-a1c9-4d73-8e29-e09c20b5e699}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -98,7 +98,7 @@
       <Filter>02.GameObject\GameLogic\Screen</Filter>
     </ClInclude>
     <ClInclude Include="..\Code\DynamicCamera.h">
-      <Filter>02.GameObject\UI\Camera\DynamicCamera</Filter>
+      <Filter>02.GameObject\Camera\DynamicCamera</Filter>
     </ClInclude>
     <ClInclude Include="TestPlane.h">
       <Filter>02.GameObject\GameLogic\TestObject\TestPlane</Filter>
@@ -131,7 +131,7 @@
       <Filter>02.GameObject\GameLogic\Screen</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\DynamicCamera.cpp">
-      <Filter>02.GameObject\UI\Camera\DynamicCamera</Filter>
+      <Filter>02.GameObject\Camera\DynamicCamera</Filter>
     </ClCompile>
     <ClCompile Include="TestPlane.cpp">
       <Filter>02.GameObject\GameLogic\TestObject\TestPlane</Filter>

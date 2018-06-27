@@ -57,14 +57,18 @@ int Engine::CVIBuffer::Release()
 HRESULT Engine::CVIBuffer::CreateBuffer()
 {
 	HRESULT hr = E_FAIL;
-	hr = ptr_device_->CreateVertexBuffer(vertex_size_ * vertex_count_, 0, vertex_FVF_
+	hr = ptr_device_->CreateVertexBuffer(vertex_size_ * vertex_count_
+		, 0
+		, vertex_FVF_
 		, D3DPOOL_MANAGED, &ptr_vertex_buffer_, nullptr);
 	assert(hr == S_OK && "Create Vertex Buffer Error");
 
 	if (index_size_ == 0)
 		return S_OK;
 
-	hr = ptr_device_->CreateIndexBuffer(index_size_ * tri_count_, 0, index_format_
+	hr = ptr_device_->CreateIndexBuffer(index_size_ * tri_count_
+		, 0
+		, index_format_
 		, D3DPOOL_MANAGED, &ptr_index_buffer_, nullptr);
 	assert(hr == S_OK && "Create Index Buffer Error");
 

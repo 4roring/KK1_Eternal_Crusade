@@ -12,18 +12,12 @@ CDynamicCamera::~CDynamicCamera()
 
 HRESULT CDynamicCamera::InitCamera(const Vector3 & eye, const Vector3 & at)
 {
+	CCamera::Initialize();
+
 	speed_ = 15.f;
 
-	eye_ = eye;
-	at_ = at;
-	up_ = Vector3(0.f, 1.f, 0.f);
-	Invalidate_View();
-
-	fov_y_ = D3DXToRadian(45.f);
-	aspect_ = float(kWinCx) / kWinCy;
-	near_ = 1.f;
-	far_ = 1000.f;
-	Invalidate_Projection();
+	SetView(eye, at);
+	SetProjection(D3DXToRadian(45.f), float(kWinCx) / kWinCy, 1.f, 1000.f);
 
 	return S_OK;
 }
@@ -60,44 +54,44 @@ void CDynamicCamera::InputCheck(float delta_time)
 
 	if (Engine::Input()->GetKey(KEY::W))
 	{
-		Vector3 look_vector = at_ - eye_;
+		Vector3 look_vector = at() - eye();
 		D3DXVec3Normalize(&look_vector, &look_vector);
 
-		eye_ += look_vector * speed_ * delta_time;
-		at_ += look_vector * speed_ * delta_time;
+		eye() += look_vector * speed_ * delta_time;
+		at() += look_vector * speed_ * delta_time;
 	}
 
 	if (Engine::Input()->GetKey(KEY::S))
 	{
-		Vector3 look_vector = at_ - eye_;
+		Vector3 look_vector = at() - eye();
 		D3DXVec3Normalize(&look_vector, &look_vector);
 
-		eye_ -= look_vector * speed_ * delta_time;
-		at_ -= look_vector * speed_ * delta_time;
+		eye() -= look_vector * speed_ * delta_time;
+		at() -= look_vector * speed_ * delta_time;
 	}
 
 	if (Engine::Input()->GetKey(KEY::A))
 	{
 		Matrix camera_world;
-		D3DXMatrixInverse(&camera_world, nullptr, &mat_view_);
+		D3DXMatrixInverse(&camera_world, nullptr, &mat_view());
 		Vector3 right_vector;
 		memcpy(&right_vector, &camera_world.m[0][0], sizeof(Vector3));
 		D3DXVec3Normalize(&right_vector, &right_vector);
 
-		eye_ -= right_vector * speed_ * delta_time;
-		at_ -= right_vector * speed_ * delta_time;
+		eye() -= right_vector * speed_ * delta_time;
+		at() -= right_vector * speed_ * delta_time;
 	}
 
 	if (Engine::Input()->GetKey(KEY::D))
 	{
 		Matrix camera_world;
-		D3DXMatrixInverse(&camera_world, nullptr, &mat_view_);
+		D3DXMatrixInverse(&camera_world, nullptr, &mat_view());
 		Vector3 right_vector;
 		memcpy(&right_vector, &camera_world.m[0][0], sizeof(Vector3));
 		D3DXVec3Normalize(&right_vector, &right_vector);
 
-		eye_ += right_vector * speed_ * delta_time;
-		at_ += right_vector * speed_ * delta_time;
+		eye() += right_vector * speed_ * delta_time;
+		at() += right_vector * speed_ * delta_time;
 	}
 }
 
@@ -109,16 +103,16 @@ void CDynamicCamera::MouseMove()
 		Matrix mat_axis;
 		D3DXMatrixRotationAxis(&mat_axis, &Vector3(0.f, 1.f, 0.f), D3DXToRadian(distance * 0.1f));
 
-		Vector3 dir = at_ - eye_;
+		Vector3 dir = at() - eye();
 		D3DXVec3TransformNormal(&dir, &dir, &mat_axis);
 
-		at_ = eye_ + dir;
+		at() = eye() + dir;
 	}
 
 	if (distance = Engine::Input()->GetDIMouseMove(Engine::CInputManager::DIM_Y))
 	{
 		Matrix camera_world;
-		D3DXMatrixInverse(&camera_world, nullptr, &mat_view_);
+		D3DXMatrixInverse(&camera_world, nullptr, &mat_view());
 
 		Vector3 right_vector;
 		memcpy(&right_vector, &camera_world.m[0][0], sizeof(Vector3));
@@ -127,10 +121,10 @@ void CDynamicCamera::MouseMove()
 		Matrix mat_axis;
 		D3DXMatrixRotationAxis(&mat_axis, &right_vector, D3DXToRadian(distance * 0.1f));
 
-		Vector3 dir = at_ - eye_;
+		Vector3 dir = at() - eye();
 		D3DXVec3TransformNormal(&dir, &dir, &mat_axis);
 
-		at_ = eye_ + dir;
+		at() = eye() + dir;
 	}
 }
 

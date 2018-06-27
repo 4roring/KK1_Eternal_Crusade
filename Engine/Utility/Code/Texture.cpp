@@ -11,7 +11,7 @@ Engine::CTexture::~CTexture()
 
 const LPDIRECT3DBASETEXTURE9 Engine::CTexture::GetTexture(int index)
 {
-	return vec_texture_[index];
+	return texture_.vec_texture[index];
 }
 
 Engine::CComponent * Engine::CTexture::CloneComponent()
@@ -24,7 +24,7 @@ HRESULT Engine::CTexture::LoadTexture(TEXTURETYPE texture_type, const std::wstri
 {
 	IDirect3DBaseTexture9* ptr_texture = NULL;
 
-	vec_texture_.reserve(count);
+	texture_.vec_texture.reserve(count);
 
 	TCHAR full_path[MAX_PATH] = TEXT("");
 
@@ -45,10 +45,10 @@ HRESULT Engine::CTexture::LoadTexture(TEXTURETYPE texture_type, const std::wstri
 		}
 		assert(hr == S_OK && "Create Texture Failed");
 
-		vec_texture_.emplace_back(ptr_texture);
+		texture_.vec_texture.emplace_back(ptr_texture);
 	}
 
-	container_size = vec_texture_.size();
+	container_size = texture_.vec_texture.size();
 	return S_OK;
 }
 
@@ -56,10 +56,10 @@ int Engine::CTexture::Release()
 {
 	if (--reference_count_ == 0)
 	{
-		for (auto& texture : vec_texture_)
+		for (auto& texture : texture_.vec_texture)
 			Safe_Release(texture);
 
-		vec_texture_.clear();
+		texture_.vec_texture.clear();
 		return 0;
 	}
 	return reference_count_;

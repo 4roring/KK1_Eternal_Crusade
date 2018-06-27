@@ -14,25 +14,30 @@ public:
 	virtual ~CCamera();
 
 public:
-	virtual void Update(float delta_time);
+	Vector3& eye();
+	Vector3& at();
+	Matrix& mat_view();
+	Matrix& mat_projection();
 
 public:
+	void SetView(const Vector3& eye, const Vector3& at);
+	void SetProjection(float fov_y, float aspect, float z_near, float z_far);
+
+protected:
+	virtual HRESULT Initialize() override;
+
+public:
+	virtual void Update(float delta_time);
+
+protected:
+	void Release();
+
+private:
 	void Invalidate_View();
 	void Invalidate_Projection();
 
-protected:
-	Matrix mat_view_, mat_projection_;
-
-protected:
-	Vector3 eye_ = Vector3(0.f, 0.f, 0.f);
-	Vector3 at_ = Vector3(0.f, 0.f, 0.f);
-	Vector3 up_ = Vector3(0.f, 0.f, 0.f);
-
-protected:
-	float fov_y_ = 0.f;
-	float aspect_ = 0.f;
-	float near_ = 0.f;
-	float far_ = 0.f;
+private:
+	struct CameraInfo* ptr_camera_info_;
 };
 
 END

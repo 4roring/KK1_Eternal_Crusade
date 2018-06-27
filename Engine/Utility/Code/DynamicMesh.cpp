@@ -21,7 +21,7 @@ void Engine::CDynamicMesh::ComputeMeshMinMax(D3DXFRAME * ptr_frame, const Vector
 
 const D3DXMATRIX * Engine::CDynamicMesh::FindFrame(const char * ptr_frame_name) const
 {
-	DerivedFrame* ptr_frame = static_cast<DerivedFrame*>(D3DXFrameFind(ptr_root_bone_, ptr_frame_name));
+	BoneFrame* ptr_frame = static_cast<BoneFrame*>(D3DXFrameFind(ptr_root_bone_, ptr_frame_name));
 
 	return &ptr_frame->combined_matrix;
 }
@@ -44,13 +44,13 @@ void Engine::CDynamicMesh::FrameMove(float delta_time, CAnimController* ptr_anim
 	Matrix mat_identity;
 	D3DXMatrixIdentity(&mat_identity);
 
-	UpdateFrameMatrix((DerivedFrame*)ptr_root_bone_, &mat_identity);
+	UpdateFrameMatrix((BoneFrame*)ptr_root_bone_, &mat_identity);
 }
 
 void Engine::CDynamicMesh::RenderMesh(LPD3DXEFFECT ptr_effect)
 {
 	ptr_effect->Begin(nullptr, 0);
-	FindMeshContainer((DerivedFrame*)ptr_root_bone_, ptr_effect);
+	FindMeshContainer((BoneFrame*)ptr_root_bone_, ptr_effect);
 	ptr_effect->End();
 }
 
@@ -91,24 +91,24 @@ HRESULT Engine::CDynamicMesh::LoadMeshFromFile(const TCHAR * path, const TCHAR *
 	D3DXMATRIX mat_identity;
 	D3DXMatrixIdentity(&mat_identity);
 
-	UpdateFrameMatrix((DerivedFrame*)ptr_root_bone_, &mat_identity);
-	SetUpFrameMatrixPointer((DerivedFrame*)ptr_root_bone_);
+	UpdateFrameMatrix((BoneFrame*)ptr_root_bone_, &mat_identity);
+	SetUpFrameMatrixPointer((BoneFrame*)ptr_root_bone_);
 	return S_OK;
 }
 
-void Engine::CDynamicMesh::UpdateFrameMatrix(DerivedFrame * ptr_frame, const Matrix * ptr_parent_matrix)
+void Engine::CDynamicMesh::UpdateFrameMatrix(BoneFrame * ptr_frame, const Matrix * ptr_parent_matrix)
 {
 	if (nullptr != ptr_frame)
 		ptr_frame->combined_matrix = ptr_frame->TransformationMatrix * (*ptr_parent_matrix);
 
 	if (nullptr != ptr_frame->pFrameFirstChild)
-		UpdateFrameMatrix((DerivedFrame*)ptr_frame->pFrameFirstChild, &ptr_frame->combined_matrix);
+		UpdateFrameMatrix((BoneFrame*)ptr_frame->pFrameFirstChild, &ptr_frame->combined_matrix);
 
 	if (nullptr != ptr_frame->pFrameSibling)
-		UpdateFrameMatrix((DerivedFrame*)ptr_frame->pFrameSibling, ptr_parent_matrix);
+		UpdateFrameMatrix((BoneFrame*)ptr_frame->pFrameSibling, ptr_parent_matrix);
 }
 
-void Engine::CDynamicMesh::SetUpFrameMatrixPointer(DerivedFrame * ptr_frame)
+void Engine::CDynamicMesh::SetUpFrameMatrixPointer(BoneFrame * ptr_frame)
 {
 	if (nullptr == ptr_frame)
 		return;
@@ -120,41 +120,41 @@ void Engine::CDynamicMesh::SetUpFrameMatrixPointer(DerivedFrame * ptr_frame)
 			return;
 
 		DWORD num_frame = ptr_mesh->pSkinInfo->GetNumBones();
-		((DerivedMeshContainer*)ptr_mesh)->pp_frame_combined_matrix = new Matrix*[num_frame];
-		ZeroMemory(((DerivedMeshContainer*)ptr_mesh)->pp_frame_combined_matrix
+		((BoneMesh*)ptr_mesh)->pp_frame_combined_matrix = new Matrix*[num_frame];
+		ZeroMemory(((BoneMesh*)ptr_mesh)->pp_frame_combined_matrix
 			, sizeof(Matrix*) * num_frame);
 
 
 		for (DWORD i = 0; i < num_frame; ++i)
 		{
-			((DerivedMeshContainer*)ptr_mesh)->pp_frame_combined_matrix[i] =
-				&((DerivedFrame*)D3DXFrameFind(ptr_root_bone_, ptr_mesh->pSkinInfo->GetBoneName(i)))->combined_matrix;
+			((BoneMesh*)ptr_mesh)->pp_frame_combined_matrix[i] =
+				&((BoneFrame*)D3DXFrameFind(ptr_root_bone_, ptr_mesh->pSkinInfo->GetBoneName(i)))->combined_matrix;
 		}
 	}
 
 	if (nullptr != ptr_frame->pFrameFirstChild)
-		SetUpFrameMatrixPointer((DerivedFrame*)ptr_frame->pFrameFirstChild);
+		SetUpFrameMatrixPointer((BoneFrame*)ptr_frame->pFrameFirstChild);
 
 	if (nullptr != ptr_frame->pFrameSibling)
-		SetUpFrameMatrixPointer((DerivedFrame*)ptr_frame->pFrameSibling);
+		SetUpFrameMatrixPointer((BoneFrame*)ptr_frame->pFrameSibling);
 }
 
-void Engine::CDynamicMesh::FindMeshContainer(DerivedFrame * ptr_frame, LPD3DXEFFECT ptr_effect)
+void Engine::CDynamicMesh::FindMeshContainer(BoneFrame * ptr_frame, LPD3DXEFFECT ptr_effect)
 {
 	if (nullptr == ptr_frame)
 		return;
 
 	if (nullptr != ptr_frame->pMeshContainer)
-		RenderMeshContainer((DerivedMeshContainer*)ptr_frame->pMeshContainer, ptr_effect);
+		RenderMeshContainer((BoneMesh*)ptr_frame->pMeshContainer, ptr_effect);
 
 	if (nullptr != ptr_frame->pFrameFirstChild)
-		FindMeshContainer((DerivedFrame*)ptr_frame->pFrameFirstChild, ptr_effect);
+		FindMeshContainer((BoneFrame*)ptr_frame->pFrameFirstChild, ptr_effect);
 
 	if (nullptr != ptr_frame->pFrameSibling)
-		FindMeshContainer((DerivedFrame*)ptr_frame->pFrameSibling, ptr_effect);
+		FindMeshContainer((BoneFrame*)ptr_frame->pFrameSibling, ptr_effect);
 }
 
-void Engine::CDynamicMesh::RenderMeshContainer(DerivedMeshContainer * ptr_mesh_container, LPD3DXEFFECT ptr_effect)
+void Engine::CDynamicMesh::RenderMeshContainer(BoneMesh * ptr_mesh_container, LPD3DXEFFECT ptr_effect)
 {
 	//if (nullptr != ptr_mesh_container->pSkinInfo)
 	//{
@@ -216,14 +216,15 @@ void Engine::CDynamicMesh::RenderMeshContainer(DerivedMeshContainer * ptr_mesh_c
 		ptr_effect->BeginPass(0);
 		for (DWORD i = 0; i < ptr_mesh_container->NumMaterials; ++i)
 		{
-			//ptr_device_->SetMaterial(&ptr_mesh_container->pMaterials[i].MatD3D);
-			if (nullptr == ptr_effect)
-				ptr_device_->SetTexture(0, ptr_mesh_container->pp_texture[i]);
-			else
-			{
-				ptr_effect->SetTexture("g_base_texture", ptr_mesh_container->pp_texture[i]);
-				ptr_effect->CommitChanges();
-			}
+			if(nullptr != ptr_mesh_container->pp_color_texture[i])
+				ptr_effect->SetTexture("g_color_texture", ptr_mesh_container->pp_color_texture[i]);
+			if (nullptr != ptr_mesh_container->pp_color_texture[i])
+				ptr_effect->SetTexture("g_normal_texture", ptr_mesh_container->pp_normal_texture[i]);
+			if (nullptr != ptr_mesh_container->pp_color_texture[i])
+				ptr_effect->SetTexture("g_specualr_texture", ptr_mesh_container->pp_specular_texture[i]);
+
+			ptr_effect->CommitChanges();
+
 			ptr_mesh_container->MeshData.pMesh->DrawSubset(i);
 		}
 		ptr_effect->EndPass();

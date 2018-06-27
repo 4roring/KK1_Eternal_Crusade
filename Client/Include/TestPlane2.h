@@ -33,7 +33,6 @@ private:
 
 private:
 	Engine::CStaticMesh* ptr_mesh_ = nullptr;
-	Engine::CTexture* ptr_normal_texture_ = nullptr;
 
 private:
 	bool is_normal = false;

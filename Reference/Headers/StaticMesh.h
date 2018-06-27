@@ -35,7 +35,9 @@ private:
 	bool CheckAlpha(int subset_index, const char* find_tag);
 
 private:
-	LPDIRECT3DTEXTURE9* pp_texture_ = nullptr;
+	LPDIRECT3DTEXTURE9* pp_color_texture_ = nullptr;
+	LPDIRECT3DTEXTURE9* pp_normal_texture_ = nullptr;
+	LPDIRECT3DTEXTURE9* pp_specular_texture_ = nullptr;
 	D3DMATERIAL9* ptr_material_ = nullptr;
 
 private:

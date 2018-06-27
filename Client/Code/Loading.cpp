@@ -43,7 +43,7 @@ HRESULT CLoading::Stage_Loading()
 	lstrcpy(loading_message_, TEXT("Texture Loading"));
 	HRESULT hr = E_FAIL;
 
-	// Texture
+	// VecTexture
 	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
 		, TEXT("Texture_TestPlane_Color")
 		, Engine::CTexture::Create(ptr_device_

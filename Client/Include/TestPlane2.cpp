@@ -24,7 +24,7 @@ HRESULT CTestPlane2::Initialize()
 	hr = AddComponent();
 	assert(!FAILED(hr) && "AddComponent call failed in TestPlane2");
 
-	ptr_transform_->scale_ = Vector3(0.01f, 0.01f, 0.01f);
+	ptr_transform_->scale() = Vector3(0.01f, 0.01f, 0.01f);
 	return S_OK;
 }
 
@@ -46,12 +46,10 @@ void CTestPlane2::Render()
 	ptr_device_->GetTransform(D3DTS_VIEW, &mat_view);
 	ptr_device_->GetTransform(D3DTS_PROJECTION, &mat_proj);
 
-	ptr_effect->SetMatrix("g_mat_world", &ptr_transform_->mat_world_);
+	ptr_effect->SetMatrix("g_mat_world", &ptr_transform_->mat_world());
 	ptr_effect->SetMatrix("g_mat_view", &mat_view);
 	ptr_effect->SetMatrix("g_mat_projection", &mat_proj);
 
-
-	ptr_effect->SetTexture("g_normal_texture", ptr_normal_texture_->GetTexture(0));
 	ptr_effect->SetVector("g_light_diffuse", &Vector4(1.f, 1.f, 1.f, 1.f));
 	ptr_effect->SetVector("g_light_ambient", &Vector4(1.f, 1.f, 1.f, 1.f));
 	ptr_effect->SetVector("g_light_dir", &Vector4(0.f, -1.f, 1.f, 0.f));
@@ -79,8 +77,6 @@ HRESULT CTestPlane2::AddComponent()
 	assert(hr == S_OK && "ScreenImage Buffer ReadyComponent Failed");
 	hr = Ready_Component(MAINTAIN_STATIC, TEXT("Component_Transform"), TEXT("Transform"), ptr_transform_);
 	assert(hr == S_OK && "Tranform Component ReadyComponent Failed");
-	hr = Ready_Component(MAINTAIN_STAGE, TEXT("Floor_6x12_1_Texture_Normal"), TEXT("Texture_Normal"), ptr_normal_texture_);
-	assert(hr == S_OK && "ScreenImage Texture ReadyComponent Failed");
 	hr = Ready_Component(MAINTAIN_STATIC, TEXT("Shader_NormalMap"), TEXT("Shader"), ptr_shader_);
 	assert(hr == S_OK && "ScreenImage Shader ReadyComponent Failed");
 

@@ -14,9 +14,6 @@ public:
 	virtual ~CMesh();
 
 public:
-	void GetMinMax(const Vector3& min, const Vector3& max);
-
-public:
 	virtual void GetComputeBoundingBox(const Vector3& min, const Vector3& max) const PURE;
 
 public:
@@ -24,10 +21,6 @@ public:
 
 public:
 	virtual int Release() PURE;
-
-protected:
-	Vector3 min_ = Vector3(0.f, 0.f, 0.f);
-	Vector3 max_ = Vector3(0.f, 0.f, 0.f);
 };
 
 END
