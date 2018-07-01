@@ -27,6 +27,8 @@ void CToolManager::Render()
 
 void CToolManager::Release()
 {
+	Engine::Input()->DestroyInstance();
+	Engine::GraphicDevice()->DestroyInstance();
 }
 
 void CToolManager::BegineScene()

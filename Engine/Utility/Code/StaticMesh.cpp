@@ -1,4 +1,6 @@
 #include "StaticMesh.h"
+#include "GameManager.h"
+#include "Texture.h"
 
 Engine::CStaticMesh::CStaticMesh(LPDIRECT3DDEVICE9 ptr_device)
 	: CMesh(ptr_device)
@@ -19,6 +21,10 @@ void Engine::CStaticMesh::GetComputeBoundingBox(const Vector3 & min, const Vecto
 {
 }
 
+void Engine::CStaticMesh::GetComputeBoundingSphere(const Vector3 & min, const Vector3 & max) const
+{
+}
+
 void Engine::CStaticMesh::RenderMesh(LPD3DXEFFECT ptr_effect)
 {
 	ptr_effect->Begin(nullptr, 0);
@@ -34,8 +40,10 @@ void Engine::CStaticMesh::RenderMesh(LPD3DXEFFECT ptr_effect)
 
 		ptr_effect->BeginPass(pass_index);
 	
-		ptr_effect->SetTexture("g_base_texture", pp_color_texture_[i]);
-		ptr_effect->SetTexture("g_normal_texture", pp_normal_texture_[i]);
+		if(nullptr != pp_color_texture_[i])
+			ptr_effect->SetTexture("g_base_texture", pp_color_texture_[i]);
+		if (nullptr != pp_normal_texture_[i])
+			ptr_effect->SetTexture("g_normal_texture", pp_normal_texture_[i]);
 
 		ptr_effect->SetVector("g_material_diffuse", (Vector4*)&ptr_material_[i].Diffuse);
 		ptr_effect->SetVector("g_material_ambient", &Vector4(1.f, 1.f, 1.f, 1.f));
@@ -71,7 +79,7 @@ int Engine::CStaticMesh::Release()
 	return reference_count_;
 }
 
-HRESULT Engine::CStaticMesh::LoadMeshFromFile(const TCHAR * path, const TCHAR * file_name)
+HRESULT Engine::CStaticMesh::LoadMeshFromFile(const TCHAR * path, const TCHAR * file_name, int stage_index)
 {
 	HRESULT hr = E_FAIL;
 	std::wstring full_path;
@@ -89,37 +97,49 @@ HRESULT Engine::CStaticMesh::LoadMeshFromFile(const TCHAR * path, const TCHAR * 
 	pp_normal_texture_ = new LPDIRECT3DTEXTURE9[subset_count_];
 	pp_specular_texture_ = new LPDIRECT3DTEXTURE9[subset_count_];
 
-	full_path.clear();
-	full_path = path;
+	auto iter = full_path.rfind(TEXT("/"));
+	full_path = full_path.substr(0, iter);
+	iter = full_path.rfind(TEXT("/"));
+	full_path = full_path.substr(0, iter);
+	full_path += TEXT("/Texture/");
 
 	for (DWORD i = 0; i < subset_count_; ++i)
 	{
-		TCHAR file_name[128] = TEXT("");
+		TCHAR tex_name_buf[128] = TEXT("");
 
 		ptr_material_[i] = ptr_subset_[i].MatD3D;
 
 		MultiByteToWideChar(CP_ACP, 0, ptr_subset_[i].pTextureFilename
 			, strlen(ptr_subset_[i].pTextureFilename)
-			, file_name, 128);
+			, tex_name_buf, 128);
 
-		full_path += file_name;
-		auto iter = full_path.rfind(TEXT("_"));
-		full_path = full_path.substr(0, ++iter);
+		std::wstring tex_key = tex_name_buf;
+		auto iter = tex_key.rfind(TEXT("_"));
+		tex_key = tex_key.substr(0, iter);
 
-		hr = D3DXCreateTextureFromFileW(ptr_device_, (full_path + TEXT("BC.tga")).c_str(), &pp_color_texture_[i]);
-		if (FAILED(hr)) pp_color_texture_[i] = nullptr;
-		hr = D3DXCreateTextureFromFileW(ptr_device_, (full_path + TEXT("N.tga")).c_str(), &pp_normal_texture_[i]);
-		if (FAILED(hr)) pp_normal_texture_[i] = nullptr;
-		hr = D3DXCreateTextureFromFileW(ptr_device_, (full_path + TEXT("R.tga")).c_str(), &pp_specular_texture_[i]);
-		if (FAILED(hr)) pp_specular_texture_[i] = nullptr;
+		CTexture* ptr_texture = dynamic_cast<CTexture*>(CGameManager::GetInstance()->CloneComponent(stage_index, tex_key));
+		if (nullptr == ptr_texture)
+		{
+			ptr_texture = CTexture::Create(ptr_device_, TEXTURETYPE::STATIC_MESH, full_path + tex_key, 0);
+			CGameManager::GetInstance()->Add_Prototype(stage_index, tex_key, ptr_texture);
+			ptr_texture->AddReferenceCount();
+		}
+		pp_color_texture_[i] = (LPDIRECT3DTEXTURE9)ptr_texture->GetTexture(0);
+		if(nullptr != pp_color_texture_[i]) pp_color_texture_[i]->AddRef();
+		pp_normal_texture_[i] = (LPDIRECT3DTEXTURE9)ptr_texture->GetTexture(1);
+		if (nullptr != pp_normal_texture_[i]) pp_normal_texture_[i]->AddRef();
+		pp_specular_texture_[i] = (LPDIRECT3DTEXTURE9)ptr_texture->GetTexture(2);
+		if (nullptr != pp_specular_texture_[i]) pp_specular_texture_[i]->AddRef();
+
+		Safe_Release(ptr_texture);
 	}
 	return S_OK;
 }
 
-Engine::CStaticMesh * Engine::CStaticMesh::Create(LPDIRECT3DDEVICE9 ptr_device, const TCHAR * path, const TCHAR * file_name)
+Engine::CStaticMesh * Engine::CStaticMesh::Create(LPDIRECT3DDEVICE9 ptr_device, const TCHAR * path, const TCHAR * file_name, int stage_index)
 {
 	CStaticMesh* ptr_mesh = new CStaticMesh(ptr_device);
-	if (FAILED(ptr_mesh->LoadMeshFromFile(path, file_name)))
+	if (FAILED(ptr_mesh->LoadMeshFromFile(path, file_name, stage_index)))
 	{
 		Safe_Release_Delete(ptr_mesh);
 		assert(!"StaticMesh Create Failed");

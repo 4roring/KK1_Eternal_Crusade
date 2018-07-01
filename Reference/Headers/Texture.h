@@ -26,7 +26,8 @@ public:
 
 public:
 	HRESULT LoadTexture(TEXTURETYPE texture_type, const std::wstring& file_path, int count);
-	
+	HRESULT LoadStaticMeshTexture(const std::wstring& file_path);
+
 public:
 	virtual int Release() override;
 

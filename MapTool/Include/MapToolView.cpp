@@ -13,6 +13,9 @@
 #include "MapToolView.h"
 #include "MainFrm.h"
 
+#include "Transform.h"
+#include "Shader.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -28,6 +31,7 @@ BEGIN_MESSAGE_MAP(CMapToolView, CView)
 	ON_COMMAND(ID_FILE_PRINT, &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_DIRECT, &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CView::OnFilePrintPreview)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 // CMapToolView 생성/소멸
@@ -62,6 +66,9 @@ void CMapToolView::OnDraw(CDC* /*pDC*/)
 
 	// TODO: 여기에 원시 데이터에 대한 그리기 코드를 추가합니다.
 	Tool()->BegineScene();
+
+	// 그리시오.
+	Engine::GameManager()->Render();
 
 	Tool()->EndScene(m_hWnd);
 }
@@ -115,10 +122,43 @@ void CMapToolView::OnInitialUpdate()
 	CView::OnInitialUpdate();
 
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
-
-
-
 	g_hwnd = m_hWnd;
-
 	Tool()->Init_ToolManager();
+	ptr_device_ = Engine::GraphicDevice()->GetDevice();
+	Engine::Time()->InitTime();
+	SetTimer(0, 10, nullptr);
+
+	HRESULT hr = E_FAIL;
+
+	Engine::GameManager()->InitManager(ptr_device_);
+	Engine::GameManager()->InitComponentManager(1);
+	hr = Engine::GameManager()->Add_Prototype(0, TEXT("Transform"), Engine::CTransform::Create(Vector3(0.f, 0.f, 1.f)));
+	assert(hr == S_OK && "Transform Component Add Failed");
+
+	hr = Engine::GameManager()->Add_Prototype(0, TEXT("Shader_NormalMap")
+			, Engine::CShader::Create(ptr_device_, TEXT("../../Reference/Shader/NormalMapShader.hlsl")));
+	assert(hr == S_OK && "Shader_NormalMap Component Add Failed");
+}
+
+
+void CMapToolView::PostNcDestroy()
+{
+	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
+	
+	Engine::GameManager()->DestroyInstance();
+	Engine::Time()->DestroyInstance();
+	Tool()->DestroyInstance();
+
+	CView::PostNcDestroy();
+}
+
+
+void CMapToolView::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	Engine::Time()->SetTime();
+
+	Invalidate(); // Render
+
+	CView::OnTimer(nIDEvent);
 }

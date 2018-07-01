@@ -75,8 +75,11 @@ void Engine::CGameManager::Render()
 {
 	assert(nullptr != ptr_renderer_ && "Renderer is nullptr");
 	ptr_renderer_->Render();
-	assert(nullptr != ptr_scene_ && "Scene is nullptr");
-	ptr_scene_->Render();
+
+#ifdef _DEBUG
+	if(nullptr != ptr_scene_) 
+		ptr_scene_->Render();
+#endif
 }
 
 void Engine::CGameManager::Release()

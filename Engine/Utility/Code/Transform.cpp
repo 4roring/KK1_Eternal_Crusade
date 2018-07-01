@@ -3,6 +3,7 @@
 Engine::CTransform::CTransform(const Vector3 & look)
 {
 	D3DXMatrixIdentity(&transform_.mat_world);
+	transform_.scale = Vector3(1.f, 1.f, 1.f);
 	transform_.direction = look;
 	++reference_count_;
 }

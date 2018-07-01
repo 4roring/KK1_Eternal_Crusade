@@ -44,6 +44,11 @@ void Engine::CDynamicMesh::FrameMove(float delta_time, CAnimController* ptr_anim
 	Matrix mat_identity;
 	D3DXMatrixIdentity(&mat_identity);
 
+	Matrix mat_scale, mat_rot_y;
+	D3DXMatrixScaling(&mat_scale, 0.01f, 0.01f, 0.01f);
+	D3DXMatrixRotationY(&mat_rot_y, D3DXToRadian(179.99999f));
+	mat_identity = mat_scale * mat_rot_y;
+
 	UpdateFrameMatrix((BoneFrame*)ptr_root_bone_, &mat_identity);
 }
 

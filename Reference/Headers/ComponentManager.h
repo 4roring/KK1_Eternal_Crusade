@@ -36,7 +36,7 @@ private:
 	int container_size_ = 0;
 
 private:
-	typedef std::map<std::wstring, CComponent*> MapComponent;
+	typedef std::unordered_map<std::wstring, CComponent*> MapComponent;
 	MapComponent* ptr_map_component_ = nullptr;
 };
 

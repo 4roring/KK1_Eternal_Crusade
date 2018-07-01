@@ -16,9 +16,6 @@
     <Filter Include="02.EditorTab">
       <UniqueIdentifier>{9aa4ca09-7201-4e15-886f-5ab5ca921823}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.EditorTab\00.LevelEditor">
-      <UniqueIdentifier>{abbe3d8f-3933-4571-88ea-3f163c146031}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.EditorTab\02.NavMeshEditor">
       <UniqueIdentifier>{c05a51ea-c357-4d48-b940-d781eb5e7ca0}</UniqueIdentifier>
     </Filter>
@@ -28,8 +25,17 @@
     <Filter Include="02.EditorTab\01.TerrainEditor">
       <UniqueIdentifier>{00c6d88b-67b6-4303-90c6-50af4687cae4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03.ResourceLoader">
+    <Filter Include="03.MapData">
       <UniqueIdentifier>{dec29da1-8182-4abf-9e96-9388d1a5a61f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.MapData\ResourceLoader">
+      <UniqueIdentifier>{31c73216-b495-4bdf-ace0-6df48f60efb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.MapData\MapObject">
+      <UniqueIdentifier>{a629711a-993b-47ff-a512-29f68d1ae01b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.EditorTab\00.StageEditor">
+      <UniqueIdentifier>{abbe3d8f-3933-4571-88ea-3f163c146031}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -59,7 +65,7 @@
       <Filter>02.EditorTab\KK1Sheet</Filter>
     </ClInclude>
     <ClInclude Include="StageEditor.h">
-      <Filter>02.EditorTab\00.LevelEditor</Filter>
+      <Filter>02.EditorTab\00.StageEditor</Filter>
     </ClInclude>
     <ClInclude Include="TerrainEditor.h">
       <Filter>02.EditorTab\01.TerrainEditor</Filter>
@@ -71,7 +77,10 @@
       <Filter>02.EditorTab</Filter>
     </ClInclude>
     <ClInclude Include="..\Code\ResourceLoader.h">
-      <Filter>03.ResourceLoader</Filter>
+      <Filter>03.MapData\ResourceLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\MapObject.h">
+      <Filter>03.MapData\MapObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -97,7 +106,7 @@
       <Filter>02.EditorTab\KK1Sheet</Filter>
     </ClCompile>
     <ClCompile Include="StageEditor.cpp">
-      <Filter>02.EditorTab\00.LevelEditor</Filter>
+      <Filter>02.EditorTab\00.StageEditor</Filter>
     </ClCompile>
     <ClCompile Include="TerrainEditor.cpp">
       <Filter>02.EditorTab\01.TerrainEditor</Filter>
@@ -109,7 +118,10 @@
       <Filter>02.EditorTab</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\ResourceLoader.cpp">
-      <Filter>03.ResourceLoader</Filter>
+      <Filter>03.MapData\ResourceLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\MapObject.cpp">
+      <Filter>03.MapData\MapObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -25,11 +25,10 @@ HRESULT CSpaceMarin::Initialize()
 	assert(!FAILED(hr) && "AddComponent call failed in SpaceMarin");
 
 	anim_track_ = rand() % 34;
-	//anim_track_ = 0;
+
+	
 
 	ptr_anim_ctrl_->SetAnimationTrack(anim_track_);
-
-	ptr_transform_->scale() = Vector3(0.01f, 0.01f, 0.01f);
 
 	return S_OK;
 }

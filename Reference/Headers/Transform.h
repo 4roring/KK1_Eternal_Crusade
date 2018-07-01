@@ -40,7 +40,7 @@ public:
 	static CTransform* Create(const Vector3& look);
 
 private:
-	Transform transform_;
+	Transform transform_ = {};
 };
 
 END

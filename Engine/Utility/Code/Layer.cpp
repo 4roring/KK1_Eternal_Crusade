@@ -54,20 +54,22 @@ void Engine::CLayer::Update(float delta_time)
 	{
 		for (auto& pair : layer_pair.second)
 		{
+			for (auto& object : pair.second)
+				object->Update(delta_time);
+
 			auto iter = pair.second.begin();
 			auto iter_end = pair.second.end();
 
 			for (; iter != iter_end; )
 			{
+				(*iter)->LateUpdate();
+
 				if (true == (*iter)->destroy())
 					iter = pair.second.erase(iter);
 				else if (false == (*iter)->active())
 					continue;
 				else
-				{
-					(*iter)->Update(delta_time);
 					++iter;
-				}
 			}
 		}
 	}

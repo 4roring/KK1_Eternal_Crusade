@@ -43,30 +43,23 @@ HRESULT CLoading::Stage_Loading()
 	lstrcpy(loading_message_, TEXT("Texture Loading"));
 	HRESULT hr = E_FAIL;
 
-	// VecTexture
-	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
-		, TEXT("Texture_TestPlane_Color")
-		, Engine::CTexture::Create(ptr_device_
-			, Engine::TEXTURETYPE::NORMAL
-			, TEXT("../bin/Resources/TestAsset/T_FullGrass_D.tga")
-			, 1));
-	assert(hr == S_OK && "Add Texture Failed");
+	// Texture
+	//hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+	//	, TEXT("Texture_TestPlane_Color")
+	//	, Engine::CTexture::Create(ptr_device_
+	//		, Engine::TEXTURETYPE::NORMAL
+	//		, TEXT("../bin/Resources/TestAsset/T_FullGrass_D.tga")
+	//		, 1));
+	//assert(hr == S_OK && "Add Texture Failed");
 
-	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
-		, TEXT("Texture_TestPlane_Normal")
-		, Engine::CTexture::Create(ptr_device_
-			, Engine::TEXTURETYPE::NORMAL
-			, TEXT("../bin/Resources/TestAsset/T_FullGrass_N.tga")
-			, 1));
-	assert(hr == S_OK && "Add Texture Failed");
+	//hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+	//	, TEXT("Texture_TestPlane_Normal")
+	//	, Engine::CTexture::Create(ptr_device_
+	//		, Engine::TEXTURETYPE::NORMAL
+	//		, TEXT("../bin/Resources/TestAsset/T_FullGrass_N.tga")
+	//		, 1));
+	//assert(hr == S_OK && "Add Texture Failed");
 
-	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
-		, TEXT("Floor_6x12_1_Texture_Normal")
-		, Engine::CTexture::Create(ptr_device_
-			, Engine::TEXTURETYPE::NORMAL
-			, TEXT("../bin/Resources/Mesh/MapData/Floor_6x12_1/T_Bundle_J_var1_N.tga")
-			, 1));
-	assert(hr == S_OK && "Add Texture Failed");
 
 	// Mesh
 	lstrcpy(loading_message_, TEXT("Mesh Loading"));
@@ -79,11 +72,11 @@ HRESULT CLoading::Stage_Loading()
 
 	lstrcpy(loading_message_, TEXT("Mesh Loading"));
 	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
-		, TEXT("Floor_6x12_1_Mesh")
+		, TEXT("Floor_12x12_Mesh")
 		, Engine::CStaticMesh::Create(ptr_device_
-			, TEXT("../bin/Resources/Mesh/MapData/Floor_6x12_1/")
-			, TEXT("Floor_6x12_1.X")));
-	assert(hr == S_OK && "Floor_6x12_1 Mesh Add Failed");
+			, TEXT("../bin/Resources/Mesh/MapData/Floor/")
+			, TEXT("Floor_12x12.X"), MAINTAIN_STAGE));
+	assert(hr == S_OK && "Floor_12x12 Mesh Add Failed");
 
 	// Shader
 	lstrcpy(loading_message_, TEXT("Shader Loading"));

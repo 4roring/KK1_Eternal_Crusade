@@ -1,26 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="00.Managers">
-      <UniqueIdentifier>{0c19b57f-c8e2-4928-ba60-63f42481c63b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Export">
       <UniqueIdentifier>{170b7950-3a02-4a4c-964f-e20f00515026}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Managers">
+      <UniqueIdentifier>{0c19b57f-c8e2-4928-ba60-63f42481c63b}</UniqueIdentifier>
     </Filter>
     <Filter Include="00.Managers\GameManager">
       <UniqueIdentifier>{a3228609-a889-437b-9c4a-c65b7d0aa29d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00.Managers\GameManager\ComponentManager">
+      <UniqueIdentifier>{5706b1ab-fddf-4ec4-be0e-11612c978d31}</UniqueIdentifier>
+    </Filter>
     <Filter Include="01.Renderer">
       <UniqueIdentifier>{3afe6545-7056-4bc9-9c34-4e9b68b67f1a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04.Component">
-      <UniqueIdentifier>{0908d527-e517-477c-af5d-f00e0d9d6f47}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04.Component\Transform">
-      <UniqueIdentifier>{fa3620fa-99e1-404d-9ffe-8e1173ecf258}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04.Component\Collision">
-      <UniqueIdentifier>{43d67e3c-e735-465b-9bfb-4191e8b52f36}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.Scene">
       <UniqueIdentifier>{f2f34bbe-d10b-4e25-9c23-f8845bb9094a}</UniqueIdentifier>
@@ -31,11 +25,38 @@
     <Filter Include="03.GameObject">
       <UniqueIdentifier>{61c38135-a570-43c2-a91b-b855a64e9619}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.GameObject\Camera">
+      <UniqueIdentifier>{4fb59925-4447-42b6-b590-78a456678dd6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Component">
+      <UniqueIdentifier>{0908d527-e517-477c-af5d-f00e0d9d6f47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Component\Transform">
+      <UniqueIdentifier>{fa3620fa-99e1-404d-9ffe-8e1173ecf258}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Component\Collision">
+      <UniqueIdentifier>{43d67e3c-e735-465b-9bfb-4191e8b52f36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Component\Shader">
+      <UniqueIdentifier>{cd1e24f7-c2cd-43f6-8a1b-af733c18ab7f}</UniqueIdentifier>
+    </Filter>
     <Filter Include="05.Resources">
       <UniqueIdentifier>{643aec07-39bd-4517-9ba6-2c8184951f48}</UniqueIdentifier>
     </Filter>
     <Filter Include="05.Resources\Mesh">
       <UniqueIdentifier>{34b19853-35bc-4122-a440-4bb80e70a363}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05.Resources\Mesh\StaticMesh">
+      <UniqueIdentifier>{c9f471ac-c1fe-4c91-aacd-95314902cb64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05.Resources\Mesh\DynamicMesh">
+      <UniqueIdentifier>{4698792e-0fbe-48d3-8026-e32c723655eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05.Resources\Mesh\DynamicMesh\Loader">
+      <UniqueIdentifier>{7807d546-b17d-41f0-a11d-c344e844f2ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05.Resources\Mesh\DynamicMesh\AnimController">
+      <UniqueIdentifier>{d50c63f7-0441-47cc-a4d5-8f26e2a78151}</UniqueIdentifier>
     </Filter>
     <Filter Include="05.Resources\Texture">
       <UniqueIdentifier>{8d6b0701-5b17-41d5-951e-910deca0661f}</UniqueIdentifier>
@@ -55,26 +76,11 @@
     <Filter Include="05.Resources\VIBuffer\CubeColor">
       <UniqueIdentifier>{57510354-293a-4729-acd4-829a501bfa4f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="04.Component\Shader">
-      <UniqueIdentifier>{cd1e24f7-c2cd-43f6-8a1b-af733c18ab7f}</UniqueIdentifier>
+    <Filter Include="05.Resources\Shape">
+      <UniqueIdentifier>{3dbc1812-6a28-4953-b4bb-3c8934c3409d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05.Resources\Mesh\StaticMesh">
-      <UniqueIdentifier>{c9f471ac-c1fe-4c91-aacd-95314902cb64}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05.Resources\Mesh\DynamicMesh">
-      <UniqueIdentifier>{4698792e-0fbe-48d3-8026-e32c723655eb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05.Resources\Mesh\DynamicMesh\Loader">
-      <UniqueIdentifier>{7807d546-b17d-41f0-a11d-c344e844f2ee}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05.Resources\Mesh\DynamicMesh\AnimController">
-      <UniqueIdentifier>{d50c63f7-0441-47cc-a4d5-8f26e2a78151}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.GameObject\Camera">
-      <UniqueIdentifier>{4fb59925-4447-42b6-b590-78a456678dd6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="00.Managers\GameManager\ComponentManager">
-      <UniqueIdentifier>{5706b1ab-fddf-4ec4-be0e-11612c978d31}</UniqueIdentifier>
+    <Filter Include="05.Resources\Shape\Sphere">
+      <UniqueIdentifier>{7ac55e15-1342-48ee-b11f-8eb5c0691f53}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -147,6 +153,12 @@
     <ClInclude Include="..\Code\ComponentMap.h">
       <Filter>03.GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="..\Code\Collision.h">
+      <Filter>04.Component\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Sphere.h">
+      <Filter>05.Resources\Shape\Sphere</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\GameManager.cpp">
@@ -214,6 +226,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\ComponentMap.cpp">
       <Filter>03.GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Collision.cpp">
+      <Filter>04.Component\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Sphere.cpp">
+      <Filter>05.Resources\Shape\Sphere</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

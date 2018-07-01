@@ -42,6 +42,11 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual void OnInitialUpdate();
+	virtual void PostNcDestroy();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
+
+private:
+	LPDIRECT3DDEVICE9 ptr_device_;
 };
 
 #ifndef _DEBUG  // MapToolView.cpp의 디버그 버전

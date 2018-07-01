@@ -18,6 +18,7 @@ STDOVERRIDEMETHODIMP Engine::CLoader::CreateFrame(LPCSTR ptr_name, LPD3DXFRAME *
 		AllocateName(&ptr_new_frame->Name, ptr_name);
 
 	D3DXMatrixIdentity(&ptr_new_frame->combined_matrix);
+
 	ptr_new_frame->TransformationMatrix = ptr_new_frame->combined_matrix;
 
 	*pp_new_frame = ptr_new_frame;
@@ -46,8 +47,6 @@ STDOVERRIDEMETHODIMP Engine::CLoader::CreateMeshContainer(LPCSTR ptr_name
 	DWORD num_faces = ptr_mesh->GetNumFaces();
 	ptr_mesh_container->pAdjacency = new DWORD[num_faces * 3];
 	memcpy(ptr_mesh_container->pAdjacency, ptr_adjacency, sizeof(DWORD) * num_faces * 3);
-
-
 
 	// Subset Data
 	ptr_mesh_container->NumMaterials = max(num_materials, 1);

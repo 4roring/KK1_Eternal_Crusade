@@ -70,6 +70,10 @@ void Engine::CGameObject::Update(float delta_time)
 	ptr_component_map_->Update(delta_time);
 }
 
+void Engine::CGameObject::LateUpdate()
+{
+}
+
 void Engine::CGameObject::Render()
 {
 }

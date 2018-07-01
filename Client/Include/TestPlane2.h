@@ -33,7 +33,4 @@ private:
 
 private:
 	Engine::CStaticMesh* ptr_mesh_ = nullptr;
-
-private:
-	bool is_normal = false;
 };

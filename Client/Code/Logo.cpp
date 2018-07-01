@@ -35,23 +35,21 @@ HRESULT CLogo::InitScene()
 			, Engine::TEXTURETYPE::NORMAL
 			, TEXT("../bin/Resources/Texture/Logo.jpg")
 			, 1));
-	assert(hr == S_OK && "Add Texture Failed");
+	assert(!FAILED(hr) && "Add Texture Failed");
 
 	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
 		, TEXT("Component_Transform")
 		, Engine::CTransform::Create(g_kLook));
-	assert(hr == S_OK && "Add Transform Component Failed");
+	assert(!FAILED(hr) && "Add Transform Component Failed");
 
 	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
 		, TEXT("Shader_Default")
 		, Engine::CShader::Create(ptr_device_
 			, TEXT("../../Reference/Shader/DefaultShader.hlsl")));
-	assert(hr == S_OK && "Shader_Default Component Add Failed");
-
+	assert(!FAILED(hr) && "Shader_Default Component Add Failed");
 
 	hr = Add_GameLogic_Layer();
-	assert(hr == S_OK && "Add_GameLogic_Layer Call Failed");
-
+	assert(!FAILED(hr) && "Add_GameLogic_Layer Call Failed");
 
 	ptr_loading_ = CLoading::Create(CLoading::LOADINGID::STAGE);
 

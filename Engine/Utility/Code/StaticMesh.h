@@ -18,6 +18,7 @@ public:
 	
 public:
 	virtual void GetComputeBoundingBox(const Vector3 & min, const Vector3 & max) const override;
+	virtual void GetComputeBoundingSphere(const Vector3 & min, const Vector3 & max) const override;
 
 public:
 	virtual void RenderMesh(LPD3DXEFFECT ptr_effect) override;
@@ -26,10 +27,10 @@ public:
 	virtual int Release() override;
 
 private:
-	HRESULT LoadMeshFromFile(const TCHAR* path, const TCHAR* file_name);
+	HRESULT LoadMeshFromFile(const TCHAR* path, const TCHAR* file_name, int stage_index);
 
 public:
-	static CStaticMesh* Create(LPDIRECT3DDEVICE9 ptr_device, const TCHAR* path, const TCHAR* file_name);
+	static CStaticMesh* Create(LPDIRECT3DDEVICE9 ptr_device, const TCHAR* path, const TCHAR* file_name, int stage_index);
 
 private:
 	bool CheckAlpha(int subset_index, const char* find_tag);

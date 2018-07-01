@@ -22,7 +22,9 @@ Engine::CComponent * Engine::CComponentManager::FindComponent(int container_inde
 Engine::CComponent * Engine::CComponentManager::CloneComponent(int container_index, const std::wstring & component_key)
 {
 	CComponent* ptr_component = FindComponent(container_index, component_key);
-	assert(nullptr != ptr_component && "CloneComponent Failed");
+
+	if (nullptr == ptr_component)
+		return nullptr;
 
 	return ptr_component->CloneComponent();
 }

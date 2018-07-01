@@ -45,14 +45,16 @@ HRESULT CMainGame::InitGame()
 
 	hr = Engine::GameManager()->SceneChange(CSceneSelector(CSceneSelector::SCENE::LOGO));
 
-	D3DLIGHT9 light_info = {};
-	light_info.Type = D3DLIGHT_DIRECTIONAL;
-	light_info.Diffuse = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
-	light_info.Ambient = D3DXCOLOR(0.2f, 0.2f, 0.2f, 1.f);
-	light_info.Specular = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
-	light_info.Direction = Vector3(0.f, -1.f, 1.f);
+	ptr_device_->SetRenderState(D3DRS_LIGHTING, FALSE);
 
-	ptr_device_->SetLight(0, &light_info);
+	//D3DLIGHT9 light_info = {};
+	//light_info.Type = D3DLIGHT_DIRECTIONAL;
+	//light_info.Diffuse = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
+	//light_info.Ambient = D3DXCOLOR(0.2f, 0.2f, 0.2f, 1.f);
+	//light_info.Specular = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
+	//light_info.Direction = Vector3(0.f, -1.f, 1.f);
+
+	//ptr_device_->SetLight(0, &light_info);
 
 	Engine::Time()->InitTime();
 	Engine::Input()->InitInputDevice(g_hinstance, g_hwnd);

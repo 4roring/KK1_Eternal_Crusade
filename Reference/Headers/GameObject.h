@@ -40,6 +40,7 @@ protected:
 
 public:
 	virtual void Update(float delta_time);
+	virtual void LateUpdate();
 	virtual void Render();
 
 protected:

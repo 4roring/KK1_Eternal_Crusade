@@ -71,9 +71,9 @@ HRESULT CStage::Add_GameLogic_Layer()
 	assert(nullptr != ptr_obj && "Test Plane2 Create Failed");
 	AddObject(LAYER_GAMELOGIC, TEXT("TestPlane2"), ptr_obj);
 
-	for (int i = 0; i < 5; ++i)
+	for (int i = 0; i < 7; ++i)
 	{
-		for (int j = 0; j < 5; ++j)
+		for (int j = 0; j < 7; ++j)
 		{
 			ptr_obj = CSpaceMarin::Create(ptr_device_);
 			assert(nullptr != ptr_obj && "SpaceMarin Create Failed");

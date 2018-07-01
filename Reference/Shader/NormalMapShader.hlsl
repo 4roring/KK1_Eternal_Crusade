@@ -89,11 +89,18 @@ PS_OUT PS_MAIN(PS_IN In)
 	PS_OUT Out = (PS_OUT)0;
     
     float3 tangent_normal = tex2D(normal_sampler, In.texture_uv).xyz;
-    tangent_normal = normalize(tangent_normal * 2.f - 1.f);
-    float3x3 TBN = float3x3(normalize(In.T), normalize(In.B), normalize(In.N));
-    TBN = transpose(TBN);
+    float3 world_normal = (float3)0.f;
 
-    float3 world_normal = mul(TBN, tangent_normal);
+    if (tangent_normal.x != 0)
+    {
+        tangent_normal = normalize(tangent_normal * 2.f - 1.f);
+        float3x3 TBN = float3x3(normalize(In.T), normalize(In.B), normalize(In.N));
+        TBN = transpose(TBN);
+        world_normal = mul(TBN, tangent_normal);
+    }
+    else
+        world_normal = normalize(In.N);
+
     float3 light_dir = normalize(In.light_dir);
     float3 diffuse = saturate(dot(world_normal, -light_dir));
 
@@ -109,7 +116,7 @@ PS_OUT PS_MAIN(PS_IN In)
 
 technique Default_Technique
 {
-	pass Default
+	pass Normal
 	{
         VertexShader = compile vs_3_0 VS_MAIN();
 		PixelShader = compile ps_3_0 PS_MAIN();

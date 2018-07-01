@@ -14,7 +14,8 @@ public:
 	virtual ~CMesh();
 
 public:
-	virtual void GetComputeBoundingBox(const Vector3& min, const Vector3& max) const PURE;
+	virtual void GetComputeBoundingBox(const Vector3& min, const Vector3& max) const;
+	virtual void GetComputeBoundingSphere(const Vector3 & min, const Vector3 & max) const;
 
 public:
 	virtual void RenderMesh(LPD3DXEFFECT ptr_effect) PURE;

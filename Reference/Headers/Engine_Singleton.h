@@ -14,23 +14,23 @@ namespace Engine
 	public:
 		static T* GetInstance()
 		{
-			if (m_pInstance == nullptr)
-				m_pInstance = new T;
-			return m_pInstance;
+			if (ptr_instance_ == nullptr)
+				ptr_instance_ = new T;
+			return ptr_instance_;
 		}
 
 		static void DestroyInstance()
 		{
-			if (m_pInstance)
+			if (nullptr != ptr_instance_)
 			{
-				delete m_pInstance;
-				m_pInstance = nullptr;
+				delete ptr_instance_;
+				ptr_instance_ = nullptr;
 			}
 		}
 
 	private:
-		static T* m_pInstance;
+		static T* ptr_instance_;
 	};
 
-	template<typename T> T* CSingleton<T>::m_pInstance = nullptr;
+	template<typename T> T* CSingleton<T>::ptr_instance_ = nullptr;
 }

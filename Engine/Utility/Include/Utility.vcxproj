@@ -157,6 +157,7 @@
     <ClInclude Include="..\..\Export\Export_Utility.h" />
     <ClInclude Include="..\Code\AnimController.h" />
     <ClInclude Include="..\Code\Camera.h" />
+    <ClInclude Include="..\Code\Collision.h" />
     <ClInclude Include="..\Code\Component.h" />
     <ClInclude Include="..\Code\ComponentManager.h" />
     <ClInclude Include="..\Code\ComponentMap.h" />
@@ -173,6 +174,7 @@
     <ClInclude Include="..\Code\Resources.h" />
     <ClInclude Include="..\Code\Scene.h" />
     <ClInclude Include="..\Code\Shader.h" />
+    <ClInclude Include="..\Code\Sphere.h" />
     <ClInclude Include="..\Code\StaticMesh.h" />
     <ClInclude Include="..\Code\Texture.h" />
     <ClInclude Include="..\Code\Transform.h" />
@@ -181,6 +183,7 @@
   <ItemGroup>
     <ClCompile Include="..\Code\AnimController.cpp" />
     <ClCompile Include="..\Code\Camera.cpp" />
+    <ClCompile Include="..\Code\Collision.cpp" />
     <ClCompile Include="..\Code\Component.cpp" />
     <ClCompile Include="..\Code\ComponentManager.cpp" />
     <ClCompile Include="..\Code\ComponentMap.cpp" />
@@ -197,6 +200,7 @@
     <ClCompile Include="..\Code\Resources.cpp" />
     <ClCompile Include="..\Code\Scene.cpp" />
     <ClCompile Include="..\Code\Shader.cpp" />
+    <ClCompile Include="..\Code\Sphere.cpp" />
     <ClCompile Include="..\Code\StaticMesh.cpp" />
     <ClCompile Include="..\Code\Texture.cpp" />
     <ClCompile Include="..\Code\Transform.cpp" />
