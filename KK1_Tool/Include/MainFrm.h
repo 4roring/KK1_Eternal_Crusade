@@ -34,6 +34,7 @@ public:
 
 public:
 	class CMapToolView* ptr_main_view_ = nullptr;
+	class EditorTab* ptr_edit_tab_ = nullptr;
 
 protected:  // 컨트롤 모음이 포함된 멤버입니다.
 	CToolBar          m_wndToolBar;
@@ -45,6 +46,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 	virtual BOOL OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext);
+	virtual void PostNcDestroy();
 };
 
 

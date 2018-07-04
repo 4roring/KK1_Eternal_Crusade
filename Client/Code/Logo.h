@@ -4,7 +4,7 @@
 
 namespace Engine
 {
-	class CFont;
+	class KK1_Font;
 }
 
 class CLoading;
@@ -37,5 +37,5 @@ private:
 
 private:
 	CLoading* ptr_loading_ = nullptr;
-	Engine::CFont* ptr_loading_text_ = nullptr;
+	Engine::KK1_Font* ptr_loading_text_ = nullptr;
 };

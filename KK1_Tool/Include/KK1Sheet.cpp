@@ -13,8 +13,8 @@ IMPLEMENT_DYNAMIC(KK1Sheet, CPropertySheet)
 KK1Sheet::KK1Sheet()
 {
 	AddPage(&stage_editor_);
-	AddPage(&Terrain_editor_);
 	AddPage(&navmesh_editor_);
+	AddPage(&Terrain_editor_);
 }
 
 KK1Sheet::KK1Sheet(UINT nIDCaption, CWnd* pParentWnd, UINT iSelectPage)
@@ -39,3 +39,14 @@ END_MESSAGE_MAP()
 
 
 // KK1Sheet 메시지 처리기입니다.
+
+
+void KK1Sheet::PostNcDestroy()
+{
+	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
+	RemovePage(&stage_editor_);
+	RemovePage(&Terrain_editor_);
+	RemovePage(&navmesh_editor_);
+
+	CPropertySheet::PostNcDestroy();
+}

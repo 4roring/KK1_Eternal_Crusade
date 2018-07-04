@@ -85,14 +85,16 @@ void CMainFrame::Dump(CDumpContext& dc) const
 BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 {
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
+	constexpr int edit_tap_size_x = 300;
 
 	Engine::Input()->InitInputDevice(AfxGetInstanceHandle(), m_hWnd);
 
 	main_splitter_.CreateStatic(this, 1, 2);
 	main_splitter_.CreateView(0, 0, RUNTIME_CLASS(CMapToolView), CSize(g_kWinCx, g_kWinCy), pContext);
-	main_splitter_.CreateView(0, 1, RUNTIME_CLASS(EditorTab), CSize(300, g_kWinCy), pContext);
+	main_splitter_.CreateView(0, 1, RUNTIME_CLASS(EditorTab), CSize(edit_tap_size_x, g_kWinCy), pContext);
 
 	ptr_main_view_ = static_cast<CMapToolView*>(main_splitter_.GetPane(0, 0));
+	ptr_edit_tab_ = static_cast<EditorTab*>(main_splitter_.GetPane(0, 1));
 
 	RECT rc_frame_window;
 	GetWindowRect(&rc_frame_window);
@@ -107,7 +109,15 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	int col_frame = rc_frame_window.bottom - rc_main_view.bottom;
 
 	SetWindowPos(nullptr, 100, 100
-		, int(g_kWinCx + 300 + row_frame), int(g_kWinCy + col_frame), SWP_NOZORDER);
+		, int(g_kWinCx + edit_tap_size_x + row_frame), int(g_kWinCy + col_frame), SWP_NOZORDER);
 
 	return TRUE;
+}
+
+void CMainFrame::PostNcDestroy()
+{
+	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
+	Tool()->DestroyInstance();
+
+	CFrameWnd::PostNcDestroy();
 }

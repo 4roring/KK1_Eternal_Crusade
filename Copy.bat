@@ -11,5 +11,5 @@ xcopy /y	.\Engine\Utility\bin\Utility.lib		.\Reference\Library\
 xcopy /y	.\Engine\Utility\bin\Utility.dll		.\Client\bin\
 
 
-xcopy /y	.\Engine\System\bin\System.dll			.\MapTool\bin\
-xcopy /y	.\Engine\Utility\bin\Utility.dll		.\MapTool\bin\
+xcopy /y	.\Engine\System\bin\System.dll			.\KK1_Tool\bin\
+xcopy /y	.\Engine\Utility\bin\Utility.dll		.\KK1_Tool\bin\

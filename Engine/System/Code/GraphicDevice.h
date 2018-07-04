@@ -24,7 +24,7 @@ public:
 
 public:
 	HRESULT AddFont(const std::wstring font_key, int height, UINT width, UINT weight);
-	class CFont* GetFont(const std::wstring font_key);
+	class KK1_Font* GetFont(const std::wstring font_key);
 
 private:
 	LPDIRECT3D9 ptr_sdk_ = nullptr;

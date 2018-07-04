@@ -2,7 +2,7 @@
 
 namespace Engine
 {
-	class CFont;
+	class KK1_Font;
 }
 
 class CMainGame
@@ -33,7 +33,7 @@ private:
 	LPDIRECT3DDEVICE9 ptr_device_ = nullptr;
 
 private:
-	Engine::CFont* ptr_fps_font_ = nullptr;
+	Engine::KK1_Font* ptr_fps_font_ = nullptr;
 	int frame_count_ = 0;
 	float fps_time_ = 0.f;
 	TCHAR fps_[64] = TEXT("");

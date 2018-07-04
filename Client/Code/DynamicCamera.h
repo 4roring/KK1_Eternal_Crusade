@@ -28,5 +28,4 @@ private:
 private:
 	float speed_ = 0.f;
 	bool mouse_fix_ = true;
-	bool click_ = false;
 };

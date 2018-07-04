@@ -4,20 +4,20 @@
 
 BEGIN(Engine)
 
-class ENGINE_DLL CFont
+class ENGINE_DLL KK1_Font
 {
 private:
-	explicit CFont(LPDIRECT3DDEVICE9 ptr_device);
+	explicit KK1_Font(LPDIRECT3DDEVICE9 ptr_device);
 
 public:
-	~CFont();
+	~KK1_Font();
 
 public:
 	HRESULT InitFont(int height, UINT width, UINT weight, const TCHAR* face_name);
 	void Render(const TCHAR* text, const D3DXCOLOR& color, const Vector3& position);
 
 public:
-	static CFont* Create(LPDIRECT3DDEVICE9 ptr_device, int height, UINT width, UINT weight, const TCHAR* face_name);
+	static KK1_Font* Create(LPDIRECT3DDEVICE9 ptr_device, int height, UINT width, UINT weight, const TCHAR* face_name);
 
 private:
 	void Release();

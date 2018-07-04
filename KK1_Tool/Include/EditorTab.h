@@ -3,6 +3,8 @@
 
 
 // EditorTab Æû ºäÀÔ´Ï´Ù.
+class StageEditor;
+class NavMeshEditor;
 
 class EditorTab : public CFormView
 {

@@ -66,10 +66,7 @@ void CMapToolView::OnDraw(CDC* /*pDC*/)
 
 	// TODO: 여기에 원시 데이터에 대한 그리기 코드를 추가합니다.
 	Tool()->BegineScene();
-
-	// 그리시오.
-	Engine::GameManager()->Render();
-
+	Tool()->Render();
 	Tool()->EndScene(m_hWnd);
 }
 
@@ -132,22 +129,20 @@ void CMapToolView::OnInitialUpdate()
 
 	Engine::GameManager()->InitManager(ptr_device_);
 	Engine::GameManager()->InitComponentManager(1);
-	hr = Engine::GameManager()->Add_Prototype(0, TEXT("Transform"), Engine::CTransform::Create(Vector3(0.f, 0.f, 1.f)));
+	hr = Engine::GameManager()->Add_Prototype(0, TEXT("Component_Transform"), Engine::CTransform::Create(Vector3(0.f, 0.f, 1.f)));
 	assert(hr == S_OK && "Transform Component Add Failed");
 
 	hr = Engine::GameManager()->Add_Prototype(0, TEXT("Shader_NormalMap")
 			, Engine::CShader::Create(ptr_device_, TEXT("../../Reference/Shader/NormalMapShader.hlsl")));
 	assert(hr == S_OK && "Shader_NormalMap Component Add Failed");
+
+	Engine::GraphicDevice()->AddFont(TEXT("바탕"), 28, 20, FW_NORMAL);
 }
 
 
 void CMapToolView::PostNcDestroy()
 {
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
-	
-	Engine::GameManager()->DestroyInstance();
-	Engine::Time()->DestroyInstance();
-	Tool()->DestroyInstance();
 
 	CView::PostNcDestroy();
 }
@@ -158,7 +153,8 @@ void CMapToolView::OnTimer(UINT_PTR nIDEvent)
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 	Engine::Time()->SetTime();
 
-	Invalidate(); // Render
+	Tool()->Update(Engine::Time()->GetDeltaTime());
+	Invalidate(0); // Render
 
 	CView::OnTimer(nIDEvent);
 }

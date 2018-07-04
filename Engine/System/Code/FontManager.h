@@ -5,7 +5,7 @@
 
 BEGIN(Engine)
 
-class CFont;
+class KK1_Font;
 
 class CFontManager
 {
@@ -17,7 +17,7 @@ public:
 
 public:
 	HRESULT AddFont(LPDIRECT3DDEVICE9 ptr_device, const std::wstring font_key, int height, UINT width, UINT weight);
-	CFont* GetFont(const std::wstring font_key);
+	KK1_Font* GetFont(const std::wstring font_key);
 
 public:
 	static CFontManager* Create();
@@ -26,7 +26,7 @@ private:
 	void Release();
 
 private:
-	std::unordered_map<std::wstring, CFont*> map_font_;
+	std::unordered_map<std::wstring, KK1_Font*> map_font_;
 };
 
 END

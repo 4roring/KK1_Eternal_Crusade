@@ -74,7 +74,7 @@ HRESULT CLoading::Stage_Loading()
 	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
 		, TEXT("Floor_12x12_Mesh")
 		, Engine::CStaticMesh::Create(ptr_device_
-			, TEXT("../bin/Resources/Mesh/MapData/Floor/")
+			, TEXT("..\\bin\\Resources\\Mesh\\MapData\\Floor\\")
 			, TEXT("Floor_12x12.X"), MAINTAIN_STAGE));
 	assert(hr == S_OK && "Floor_12x12 Mesh Add Failed");
 

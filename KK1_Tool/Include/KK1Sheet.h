@@ -25,6 +25,7 @@ public:
 	StageEditor stage_editor_;
 	TerrainEditor Terrain_editor_;
 	NavMeshEditor navmesh_editor_;
+	virtual void PostNcDestroy();
 };
 
 

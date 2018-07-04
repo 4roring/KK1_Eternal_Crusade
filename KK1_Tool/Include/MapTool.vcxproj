@@ -23,6 +23,7 @@
     <RootNamespace>MapTool</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
     <Keyword>MFCProj</Keyword>
+    <ProjectName>KK1_Tool</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -186,6 +187,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Code\DynamicCamera.h" />
     <ClInclude Include="..\Code\MapObject.h" />
     <ClInclude Include="..\Code\ResourceLoader.h" />
     <ClInclude Include="..\Code\ToolManager.h" />
@@ -203,6 +205,7 @@
     <ClInclude Include="TerrainEditor.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Code\DynamicCamera.cpp" />
     <ClCompile Include="..\Code\MapObject.cpp" />
     <ClCompile Include="..\Code\ResourceLoader.cpp" />
     <ClCompile Include="..\Code\ToolManager.cpp" />

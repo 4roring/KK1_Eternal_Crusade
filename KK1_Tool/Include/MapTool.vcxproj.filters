@@ -37,6 +37,9 @@
     <Filter Include="02.EditorTab\00.StageEditor">
       <UniqueIdentifier>{abbe3d8f-3933-4571-88ea-3f163c146031}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04.DynamicCamera">
+      <UniqueIdentifier>{d6f12c07-1948-4b10-a79b-a4475369222e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainFrm.h">
@@ -82,6 +85,9 @@
     <ClInclude Include="..\Code\MapObject.h">
       <Filter>03.MapData\MapObject</Filter>
     </ClInclude>
+    <ClInclude Include="..\Code\DynamicCamera.h">
+      <Filter>04.DynamicCamera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainFrm.cpp">
@@ -122,6 +128,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\MapObject.cpp">
       <Filter>03.MapData\MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\DynamicCamera.cpp">
+      <Filter>04.DynamicCamera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -44,6 +44,8 @@ void Engine::CStaticMesh::RenderMesh(LPD3DXEFFECT ptr_effect)
 			ptr_effect->SetTexture("g_base_texture", pp_color_texture_[i]);
 		if (nullptr != pp_normal_texture_[i])
 			ptr_effect->SetTexture("g_normal_texture", pp_normal_texture_[i]);
+		else
+			ptr_effect->SetTexture("g_normal_texture", NULL);
 
 		ptr_effect->SetVector("g_material_diffuse", (Vector4*)&ptr_material_[i].Diffuse);
 		ptr_effect->SetVector("g_material_ambient", &Vector4(1.f, 1.f, 1.f, 1.f));
@@ -79,6 +81,16 @@ int Engine::CStaticMesh::Release()
 	return reference_count_;
 }
 
+bool Engine::CStaticMesh::RaycastToMesh(const Vector3& ray_pos, const Vector3& ray_dir, float* hit_dir)
+{
+	HRESULT hr = E_FAIL;
+	BOOL is_hit = false;
+	hr = D3DXIntersect(ptr_mesh_, &ray_pos, &ray_dir, &is_hit, nullptr, nullptr, nullptr, hit_dir, nullptr, nullptr);
+	
+	if (is_hit == FALSE) return false;
+	return true;
+}
+
 HRESULT Engine::CStaticMesh::LoadMeshFromFile(const TCHAR * path, const TCHAR * file_name, int stage_index)
 {
 	HRESULT hr = E_FAIL;
@@ -97,11 +109,11 @@ HRESULT Engine::CStaticMesh::LoadMeshFromFile(const TCHAR * path, const TCHAR * 
 	pp_normal_texture_ = new LPDIRECT3DTEXTURE9[subset_count_];
 	pp_specular_texture_ = new LPDIRECT3DTEXTURE9[subset_count_];
 
-	auto iter = full_path.rfind(TEXT("/"));
+	auto iter = full_path.rfind(TEXT("\\"));
 	full_path = full_path.substr(0, iter);
-	iter = full_path.rfind(TEXT("/"));
+	iter = full_path.rfind(TEXT("\\"));
 	full_path = full_path.substr(0, iter);
-	full_path += TEXT("/Texture/");
+	full_path += TEXT("\\Texture\\");
 
 	for (DWORD i = 0; i < subset_count_; ++i)
 	{
@@ -131,7 +143,7 @@ HRESULT Engine::CStaticMesh::LoadMeshFromFile(const TCHAR * path, const TCHAR * 
 		pp_specular_texture_[i] = (LPDIRECT3DTEXTURE9)ptr_texture->GetTexture(2);
 		if (nullptr != pp_specular_texture_[i]) pp_specular_texture_[i]->AddRef();
 
-		Safe_Release(ptr_texture);
+		if (nullptr != ptr_texture) Safe_Release(ptr_texture);
 	}
 	return S_OK;
 }
