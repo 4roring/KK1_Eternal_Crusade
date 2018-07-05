@@ -8,6 +8,7 @@
 
 CToolManager::CToolManager()
 {
+
 }
 
 CToolManager::~CToolManager()
@@ -40,6 +41,8 @@ void CToolManager::Init_ToolManager()
 
 void CToolManager::Update(float delta_time)
 {
+	if (true == file_mode_) return;
+
 	Engine::Input()->SetInputState();
 	ptr_dynamic_camera_->Update(delta_time);
 
@@ -115,6 +118,11 @@ void CToolManager::DisableCursor()
 	}
 }
 
+void CToolManager::SetFileMode(bool file_mode)
+{
+	file_mode_ = file_mode;
+}
+
 void CToolManager::DrawBoard()
 {
 	constexpr int board_max = 11;
@@ -162,3 +170,5 @@ void CToolManager::DrawBoard()
 	}
 	ptr_line_->End();
 }
+
+

@@ -27,7 +27,7 @@ public:
 	virtual int Release() override;
 	
 public:
-	bool RaycastToMesh(const Vector3& ray_pos, const Vector3& ray_dir, float* hit_dir);
+	bool RaycastToMesh(const Vector3 & ray_pos, const Vector3 & ray_dir, float* hit_dir);
 
 private:
 	HRESULT LoadMeshFromFile(const TCHAR* path, const TCHAR* file_name, int stage_index);

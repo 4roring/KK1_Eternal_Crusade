@@ -22,6 +22,16 @@ struct Vector3 : public D3DXVECTOR3
 	{
 		x = _x; y = _y; z = _z;
 	}
+	Vector3(const Vector3& rhs)
+	{
+		x = rhs.x; y = rhs.y; z = rhs.z;
+	}
+	Vector3& operator=(const Vector3& rhs)
+	{
+		x = rhs.x; y = rhs.y; z = rhs.z;
+		return *this;
+	}
+
 
 	// Vector3 + float
 	Vector3 operator+(float value)

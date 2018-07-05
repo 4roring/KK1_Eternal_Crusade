@@ -36,6 +36,9 @@ public:
 	void DisableCursor();
 
 public:
+	void SetFileMode(bool file_mode);
+
+private:
 	void DrawBoard();
 
 private:
@@ -54,6 +57,9 @@ private:
 
 private:
 	ID3DXLine* ptr_line_ = nullptr;
+
+private:
+	bool file_mode_ = false;
 };
 
 static CToolManager* Tool() { return CToolManager::GetInstance(); }

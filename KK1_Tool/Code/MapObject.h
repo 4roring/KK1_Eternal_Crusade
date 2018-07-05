@@ -4,7 +4,6 @@
 
 BEGIN(Engine)
 class CStaticMesh;
-class CTexture;
 END
 
 class MapObject
@@ -17,8 +16,9 @@ public:
 	virtual ~MapObject();
 	
 public:
+	const std::wstring& mesh_key();
 	const std::wstring& object_key();
-	
+
 public:
 	void set_object_key(const std::wstring& object_key);
 

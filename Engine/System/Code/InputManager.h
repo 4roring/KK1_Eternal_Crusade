@@ -33,6 +33,7 @@ public:
 	BYTE GetDIKeyState(BYTE key_flag);
 	BYTE GetDIMouseState(MOUSECLICK key_flag);
 	long GetDIMouseMove(MOUSEMOVE key_flag);
+	void GetMousePos(HWND hwnd, POINT* mouse_pos);
 
 private:
 	HRESULT InitKeyBoard(HWND hwnd);

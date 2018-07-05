@@ -70,6 +70,12 @@ long Engine::CInputManager::GetDIMouseMove(MOUSEMOVE key_flag)
 	return *(((long*)&mouse_state_) + key_flag);
 }
 
+void Engine::CInputManager::GetMousePos(HWND hwnd, POINT * mouse_pos)
+{
+	GetCursorPos(mouse_pos);
+	ScreenToClient(hwnd, mouse_pos);
+}
+
 HRESULT Engine::CInputManager::InitInputDevice(HINSTANCE hinstance, HWND hwnd)
 {
 	HRESULT hr = E_FAIL;
@@ -116,6 +122,21 @@ void Engine::CInputManager::SetInputState()
 
 	if (GetDIKeyState(DIK_Q) & 0x80)
 		input_state_ |= KEY::Q;
+
+	if (GetDIKeyState(DIK_E) & 0x80)
+		input_state_ |= KEY::E;
+
+	if (GetDIKeyState(DIK_R) & 0x80)
+		input_state_ |= KEY::R;
+
+	if (GetDIKeyState(DIK_X) & 0x80)
+		input_state_ |= KEY::X;
+
+	if (GetDIKeyState(DIK_Y) & 0x80)
+		input_state_ |= KEY::Y;
+
+	if (GetDIKeyState(DIK_Z) & 0x80)
+		input_state_ |= KEY::Z;
 }
 
 HRESULT Engine::CInputManager::InitKeyBoard(HWND hwnd)

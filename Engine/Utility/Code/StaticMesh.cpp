@@ -42,6 +42,9 @@ void Engine::CStaticMesh::RenderMesh(LPD3DXEFFECT ptr_effect)
 	
 		if(nullptr != pp_color_texture_[i])
 			ptr_effect->SetTexture("g_base_texture", pp_color_texture_[i]);
+		else
+			ptr_effect->SetTexture("g_base_texture", NULL);
+
 		if (nullptr != pp_normal_texture_[i])
 			ptr_effect->SetTexture("g_normal_texture", pp_normal_texture_[i]);
 		else
@@ -81,13 +84,13 @@ int Engine::CStaticMesh::Release()
 	return reference_count_;
 }
 
-bool Engine::CStaticMesh::RaycastToMesh(const Vector3& ray_pos, const Vector3& ray_dir, float* hit_dir)
+bool Engine::CStaticMesh::RaycastToMesh(const Vector3 & ray_pos, const Vector3 & ray_dir, float* hit_dir)
 {
 	HRESULT hr = E_FAIL;
 	BOOL is_hit = false;
 	hr = D3DXIntersect(ptr_mesh_, &ray_pos, &ray_dir, &is_hit, nullptr, nullptr, nullptr, hit_dir, nullptr, nullptr);
 	
-	if (is_hit == FALSE) return false;
+	if (FALSE == is_hit) return false;
 	return true;
 }
 

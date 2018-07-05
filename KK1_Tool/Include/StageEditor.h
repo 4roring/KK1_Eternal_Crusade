@@ -14,6 +14,9 @@ class StageEditor : public CPropertyPage
 {
 	DECLARE_DYNAMIC(StageEditor)
 
+private:
+	enum class ControlMode { Position, Rotation, Scale, End };
+
 public:
 	StageEditor();
 	virtual ~StageEditor();
@@ -38,6 +41,7 @@ public:
 public:
 	afx_msg void OnClickAddObject();
 	afx_msg void OnClickDeleteObject();
+	afx_msg void OnSelectObject();
 
 public:
 	void AddMapObject(const std::wstring& obj_key, MapObject* ptr_map_obj);
@@ -47,8 +51,9 @@ public:
 	void Render();
 
 private:
+	void CheckInput();
 	void PickObject();
-	void RayToViewSpace(Vector3& ray_pos, Vector3& ray_dir);
+	void RayToViewSpace(Vector3& ray_pos, Vector3& ray_dir, const POINT& mouse_pos);
 	void RayToWorldSpace(Vector3& ray_pos, Vector3& ray_dir);
 	void ObjectController();
 
@@ -68,6 +73,42 @@ private:
 	Engine::KK1_Font* ptr_font_ = nullptr;
 	TCHAR mode_text[128] = {};
 
-private: // 컨트롤 변수
-	float ctrl_offset_ = 0.f; 
+private:
+	ControlMode ctrl_mode_ = ControlMode::End;
+	float mouse_delta_pos_y_ = 0.f;
+
+private: 
+	// Control Offset 변수와 함수
+	float pos_offset_; 
+	afx_msg void ChangePosOffset();
+	float rot_offset_;
+	afx_msg void ChangeRotOffset();
+	float scale_offset_;
+	afx_msg void ChangeScaleOffset();
+	// Transform 변수와 함수
+	float pos_x_;
+	float pos_y_;
+	float pos_z_;
+	float rot_x_;
+	float rot_y_;
+	float rot_z_;
+	float scale_x_;
+	float scale_y_;
+	float scale_z_;
+private:
+	afx_msg void ChangePosX();
+	afx_msg void ChangePosY();
+	afx_msg void ChangePosZ();
+	afx_msg void ChangeRotX();
+	afx_msg void ChangeRotY();
+	afx_msg void ChangeRotZ();
+	afx_msg void ChangeScaleX();
+	afx_msg void ChangeScaleY();
+	afx_msg void ChangeScaleZ();
+
+private:
+	void ClearMapObject();
+	void GetPathFromDialog(BOOL open_file_dialog, CString& path);
+	afx_msg void OnClickSave();
+	afx_msg void OnClickLoad();
 };

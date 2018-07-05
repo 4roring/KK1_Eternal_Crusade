@@ -65,6 +65,9 @@
     <Filter Include="02.GameObject\Camera\PlayerCamera">
       <UniqueIdentifier>{5066d90b-a1c9-4d73-8e29-e09c20b5e699}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\GameLogic\LevelObject">
+      <UniqueIdentifier>{0cc1f3b0-a567-476c-96c4-046b5854fa1b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -116,6 +119,9 @@
       <Filter>02.GameObject\GameLogic\TestObject\TestPlane2</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="..\Code\LevelObject.h">
+      <Filter>02.GameObject\GameLogic\LevelObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -149,6 +155,9 @@
       <Filter>02.GameObject\GameLogic\TestObject\TestPlane2</Filter>
     </ClCompile>
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="..\Code\LevelObject.cpp">
+      <Filter>02.GameObject\GameLogic\LevelObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">

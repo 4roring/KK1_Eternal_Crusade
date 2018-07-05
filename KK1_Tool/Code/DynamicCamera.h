@@ -11,9 +11,6 @@ private:
 public:
 	virtual ~DynamicCamera();
 
-public:
-	float mouse_delta_move() const { return mouse_delta_move_; }
-
 private:
 	HRESULT InitCamera(const Vector3& eye, const Vector3 & at);
 
@@ -31,5 +28,4 @@ private:
 private:
 	float speed_ = 0.f;
 	bool click_ = false;
-	float mouse_delta_move_ = 0.f;
 };

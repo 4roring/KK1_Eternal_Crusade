@@ -15,6 +15,11 @@ MapObject::~MapObject()
 	Release();
 }
 
+const std::wstring & MapObject::mesh_key()
+{
+	return mesh_key_;
+}
+
 const std::wstring & MapObject::object_key()
 {
 	return object_key_;

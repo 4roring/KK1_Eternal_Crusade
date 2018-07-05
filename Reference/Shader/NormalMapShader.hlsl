@@ -109,7 +109,7 @@ PS_OUT PS_MAIN(PS_IN In)
 
     float3 ambient = g_mtrl_ambient * albedo;
 
-    Out.color = vector(ambient + diffuse, 1.f);
+    Out.color = vector(diffuse + ambient, 1.f);
 
 	return Out;
 }

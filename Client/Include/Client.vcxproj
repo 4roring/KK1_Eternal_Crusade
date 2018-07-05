@@ -155,6 +155,7 @@
     <ClInclude Include="..\Code\DynamicCamera.h" />
     <ClInclude Include="..\Code\Enum.h" />
     <ClInclude Include="..\Code\Include.h" />
+    <ClInclude Include="..\Code\LevelObject.h" />
     <ClInclude Include="..\Code\Loading.h" />
     <ClInclude Include="..\Code\Logo.h" />
     <ClInclude Include="..\Code\MainGame.h" />
@@ -172,6 +173,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\DynamicCamera.cpp" />
+    <ClCompile Include="..\Code\LevelObject.cpp" />
     <ClCompile Include="..\Code\Loading.cpp" />
     <ClCompile Include="..\Code\Logo.cpp" />
     <ClCompile Include="..\Code\MainGame.cpp" />

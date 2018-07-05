@@ -18,7 +18,7 @@ HRESULT DynamicCamera::InitCamera(const Vector3 & eye, const Vector3 & at)
 	speed_ = 15.f;
 
 	SetView(eye, at);
-	SetProjection(D3DXToRadian(45.f), float(g_kWinCx) / g_kWinCy, 1.f, 1000.f);
+	SetProjection(D3DXToRadian(45.f), float(g_kWinCx) / g_kWinCy, 0.2f, 1000.f);
 
 	return S_OK;
 }
@@ -98,7 +98,7 @@ void DynamicCamera::InputCheck(float delta_time)
 
 void DynamicCamera::MouseMoveCheck()
 {
-	mouse_delta_move_ = 0.f;
+	float mouse_delta_move_ = 0.f;
 	if (mouse_delta_move_ = (float)Engine::Input()->GetDIMouseMove(Engine::CInputManager::DIM_X))
 	{
 		Matrix mat_axis;
