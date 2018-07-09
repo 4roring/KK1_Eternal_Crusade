@@ -51,7 +51,8 @@ HRESULT CLogo::InitScene()
 	hr = Add_GameLogic_Layer();
 	assert(!FAILED(hr) && "Add_GameLogic_Layer Call Failed");
 
-	ptr_loading_ = CLoading::Create(CLoading::LOADINGID::STAGE);
+	ptr_loading_ = CLoading::Create(CLoading::LOADINGID::STAGE, &ptr_next_scene_);
+	assert(nullptr != ptr_loading_ && "Failed to Create Loading Instance");
 
 	ptr_loading_text_ = Engine::GraphicDevice()->GetFont(TEXT("¹ÙÅÁ"));
 	assert(nullptr != ptr_loading_text_ && "Get FPS Font Failed");
@@ -64,7 +65,10 @@ void CLogo::Update(float delta_time)
 	Engine::CScene::Update(delta_time);
 
 	if (true == ptr_loading_->complete())
-		Engine::GameManager()->SceneChange(CSceneSelector(CSceneSelector::SCENE::STAGE));
+	{
+		if (nullptr != ptr_next_scene_)
+			Engine::GameManager()->SetNextScene(ptr_next_scene_);
+	}
 }
 
 void CLogo::Render()
@@ -77,6 +81,7 @@ CLogo * CLogo::Create(LPDIRECT3DDEVICE9 ptr_device)
 {
 	CLogo* ptr_scene = new CLogo(ptr_device);
 	assert(nullptr != ptr_scene && "Logo Scene Create Failed");
+	ptr_scene->InitScene();
 
 	return ptr_scene;
 }

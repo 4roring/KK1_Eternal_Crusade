@@ -34,8 +34,6 @@ protected:
 public:
 	virtual BOOL OnInitDialog();
 	virtual void PostNcDestroy();
-
-public:
 	virtual BOOL OnSetActive();
 
 public:
@@ -50,11 +48,15 @@ public:
 	void Update(float delta_time);
 	void Render();
 
+public:
+	void RayToViewSpace(Vector3& ray_pos, Vector3& ray_dir, const POINT& mouse_pos);
+	void RayToWorldSpace(Vector3& ray_pos, Vector3& ray_dir);
+	// Return the Picking Position
+	bool PickObject(Vector3& ray_pos, Vector3& ray_dir, float* dist);
+
 private:
 	void CheckInput();
 	void PickObject();
-	void RayToViewSpace(Vector3& ray_pos, Vector3& ray_dir, const POINT& mouse_pos);
-	void RayToWorldSpace(Vector3& ray_pos, Vector3& ray_dir);
 	void ObjectController();
 
 private:
@@ -68,10 +70,6 @@ private:
 	CListBox object_list_;
 	std::unordered_map<std::wstring, MapObject*> map_object_;
 	MapObject* ptr_select_object_ = nullptr;
-
-private:
-	Engine::KK1_Font* ptr_font_ = nullptr;
-	TCHAR mode_text[128] = {};
 
 private:
 	ControlMode ctrl_mode_ = ControlMode::End;
@@ -106,9 +104,11 @@ private:
 	afx_msg void ChangeScaleY();
 	afx_msg void ChangeScaleZ();
 
+public:
+	void GetPathFromDialog(BOOL open_file_dialog, CString& path);
+
 private:
 	void ClearMapObject();
-	void GetPathFromDialog(BOOL open_file_dialog, CString& path);
 	afx_msg void OnClickSave();
 	afx_msg void OnClickLoad();
 };

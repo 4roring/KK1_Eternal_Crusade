@@ -87,7 +87,7 @@ struct PS_OUT
 PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
-    
+
     float3 tangent_normal = tex2D(normal_sampler, In.texture_uv).xyz;
     float3 world_normal = (float3)0.f;
 
@@ -120,5 +120,5 @@ technique Default_Technique
 	{
         VertexShader = compile vs_3_0 VS_MAIN();
 		PixelShader = compile ps_3_0 PS_MAIN();
-	}
+    }
 }

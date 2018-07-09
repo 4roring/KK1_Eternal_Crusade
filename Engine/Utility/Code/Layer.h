@@ -23,6 +23,8 @@ public:
 
 public:
 	void Update(float delta_time);
+	void LateUpdate();
+	void LastFrame();
 
 public:
 	static CLayer* Create();

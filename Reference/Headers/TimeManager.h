@@ -16,8 +16,12 @@ private:
 	CTimeManager& operator=(CTimeManager&) = delete;
 
 public:
+	void SetMaxFrame(int max_frame) { max_frame_ = max_frame; }
+
+public:
 	float GetDeltaTime() { return delta_time_; }
 
+public:
 	void InitTime();
 	void SetTime();
 
@@ -31,7 +35,7 @@ private:
 	float time_ = 0.0f;
 	float fps_ = 0.0f;
 	float delta_time_ = 0.f;
-	int fix_frame_ = 0;
+	int max_frame_ = 0;
 };
 
 END

@@ -17,10 +17,10 @@ void Engine::CTimeManager::InitTime()
 
 	QueryPerformanceFrequency(&cpu_tick_);
 
-	fix_frame_ = 60;
+	max_frame_ = 60;
 
 	time_ = float(frame_time_.QuadPart - fix_time_.QuadPart);
-	fps_ = float(cpu_tick_.QuadPart / fix_frame_);
+	fps_ = float(cpu_tick_.QuadPart / max_frame_);
 }
 
 void Engine::CTimeManager::SetTime()

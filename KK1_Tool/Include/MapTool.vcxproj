@@ -189,6 +189,8 @@
   <ItemGroup>
     <ClInclude Include="..\Code\DynamicCamera.h" />
     <ClInclude Include="..\Code\MapObject.h" />
+    <ClInclude Include="..\Code\NavPoint.h" />
+    <ClInclude Include="..\Code\NavTri.h" />
     <ClInclude Include="..\Code\ResourceLoader.h" />
     <ClInclude Include="..\Code\ToolManager.h" />
     <ClInclude Include="EditorTab.h" />
@@ -207,6 +209,8 @@
   <ItemGroup>
     <ClCompile Include="..\Code\DynamicCamera.cpp" />
     <ClCompile Include="..\Code\MapObject.cpp" />
+    <ClCompile Include="..\Code\NavPoint.cpp" />
+    <ClCompile Include="..\Code\NavTri.cpp" />
     <ClCompile Include="..\Code\ResourceLoader.cpp" />
     <ClCompile Include="..\Code\ToolManager.cpp" />
     <ClCompile Include="EditorTab.cpp" />

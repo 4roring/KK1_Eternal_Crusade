@@ -38,5 +38,5 @@ private:
 	Engine::CAnimController* ptr_anim_ctrl_ = nullptr;
 
 private:
-	UINT anim_track_ = 0;
+	uint32 anim_track_ = 0;
 };

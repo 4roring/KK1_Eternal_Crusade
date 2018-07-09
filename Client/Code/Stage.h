@@ -5,9 +5,6 @@
 class CStage
 	: public Engine::CScene
 {
-public:
-	enum LAYERID { LAYER_ENVIRONMEMT, LAYER_GAMELOGIC, LAYER_UI };
-
 private:
 	explicit CStage(LPDIRECT3DDEVICE9 ptr_device);
 

@@ -23,7 +23,7 @@ public:
 	HRESULT InitGraphicDevice(WINMODE mode, HWND hwnd, WORD size_x, WORD size_y);
 
 public:
-	HRESULT AddFont(const std::wstring font_key, int height, UINT width, UINT weight);
+	HRESULT AddFont(const std::wstring font_key, int height, uint32 width, uint32 weight);
 	class KK1_Font* GetFont(const std::wstring font_key);
 
 private:

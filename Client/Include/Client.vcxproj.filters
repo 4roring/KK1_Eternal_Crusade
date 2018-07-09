@@ -40,15 +40,6 @@
     <Filter Include="02.GameObject\GameLogic\SpaceMarin">
       <UniqueIdentifier>{52e5ba68-2c8b-4ec4-9fef-1853df618add}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\GameLogic\TestObject">
-      <UniqueIdentifier>{b1be8709-f969-48da-a0ed-03adc17bfd20}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\GameLogic\TestObject\TestPlane">
-      <UniqueIdentifier>{957b2783-0cc5-422c-b2f2-10ccf936ecf4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\GameLogic\TestObject\TestPlane2">
-      <UniqueIdentifier>{b2a0e722-a16c-44ef-b234-31e985c1162a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\GameLogic\Screen">
       <UniqueIdentifier>{c0e2e4e6-189f-4904-a374-ff521478feeb}</UniqueIdentifier>
     </Filter>
@@ -68,6 +59,18 @@
     <Filter Include="02.GameObject\GameLogic\LevelObject">
       <UniqueIdentifier>{0cc1f3b0-a567-476c-96c4-046b5854fa1b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="OldClass">
+      <UniqueIdentifier>{a50a2908-3447-4c88-a05a-cd79d59605bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OldClass\TestObject">
+      <UniqueIdentifier>{b1be8709-f969-48da-a0ed-03adc17bfd20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OldClass\TestObject\TestPlane">
+      <UniqueIdentifier>{957b2783-0cc5-422c-b2f2-10ccf936ecf4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OldClass\TestObject\TestPlane2">
+      <UniqueIdentifier>{b2a0e722-a16c-44ef-b234-31e985c1162a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -81,9 +84,6 @@
     </ClInclude>
     <ClInclude Include="..\Code\MainGame.h">
       <Filter>00.MainGame</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Code\SceneSelector.h">
-      <Filter>01.Scene</Filter>
     </ClInclude>
     <ClInclude Include="..\Code\Logo.h">
       <Filter>01.Scene\00.Logo</Filter>
@@ -104,7 +104,7 @@
       <Filter>02.GameObject\Camera\DynamicCamera</Filter>
     </ClInclude>
     <ClInclude Include="TestPlane.h">
-      <Filter>02.GameObject\GameLogic\TestObject\TestPlane</Filter>
+      <Filter>OldClass\TestObject\TestPlane</Filter>
     </ClInclude>
     <ClInclude Include="..\Code\Loading.h">
       <Filter>01.Scene\99.Loading</Filter>
@@ -116,11 +116,14 @@
       <Filter>01.Scene\02.Stage</Filter>
     </ClInclude>
     <ClInclude Include="TestPlane2.h">
-      <Filter>02.GameObject\GameLogic\TestObject\TestPlane2</Filter>
+      <Filter>OldClass\TestObject\TestPlane2</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="..\Code\LevelObject.h">
       <Filter>02.GameObject\GameLogic\LevelObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\SceneSelector.h">
+      <Filter>OldClass</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -140,7 +143,7 @@
       <Filter>02.GameObject\Camera\DynamicCamera</Filter>
     </ClCompile>
     <ClCompile Include="TestPlane.cpp">
-      <Filter>02.GameObject\GameLogic\TestObject\TestPlane</Filter>
+      <Filter>OldClass\TestObject\TestPlane</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Loading.cpp">
       <Filter>01.Scene\99.Loading</Filter>
@@ -152,7 +155,7 @@
       <Filter>01.Scene\02.Stage</Filter>
     </ClCompile>
     <ClCompile Include="TestPlane2.cpp">
-      <Filter>02.GameObject\GameLogic\TestObject\TestPlane2</Filter>
+      <Filter>OldClass\TestObject\TestPlane2</Filter>
     </ClCompile>
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="..\Code\LevelObject.cpp">

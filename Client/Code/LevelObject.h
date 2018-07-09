@@ -31,5 +31,9 @@ private:
 	void Release();
 
 private:
+	HRESULT LoadMesh(const std::wstring& mesh_key, MAINTAINID stage_id);
+	HRESULT FindMesh(const std::wstring& mesh_key, const std::wstring& path, MAINTAINID stage_id);
+
+private:
 	Engine::CStaticMesh* ptr_mesh_ = nullptr;
 };

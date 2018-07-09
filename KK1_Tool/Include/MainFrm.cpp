@@ -20,13 +20,13 @@ IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
 
 const int  iMaxUserToolbars = 10;
 const UINT uiFirstUserToolBarId = AFX_IDW_CONTROLBAR_FIRST + 40;
-const UINT uiLastUserToolBarId = uiFirstUserToolBarId + iMaxUserToolbars - 1;
+const uint32 uiLastUserToolBarId = uiFirstUserToolBarId + iMaxUserToolbars - 1;
 
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CREATE()
 END_MESSAGE_MAP()
 
-static UINT indicators[] =
+static uint32 indicators[] =
 {
 	ID_SEPARATOR,           // 상태 줄 표시기
 	ID_INDICATOR_CAPS,

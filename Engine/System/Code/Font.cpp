@@ -10,7 +10,7 @@ Engine::KK1_Font::~KK1_Font()
 	Release();
 }
 
-HRESULT Engine::KK1_Font::InitFont(int height, UINT width, UINT weight, const TCHAR * face_name)
+HRESULT Engine::KK1_Font::InitFont(int height, uint32 width, uint32 weight, const TCHAR * face_name)
 {
 	D3DXFONT_DESC font_info = {};
 	font_info.Height = height;
@@ -28,7 +28,7 @@ void Engine::KK1_Font::Render(const TCHAR * text, const D3DXCOLOR & color, const
 	ptr_font_->DrawTextW(nullptr, text, lstrlen(text), &rc, DT_NOCLIP, color);
 }
 
-Engine::KK1_Font * Engine::KK1_Font::Create(LPDIRECT3DDEVICE9 ptr_device, int height, UINT width, UINT weight, const TCHAR * face_name)
+Engine::KK1_Font * Engine::KK1_Font::Create(LPDIRECT3DDEVICE9 ptr_device, int height, uint32 width, uint32 weight, const TCHAR * face_name)
 {
 	KK1_Font* ptr_font = new KK1_Font(ptr_device);
 	if (FAILED(ptr_font->InitFont(height, width, weight, face_name)))

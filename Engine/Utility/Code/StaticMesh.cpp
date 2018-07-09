@@ -87,7 +87,7 @@ int Engine::CStaticMesh::Release()
 bool Engine::CStaticMesh::RaycastToMesh(const Vector3 & ray_pos, const Vector3 & ray_dir, float* hit_dir)
 {
 	HRESULT hr = E_FAIL;
-	BOOL is_hit = false;
+	BOOL is_hit = FALSE;
 	hr = D3DXIntersect(ptr_mesh_, &ray_pos, &ray_dir, &is_hit, nullptr, nullptr, nullptr, hit_dir, nullptr, nullptr);
 	
 	if (FALSE == is_hit) return false;

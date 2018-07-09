@@ -4,7 +4,9 @@
 #include "MainFrm.h"
 #include "EditorTab.h"
 #include "StageEditor.h"
+#include "NavMeshEditor.h"
 #include "DynamicCamera.h"
+#include "Font.h"
 
 CToolManager::CToolManager()
 {
@@ -26,6 +28,16 @@ void CToolManager::SetStageEditor(StageEditor * ptr_stage_editor)
 	ptr_stage_editor_ = ptr_stage_editor;
 }
 
+void CToolManager::SetNavAndLightEditor(NavMeshEditor * ptr_navmesh_editor)
+{
+	ptr_nav_n_light_editor_ = ptr_navmesh_editor;
+}
+
+void CToolManager::SetViewText(const TCHAR * text)
+{
+	lstrcpy(view_text_, text);
+}
+
 void CToolManager::Init_ToolManager()
 {
 	Engine::GraphicDevice()->InitGraphicDevice(Engine::GraphicDevice()->MODE_WINDOW, g_hwnd, g_kWinCx, g_kWinCy);
@@ -37,6 +49,8 @@ void CToolManager::Init_ToolManager()
 	ptr_line_->SetAntialias(true);
 
 	ptr_main_frame_ = static_cast<CMainFrame*>(AfxGetMainWnd());
+	Engine::GraphicDevice()->AddFont(TEXT("¹ÙÅÁ"), 28, 20, FW_NORMAL);
+	ptr_font_ = Engine::GraphicDevice()->GetFont(TEXT("¹ÙÅÁ"));
 }
 
 void CToolManager::Update(float delta_time)
@@ -49,9 +63,12 @@ void CToolManager::Update(float delta_time)
 	switch (tab_id_)
 	{
 	case TabID::Stage:
-	case TabID::NaviMesh:
 		if (nullptr != ptr_stage_editor_)
 			ptr_stage_editor_->Update(delta_time);
+		break;
+	case TabID::NaviMesh:
+		if (nullptr != ptr_nav_n_light_editor_)
+			ptr_nav_n_light_editor_->Update(delta_time);
 		break;
 	case TabID::Animation:
 		break;
@@ -69,12 +86,16 @@ void CToolManager::Render()
 	case TabID::NaviMesh:
 		if (nullptr != ptr_stage_editor_)
 			ptr_stage_editor_->Render();
+		if (nullptr != ptr_nav_n_light_editor_)
+			ptr_nav_n_light_editor_->Render();
 		break;
 	case TabID::Animation:
 		break;
 	case TabID::Particle:
 		break;
 	}
+
+	ptr_font_->Render(view_text_, D3DXCOLOR(1.f, 1.f, 1.f, 1.f), Vector3(5.f, 5.f, 0.f));
 }
 
 void CToolManager::Release()

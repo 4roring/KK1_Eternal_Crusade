@@ -5,6 +5,7 @@
 
 BEGIN(Engine)
 
+class CScene;
 class CComponent;
 class CGameObject;
 
@@ -17,7 +18,8 @@ private:
 	virtual ~CGameManager();
 
 public:
-	const CComponent* GetComponent(int layer_id
+	template<typename T>
+	const T* GetComponent(int layer_id
 		, const std::wstring& object_key, const std::wstring component_key);
 	void AddRenderLayer(RENDERLAYER render_id, CGameObject* ptr_object);
 
@@ -29,7 +31,7 @@ public:
 
 public:
 	HRESULT InitComponentManager(const int container_size);
-	HRESULT Add_Prototype(int container_index, std::wstring component_key, CComponent* ptr_component);
+	HRESULT Add_Prototype(int container_index, const std::wstring& component_key, CComponent* ptr_component);
 	void PrototypeClearances(int container_index);
 
 public:
@@ -39,16 +41,23 @@ public:
 	HRESULT InitManager(LPDIRECT3DDEVICE9 ptr_device);
 	void Update(float delta_time);
 	void Render();
+	void LastFrame();
 
+#ifdef _OLD_SCENE_SYSTEM
 public:
 	template<typename T>
 	HRESULT SceneChange(T& functor);
+#endif
+
+public:
+	HRESULT SetNextScene(CScene* ptr_scene);
 
 private:
 	void Release();
 
 private:
-	class CScene* ptr_scene_ = nullptr;
+	CScene* ptr_scene_ = nullptr;
+	CScene* ptr_next_scene_ = nullptr;
 	class CRenderer* ptr_renderer_ = nullptr;
 	class CComponentManager* ptr_component_manager_ = nullptr;
 
@@ -57,7 +66,7 @@ private:
 };
 
 template<typename T>
-inline const CComponent * CGameManager::GetComponent(int container_index, const std::wstring & component_key)
+inline const T * CGameManager::GetComponent(int layer_id, const std::wstring & object_key, const std::wstring component_key)
 {
 	const CComponent* ptr_component = FindComponent(container_index, component_key);
 	if (ptr_component == nullptr)
@@ -69,6 +78,7 @@ inline const CComponent * CGameManager::GetComponent(int container_index, const 
 	return ptr_component;
 }
 
+#ifdef _OLD_SCENE_SYSTEM
 template<typename T>
 inline HRESULT Engine::CGameManager::SceneChange(T& Functor)
 {
@@ -81,6 +91,7 @@ inline HRESULT Engine::CGameManager::SceneChange(T& Functor)
 
 	return S_OK;
 }
+#endif
 
 
 END

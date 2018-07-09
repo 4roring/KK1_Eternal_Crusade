@@ -7,8 +7,14 @@
 
 #include <time.h>
 
+#include "Logo.h"
+
 CMainGame::CMainGame()
+	: ptr_game_manager_(Engine::GameManager())
+	, ptr_time_(Engine::Time())
+	, ptr_input_(Engine::Input())
 {
+	
 }
 
 CMainGame::~CMainGame()
@@ -28,10 +34,12 @@ HRESULT CMainGame::InitGame()
 
 	ptr_device_ = Engine::GraphicDevice()->GetDevice();
 
-	hr = Engine::GameManager()->InitManager(ptr_device_);
+	if (true == NullCheckOfManager()) return E_FAIL;
+
+	hr = ptr_game_manager_->InitManager(ptr_device_);
 	assert(hr == S_OK && "Init GameManager Failed");
 
-	hr = Engine::GameManager()->InitComponentManager(MAINTAIN_END);
+	hr = ptr_game_manager_->InitComponentManager(MAINTAIN_END);
 	assert(hr == S_OK && "Init Component Manager Failed");
 
 	hr = Engine::GraphicDevice()->AddFont(TEXT("¹ÙÅÁ"), 28, 20, FW_NORMAL);
@@ -39,13 +47,11 @@ HRESULT CMainGame::InitGame()
 	ptr_fps_font_ = Engine::GraphicDevice()->GetFont(TEXT("¹ÙÅÁ"));
 	assert(nullptr != ptr_fps_font_ && "Get FPS Font Failed");
 
-	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC, TEXT("Buffer_RectTexture")
+	hr = ptr_game_manager_->Add_Prototype(MAINTAIN_STATIC, TEXT("Buffer_RectTexture")
 		, Engine::CRectTexture::Create(ptr_device_));
 	assert(hr == S_OK && "Add RectTexture Component Failed");
 
-	hr = Engine::GameManager()->SceneChange(CSceneSelector(CSceneSelector::SCENE::LOGO));
-
-	ptr_device_->SetRenderState(D3DRS_LIGHTING, FALSE);
+	hr = ptr_game_manager_->SetNextScene(CLogo::Create(ptr_device_));
 
 	//D3DLIGHT9 light_info = {};
 	//light_info.Type = D3DLIGHT_DIRECTIONAL;
@@ -56,30 +62,39 @@ HRESULT CMainGame::InitGame()
 
 	//ptr_device_->SetLight(0, &light_info);
 
-	Engine::Time()->InitTime();
-	Engine::Input()->InitInputDevice(g_hinstance, g_hwnd);
+	ptr_time_->InitTime();
+	ptr_input_->InitInputDevice(g_hinstance, g_hwnd);
 	return S_OK;
 }
 
 void CMainGame::Update()
 {
-	Engine::Input()->SetInputState();
-	Engine::Time()->SetTime();
-	Engine::GameManager()->Update(Engine::Time()->GetDeltaTime());
+	if (true == NullCheckOfManager()) return;
+	ptr_input_->SetInputState();
+	ptr_time_->SetTime();
+	ptr_game_manager_->Update(Engine::Time()->GetDeltaTime());
 }
 
 void CMainGame::Render()
 {
+	if (true == NullCheckOfManager()) return;
+
 	ptr_device_->Clear(0, nullptr, D3DCLEAR_STENCIL | D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER
 		, D3DCOLOR_ARGB(255, 0, 0, 255), 1.f, 0);
 	ptr_device_->BeginScene();
 
-	Engine::GameManager()->Render();
-
+	ptr_game_manager_->Render();
 	Render_FPS();
 
 	ptr_device_->EndScene();
 	ptr_device_->Present(nullptr, nullptr, nullptr, nullptr);
+}
+
+void CMainGame::LastFrame()
+{
+	if (true == NullCheckOfManager()) return;
+
+	ptr_game_manager_->LastFrame();
 }
 
 CMainGame * CMainGame::Create()
@@ -111,9 +126,22 @@ void CMainGame::Render_FPS()
 
 void CMainGame::Release()
 {
-	Engine::Input()->DestroyInstance();
-
-	Engine::GameManager()->DestroyInstance();
-	Engine::Time()->DestroyInstance();
+	ptr_input_->DestroyInstance();
+	ptr_input_ = nullptr;
+	ptr_game_manager_->DestroyInstance();
+	ptr_game_manager_ = nullptr;
+	ptr_time_->DestroyInstance();
+	ptr_time_ = nullptr;
 	Engine::GraphicDevice()->DestroyInstance();
+	ptr_device_ = nullptr;
+}
+
+bool CMainGame::NullCheckOfManager()
+{
+	if (nullptr == ptr_device_) return true;
+	if (nullptr == ptr_game_manager_) return true;
+	if (nullptr == ptr_time_) return true;
+	if (nullptr == ptr_input_) return true;
+
+	return false;
 }

@@ -3,6 +3,9 @@
 namespace Engine
 {
 	class KK1_Font;
+	class CGameManager;
+	class CTimeManager;
+	class CInputManager;
 }
 
 class CMainGame
@@ -21,6 +24,7 @@ private:
 public:
 	void Update();
 	void Render();
+	void LastFrame();
 
 public:
 	static CMainGame* Create();
@@ -30,7 +34,15 @@ private:
 	void Release();
 
 private:
+	bool NullCheckOfManager();
+
+private:
 	LPDIRECT3DDEVICE9 ptr_device_ = nullptr;
+
+private:
+	Engine::CGameManager* ptr_game_manager_ = nullptr;
+	Engine::CTimeManager* ptr_time_ = nullptr;
+	Engine::CInputManager* ptr_input_ = nullptr;
 
 private:
 	Engine::KK1_Font* ptr_fps_font_ = nullptr;

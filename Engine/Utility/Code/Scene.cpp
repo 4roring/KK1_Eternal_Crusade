@@ -29,9 +29,14 @@ HRESULT Engine::CScene::InitScene()
 void Engine::CScene::Update(float delta_time)
 {
 	ptr_layer_->Update(delta_time);
+	ptr_layer_->LateUpdate();
 }
 
 void Engine::CScene::Render()
+{
+}
+
+void Engine::CScene::LastFrame()
 {
 }
 

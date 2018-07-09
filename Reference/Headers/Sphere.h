@@ -6,7 +6,7 @@
 
 BEGIN(Engine)
 
-class CSphere
+class ENGINE_DLL CSphere
 {
 private:
 	explicit CSphere(LPDIRECT3DDEVICE9 ptr_device);
@@ -14,18 +14,19 @@ private:
 public:
 	virtual ~CSphere();
 
+public:
+	LPD3DXMESH ptr_sphere_mesh();
+
 private:
-	HRESULT CreateSphere();
+	HRESULT CreateSphere(float radius, uint32 slices, uint32 stacks);
 
 public:
 	void Render();
+	void Render(const Matrix* mat_world);
 	void Release();
 
 public:
-	void SetWorld(float radius, const Vector3& position);
-
-public:
-	static CSphere* Create(LPDIRECT3DDEVICE9 ptr_device);
+	static CSphere* Create(LPDIRECT3DDEVICE9 ptr_device, float radius, uint32 slices, uint32 stacks);
 
 private:
 	LPDIRECT3DDEVICE9 ptr_device_ = nullptr;

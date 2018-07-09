@@ -16,7 +16,7 @@ public:
 	~CFontManager();
 
 public:
-	HRESULT AddFont(LPDIRECT3DDEVICE9 ptr_device, const std::wstring font_key, int height, UINT width, UINT weight);
+	HRESULT AddFont(LPDIRECT3DDEVICE9 ptr_device, const std::wstring font_key, int height, uint32 width, uint32 weight);
 	KK1_Font* GetFont(const std::wstring font_key);
 
 public:

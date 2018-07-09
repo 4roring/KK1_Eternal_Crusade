@@ -53,7 +53,7 @@ HRESULT Engine::CGraphicDevice::InitGraphicDevice(WINMODE mode, HWND hwnd, WORD 
 	return S_OK;
 }
 
-HRESULT Engine::CGraphicDevice::AddFont(const std::wstring font_key, int height, UINT width, UINT weight)
+HRESULT Engine::CGraphicDevice::AddFont(const std::wstring font_key, int height, uint32 width, uint32 weight)
 {
 	return ptr_font_manager_->AddFont(ptr_device_, font_key, height, width, weight);
 }
@@ -88,7 +88,7 @@ void Engine::CGraphicDevice::Release()
 {
 	Engine::Safe_Delete(ptr_font_manager_);
 
-	UINT reference_count = 0;
+	uint32 reference_count = 0;
 
 	if (reference_count = ptr_device_->Release())
 		assert(!"The Reference count for the Device remains");

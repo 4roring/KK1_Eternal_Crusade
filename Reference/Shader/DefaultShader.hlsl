@@ -54,6 +54,11 @@ PS_OUT PS_MAIN(PS_IN In)
 	return Out;
 }
 
+vector PS_WIREFRAME(PS_IN In) : COLOR
+{
+    return vector(0.f, 1.f, 0.f, 1.f);
+}
+
 technique Default_Technique
 {
 	pass Default
@@ -66,4 +71,13 @@ technique Default_Technique
         VertexShader = compile vs_3_0 VS_MAIN();
 		PixelShader = compile ps_3_0 PS_MAIN();
 	}
+
+    pass WIREFRAME
+    {
+        FILLMODE = WIREFRAME;
+        CULLMODE = NONE;
+
+        VertexShader = compile vs_3_0 VS_MAIN();
+        PixelShader = compile ps_3_0 PS_WIREFRAME();
+    }
 }

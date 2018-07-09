@@ -23,6 +23,7 @@ public:
 	virtual HRESULT InitScene() PURE;
 	virtual void Update(float delta_time) PURE;
 	virtual void Render();
+	virtual void LastFrame();
 
 public:
 	void AddObject(int layer_id, const std::wstring& object_key, CGameObject* ptr_object);

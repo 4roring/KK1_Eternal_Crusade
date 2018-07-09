@@ -4,6 +4,7 @@
 
 class CMainFrame;
 class StageEditor;
+class NavMeshEditor;
 class DynamicCamera;
 
 class CToolManager
@@ -20,6 +21,11 @@ private:
 public:
 	void SetTab(TabID tab_id);
 	void SetStageEditor(StageEditor* ptr_stage_editor);
+	void SetNavAndLightEditor(NavMeshEditor* ptr_navmesh_editor);
+	void SetViewText(const TCHAR* text);
+
+public:
+	StageEditor* ptr_stage_editor() { return ptr_stage_editor_; }
 
 public:
 	void Init_ToolManager();
@@ -47,7 +53,14 @@ private:
 private:
 	CMainFrame* ptr_main_frame_ = nullptr;
 	StageEditor* ptr_stage_editor_ = nullptr;
+	NavMeshEditor* ptr_nav_n_light_editor_ = nullptr;
+
+private:
 	DynamicCamera* ptr_dynamic_camera_ = nullptr;
+
+private:
+	Engine::KK1_Font* ptr_font_ = nullptr;
+	TCHAR view_text_[128] = {};
 
 private:
 	TabID tab_id_ = TabID::End;

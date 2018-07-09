@@ -10,7 +10,7 @@ Engine::CFontManager::~CFontManager()
 	Release();
 }
 
-HRESULT Engine::CFontManager::AddFont(LPDIRECT3DDEVICE9 ptr_device, const std::wstring font_key, int height, UINT width, UINT weight)
+HRESULT Engine::CFontManager::AddFont(LPDIRECT3DDEVICE9 ptr_device, const std::wstring font_key, int height, uint32 width, uint32 weight)
 {
 	auto iter = map_font_.find(font_key);
 	if (iter != map_font_.end())

@@ -134,7 +134,9 @@ void CMapToolView::OnInitialUpdate()
 			, Engine::CShader::Create(ptr_device_, TEXT("../../Reference/Shader/NormalMapShader.hlsl")));
 	assert(hr == S_OK && "Shader_NormalMap Component Add Failed");
 
-	Engine::GraphicDevice()->AddFont(TEXT("¹ÙÅÁ"), 28, 20, FW_NORMAL);
+	hr = Engine::GameManager()->Add_Prototype(0, TEXT("Shader_Default")
+		, Engine::CShader::Create(ptr_device_, TEXT("../../Reference/Shader/DefaultShader.hlsl")));
+	assert(hr == S_OK && "Shader_NormalMap Component Add Failed");
 }
 
 

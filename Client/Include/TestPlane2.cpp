@@ -70,8 +70,6 @@ HRESULT CTestPlane2::AddComponent()
 {
 	HRESULT hr = E_FAIL;
 
-	hr = Ready_Component(MAINTAIN_STAGE, TEXT("Floor_12x12_Mesh"), TEXT("StaticMesh"), ptr_mesh_);
-	assert(!FAILED(hr) && "ScreenImage Buffer ReadyComponent Failed");
 	hr = Ready_Component(MAINTAIN_STATIC, TEXT("Component_Transform"), TEXT("Transform"), ptr_transform_);
 	assert(!FAILED(hr) && "Tranform Component ReadyComponent Failed");
 	hr = Ready_Component(MAINTAIN_STATIC, TEXT("Shader_NormalMap"), TEXT("Shader"), ptr_shader_);

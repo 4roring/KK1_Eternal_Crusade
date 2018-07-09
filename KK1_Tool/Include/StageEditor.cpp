@@ -10,7 +10,6 @@
 #include <memory>
 
 #include "MapObject.h"
-#include "Font.h"
 #include "Transform.h"
 
 // StageEditor 대화 상자입니다.
@@ -94,7 +93,6 @@ BOOL StageEditor::OnInitDialog()
 	std::auto_ptr<ResourceLoader> auto_ptr_resource_loader(ResourceLoader::Create(ptr_device_, TEXT("../../Client/bin/Resources/Mesh/"), resource_list_));
 
 	Tool()->SetStageEditor(this);
-	ptr_font_ = Engine::GraphicDevice()->GetFont(TEXT("바탕"));
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
@@ -202,8 +200,6 @@ void StageEditor::Render()
 {
 	for (auto& pair : map_object_)
 		pair.second->Render();
-
-	ptr_font_->Render(mode_text, D3DXCOLOR(1.f, 1.f, 1.f, 1.f), Vector3(5.f, 5.f, 0.f));
 }
 
 void StageEditor::CheckInput()
@@ -217,25 +213,25 @@ void StageEditor::CheckInput()
 	{
 		ctrl_mode_ = (ctrl_mode_ != ControlMode::Position)
 			? ControlMode::Position : ControlMode::End;
-		lstrcpy(mode_text, TEXT("Position Mode"));
+		Tool()->SetViewText(TEXT("Position Mode"));
 	}
 	else if (Engine::Input()->GetKeyDown(KEY::E))
 	{
 		ctrl_mode_ = (ctrl_mode_ != ControlMode::Rotation)
 			? ControlMode::Rotation : ControlMode::End;
-		lstrcpy(mode_text, TEXT("Rotation Mode"));
+		Tool()->SetViewText(TEXT("Rotation Mode"));
 	}
 	else if (Engine::Input()->GetKeyDown(KEY::R))
 	{
 		ctrl_mode_ = (ctrl_mode_ != ControlMode::Scale)
 			? ControlMode::Scale : ControlMode::End;
-		lstrcpy(mode_text, TEXT("Scale Mode"));
+		Tool()->SetViewText(TEXT("Scale Mode"));
 	}
 		
 	if(ctrl_mode_ != ControlMode::End)
 		ObjectController();
 	else
-		lstrcpy(mode_text, TEXT("None"));
+		Tool()->SetViewText(TEXT("None"));
 }
 
 void StageEditor::PickObject()
@@ -270,6 +266,20 @@ void StageEditor::PickObject()
 		int cursor_num = object_list_.FindString(0, ptr_select_object_->object_key().c_str());
 		object_list_.SetCurSel(cursor_num);
 	}
+}
+
+bool StageEditor::PickObject(Vector3 & ray_pos, Vector3 & ray_dir, float * dist)
+{
+	std::map<float, MapObject*> pick_object_map;
+	for (auto& pair : map_object_)
+	{
+		if (true == pair.second->RaycastToMesh(ray_pos, ray_dir, dist))
+			pick_object_map.emplace(*dist, pair.second);
+	}
+
+	if (true == pick_object_map.empty()) return false;
+	*dist = pick_object_map.begin()->first;
+	return true;
 }
 
 void StageEditor::RayToViewSpace(Vector3 & ray_pos, Vector3 & ray_dir, const POINT& mouse_pos)

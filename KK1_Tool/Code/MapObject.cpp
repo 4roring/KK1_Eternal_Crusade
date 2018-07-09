@@ -35,7 +35,7 @@ HRESULT MapObject::Initialize(const std::wstring& mesh_key)
 	HRESULT hr = CGameObject::Initialize();
 	assert(!FAILED(hr) && "CGameObject::Initialize call failed in MapObject");
 
-	AddComponent(mesh_key);
+	hr = AddComponent(mesh_key);
 	assert(!FAILED(hr) && "AddComponent call failed in MapObject");
 	mesh_key_ = mesh_key;
 	ptr_transform_->scale() = Vector3(0.01f, 0.01f, 0.01f);

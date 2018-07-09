@@ -73,7 +73,9 @@ inline HRESULT CGameObject::Ready_Component(const int container_index
 	CComponent* ptr_component = nullptr;
 	ptr_component = Engine::GameManager()->CloneComponent(container_index, component_key);
 	ptr_object = dynamic_cast<T>(ptr_component);
-	assert(nullptr != ptr_object && "Ready_Component dynamic_cast Error");
+	if (nullptr == ptr_object)
+		return E_FAIL;
+
 	AddComponent(instance_key, ptr_component);
 	return S_OK;
 }

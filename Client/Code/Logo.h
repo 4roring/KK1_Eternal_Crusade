@@ -2,19 +2,15 @@
 
 #include "Scene.h"
 
-namespace Engine
-{
-	class KK1_Font;
-}
+BEGIN(Engine)
+class KK1_Font;
+END
 
 class CLoading;
 
 class CLogo
 	: public Engine::CScene
 {
-public:
-	enum LAYERID { LAYER_ENVIRONMENT, LAYER_GAMELOGIC };
-
 private:
 	explicit CLogo(LPDIRECT3DDEVICE9 ptr_device);
 
@@ -36,6 +32,7 @@ private:
 	void Release();
 
 private:
+	Engine::CScene* ptr_next_scene_ = nullptr;
 	CLoading* ptr_loading_ = nullptr;
 	Engine::KK1_Font* ptr_loading_text_ = nullptr;
 };

@@ -12,11 +12,6 @@ Engine::CGameManager::~CGameManager()
 	Release();
 }
 
-const Engine::CComponent * Engine::CGameManager::GetComponent(int layer_id, const std::wstring & object_key, const std::wstring component_key)
-{
-	return ptr_scene_->GetComponent(layer_id, object_key, component_key);
-}
-
 void Engine::CGameManager::AddRenderLayer(RENDERLAYER render_id, class CGameObject * ptr_object)
 {
 	ptr_renderer_->AddRenderLayer(render_id, ptr_object);
@@ -37,7 +32,7 @@ HRESULT Engine::CGameManager::InitComponentManager(const int container_size)
 	return ptr_component_manager_->InitComponentManager(container_size);
 }
 
-HRESULT Engine::CGameManager::Add_Prototype(int container_index, std::wstring component_key, CComponent * ptr_component)
+HRESULT Engine::CGameManager::Add_Prototype(int container_index, const std::wstring& component_key, CComponent * ptr_component)
 {
 	return ptr_component_manager_->Add_Prototype(container_index, component_key, ptr_component);
 }
@@ -67,19 +62,42 @@ HRESULT Engine::CGameManager::InitManager(LPDIRECT3DDEVICE9 ptr_device)
 
 void Engine::CGameManager::Update(float delta_time)
 {
-	assert(nullptr != ptr_scene_ && "Scene is nullptr");
+	if (nullptr == ptr_scene_) return;
 	ptr_scene_->Update(delta_time);
 }
 
 void Engine::CGameManager::Render()
 {
-	assert(nullptr != ptr_renderer_ && "Renderer is nullptr");
+	if (nullptr == ptr_scene_) return;
 	ptr_renderer_->Render();
 
 #ifdef _DEBUG
-	if(nullptr != ptr_scene_) 
+	if(nullptr != ptr_scene_)
 		ptr_scene_->Render();
-#endif
+#endif	
+}
+
+void Engine::CGameManager::LastFrame()
+{
+	if (nullptr != ptr_scene_)
+		ptr_scene_->LastFrame();
+
+	if (ptr_next_scene_ != ptr_scene_)
+	{
+		Safe_Delete(ptr_scene_);
+		ptr_scene_ = ptr_next_scene_;
+	}
+}
+
+HRESULT Engine::CGameManager::SetNextScene(CScene * ptr_scene)
+{
+	if (nullptr == ptr_scene) return E_FAIL;
+	ptr_next_scene_ = ptr_scene;
+
+	if (nullptr == ptr_scene_)
+		ptr_scene_ = ptr_next_scene_;
+
+	return S_OK;
 }
 
 void Engine::CGameManager::Release()

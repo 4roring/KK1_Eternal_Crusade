@@ -1,5 +1,8 @@
 #pragma once
 
+typedef unsigned __int32 uint32;
+typedef unsigned __int64 uint64;
+
 typedef D3DXVECTOR2 Vector2;
 typedef D3DXVECTOR4 Vector4;
 typedef D3DXMATRIX Matrix;

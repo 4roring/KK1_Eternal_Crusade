@@ -169,6 +169,8 @@
     <ClInclude Include="..\Code\Layer.h" />
     <ClInclude Include="..\Code\Loader.h" />
     <ClInclude Include="..\Code\Mesh.h" />
+    <ClInclude Include="..\Code\NavCell.h" />
+    <ClInclude Include="..\Code\NavLine.h" />
     <ClInclude Include="..\Code\RectTexture.h" />
     <ClInclude Include="..\Code\Renderer.h" />
     <ClInclude Include="..\Code\Resources.h" />
@@ -195,6 +197,8 @@
     <ClCompile Include="..\Code\Layer.cpp" />
     <ClCompile Include="..\Code\Loader.cpp" />
     <ClCompile Include="..\Code\Mesh.cpp" />
+    <ClCompile Include="..\Code\NavCell.cpp" />
+    <ClCompile Include="..\Code\NavLine.cpp" />
     <ClCompile Include="..\Code\RectTexture.cpp" />
     <ClCompile Include="..\Code\Renderer.cpp" />
     <ClCompile Include="..\Code\Resources.cpp" />

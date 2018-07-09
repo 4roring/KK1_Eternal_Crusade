@@ -53,8 +53,11 @@
 
 #define _TOOL
 
+
 #include "Engine_Include.h"
 #include "Export_Function.h"
+#include <array>
+
 #include "ToolManager.h"
 #include <afxdlgs.h>
 

@@ -82,6 +82,18 @@
     <Filter Include="05.Resources\Shape\Sphere">
       <UniqueIdentifier>{7ac55e15-1342-48ee-b11f-8eb5c0691f53}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06.NaviMesh">
+      <UniqueIdentifier>{38e7a035-3d61-47f7-8bf0-ea06e8726904}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.NaviMesh\NavCell">
+      <UniqueIdentifier>{87b5f330-9ac5-4e4d-8670-3d7b80ccceca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Managers\GameManager\NaviManager">
+      <UniqueIdentifier>{b2ea6287-2b1e-4f31-b785-7584c65cca9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.NaviMesh\NavLine">
+      <UniqueIdentifier>{6e64049d-f428-460e-b0b5-be5e435fc80e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Code\GameManager.h">
@@ -159,6 +171,12 @@
     <ClInclude Include="..\Code\Sphere.h">
       <Filter>05.Resources\Shape\Sphere</Filter>
     </ClInclude>
+    <ClInclude Include="..\Code\NavLine.h">
+      <Filter>06.NaviMesh\NavLine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\NavCell.h">
+      <Filter>06.NaviMesh\NavCell</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\GameManager.cpp">
@@ -232,6 +250,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\Sphere.cpp">
       <Filter>05.Resources\Shape\Sphere</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\NavLine.cpp">
+      <Filter>06.NaviMesh\NavLine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\NavCell.cpp">
+      <Filter>06.NaviMesh\NavCell</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

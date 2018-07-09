@@ -23,7 +23,7 @@ public:
 
 public:
 	void SetTrackPosition(DOUBLE position);
-	void SetAnimationTrack(UINT anim_index);
+	void SetAnimationTrack(uint32 anim_index);
 	void SetMaxAnimSet();
 	void FrameMove(float delta_time);
 
@@ -37,9 +37,9 @@ private:
 	LPD3DXANIMATIONCONTROLLER ptr_anim_ctrl_ = nullptr;
 
 private:
-	UINT max_anim_set_ = 0;
-	UINT current_track_ = 0;
-	UINT new_track_ = 0;
+	uint32 max_anim_set_ = 0;
+	uint32 current_track_ = 0;
+	uint32 new_track_ = 0;
 	DOUBLE acc_time_ = 0.0;
 	DOUBLE period_ = 0.0;
 };

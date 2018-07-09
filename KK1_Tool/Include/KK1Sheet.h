@@ -14,8 +14,8 @@ class KK1Sheet : public CPropertySheet
 
 public:
 	KK1Sheet();
-	KK1Sheet(UINT nIDCaption, CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
-	KK1Sheet(LPCTSTR pszCaption, CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
+	KK1Sheet(uint32 nIDCaption, CWnd* pParentWnd = NULL, uint32 iSelectPage = 0);
+	KK1Sheet(LPCTSTR pszCaption, CWnd* pParentWnd = NULL, uint32 iSelectPage = 0);
 	virtual ~KK1Sheet();
 
 protected:
@@ -24,7 +24,7 @@ protected:
 public:
 	StageEditor stage_editor_;
 	TerrainEditor Terrain_editor_;
-	NavMeshEditor navmesh_editor_;
+	NavMeshEditor nav_n_light_editor_;
 	virtual void PostNcDestroy();
 };
 

@@ -55,7 +55,7 @@ void Engine::CAnimController::SetTrackPosition(DOUBLE position)
 	ptr_anim_ctrl_->SetTrackPosition(current_track_, position);
 }
 
-void Engine::CAnimController::SetAnimationTrack(UINT anim_index)
+void Engine::CAnimController::SetAnimationTrack(uint32 anim_index)
 {
 	if (anim_index >= max_anim_set_)
 		assert(!"anim index overflow");

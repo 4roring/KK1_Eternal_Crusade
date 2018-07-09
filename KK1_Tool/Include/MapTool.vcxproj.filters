@@ -16,29 +16,35 @@
     <Filter Include="02.EditorTab">
       <UniqueIdentifier>{9aa4ca09-7201-4e15-886f-5ab5ca921823}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.EditorTab\02.NavMeshEditor">
-      <UniqueIdentifier>{c05a51ea-c357-4d48-b940-d781eb5e7ca0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.EditorTab\KK1Sheet">
       <UniqueIdentifier>{11ec028e-b684-4911-bba7-ec0b1be58f82}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.EditorTab\01.TerrainEditor">
-      <UniqueIdentifier>{00c6d88b-67b6-4303-90c6-50af4687cae4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.MapData">
-      <UniqueIdentifier>{dec29da1-8182-4abf-9e96-9388d1a5a61f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.MapData\ResourceLoader">
-      <UniqueIdentifier>{31c73216-b495-4bdf-ace0-6df48f60efb5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.MapData\MapObject">
-      <UniqueIdentifier>{a629711a-993b-47ff-a512-29f68d1ae01b}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.EditorTab\00.StageEditor">
       <UniqueIdentifier>{abbe3d8f-3933-4571-88ea-3f163c146031}</UniqueIdentifier>
     </Filter>
     <Filter Include="04.DynamicCamera">
       <UniqueIdentifier>{d6f12c07-1948-4b10-a79b-a4475369222e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.EditorTab\00.StageEditor\MapData">
+      <UniqueIdentifier>{dec29da1-8182-4abf-9e96-9388d1a5a61f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.EditorTab\00.StageEditor\MapData\ResourceLoader">
+      <UniqueIdentifier>{31c73216-b495-4bdf-ace0-6df48f60efb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.EditorTab\00.StageEditor\MapData\MapObject">
+      <UniqueIdentifier>{a629711a-993b-47ff-a512-29f68d1ae01b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.EditorTab\02.__Editor">
+      <UniqueIdentifier>{00c6d88b-67b6-4303-90c6-50af4687cae4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.EditorTab\01.NavMeshEditor">
+      <UniqueIdentifier>{c05a51ea-c357-4d48-b940-d781eb5e7ca0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.EditorTab\01.NavMeshEditor\NavPoint">
+      <UniqueIdentifier>{bfda1c55-b85d-4050-8d10-e07d57effcd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.EditorTab\01.NavMeshEditor\NavTri">
+      <UniqueIdentifier>{f7f6a3ee-59ed-41ea-bc97-035a929a1020}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -71,22 +77,28 @@
       <Filter>02.EditorTab\00.StageEditor</Filter>
     </ClInclude>
     <ClInclude Include="TerrainEditor.h">
-      <Filter>02.EditorTab\01.TerrainEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="NavMeshEditor.h">
-      <Filter>02.EditorTab\02.NavMeshEditor</Filter>
+      <Filter>02.EditorTab\02.__Editor</Filter>
     </ClInclude>
     <ClInclude Include="EditorTab.h">
       <Filter>02.EditorTab</Filter>
     </ClInclude>
     <ClInclude Include="..\Code\ResourceLoader.h">
-      <Filter>03.MapData\ResourceLoader</Filter>
+      <Filter>02.EditorTab\00.StageEditor\MapData\ResourceLoader</Filter>
     </ClInclude>
     <ClInclude Include="..\Code\MapObject.h">
-      <Filter>03.MapData\MapObject</Filter>
+      <Filter>02.EditorTab\00.StageEditor\MapData\MapObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Code\DynamicCamera.h">
       <Filter>04.DynamicCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\NavPoint.h">
+      <Filter>02.EditorTab\01.NavMeshEditor\NavPoint</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\NavTri.h">
+      <Filter>02.EditorTab\01.NavMeshEditor\NavTri</Filter>
+    </ClInclude>
+    <ClInclude Include="NavMeshEditor.h">
+      <Filter>02.EditorTab\01.NavMeshEditor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -115,22 +127,28 @@
       <Filter>02.EditorTab\00.StageEditor</Filter>
     </ClCompile>
     <ClCompile Include="TerrainEditor.cpp">
-      <Filter>02.EditorTab\01.TerrainEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="NavMeshEditor.cpp">
-      <Filter>02.EditorTab\02.NavMeshEditor</Filter>
+      <Filter>02.EditorTab\02.__Editor</Filter>
     </ClCompile>
     <ClCompile Include="EditorTab.cpp">
       <Filter>02.EditorTab</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\ResourceLoader.cpp">
-      <Filter>03.MapData\ResourceLoader</Filter>
+      <Filter>02.EditorTab\00.StageEditor\MapData\ResourceLoader</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\MapObject.cpp">
-      <Filter>03.MapData\MapObject</Filter>
+      <Filter>02.EditorTab\00.StageEditor\MapData\MapObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\DynamicCamera.cpp">
       <Filter>04.DynamicCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\NavPoint.cpp">
+      <Filter>02.EditorTab\01.NavMeshEditor\NavPoint</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\NavTri.cpp">
+      <Filter>02.EditorTab\01.NavMeshEditor\NavTri</Filter>
+    </ClCompile>
+    <ClCompile Include="NavMeshEditor.cpp">
+      <Filter>02.EditorTab\01.NavMeshEditor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
