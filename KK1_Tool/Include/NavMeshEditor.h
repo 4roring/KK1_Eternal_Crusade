@@ -59,6 +59,10 @@ private:
 	void Picking_NavMesh(Vector3& ray_pos, Vector3& ray_dir);
 	void Picking_DeleteNavMesh(const Vector3& ray_pos, const Vector3& ray_dir);
 	void Clear_Selected_Points();
+	void Release_All();
+
+private:
+	bool CheckMouseInScreen(const POINT& mouse_pos);
 
 private:
 	LPDIRECT3DDEVICE9 ptr_device_ = nullptr;

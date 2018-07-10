@@ -15,7 +15,7 @@ class StageEditor : public CPropertyPage
 	DECLARE_DYNAMIC(StageEditor)
 
 private:
-	enum class ControlMode { Position, Rotation, Scale, End };
+	enum class ControlMode { AddMode, Position, Rotation, Scale, End };
 
 public:
 	StageEditor();
@@ -52,11 +52,13 @@ public:
 	void RayToViewSpace(Vector3& ray_pos, Vector3& ray_dir, const POINT& mouse_pos);
 	void RayToWorldSpace(Vector3& ray_pos, Vector3& ray_dir);
 	// Return the Picking Position
-	bool PickObject(Vector3& ray_pos, Vector3& ray_dir, float* dist);
+	bool PickObject(Vector3& ray_pos, Vector3& ray_dir, float* out_dist);
 
 private:
 	void CheckInput();
 	void PickObject();
+	void PickAddObject();
+	void AddMapObject(const Vector3& obj_pos);
 	void ObjectController();
 
 private:

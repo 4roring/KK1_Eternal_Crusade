@@ -71,6 +71,9 @@
     <Filter Include="OldClass\TestObject\TestPlane2">
       <UniqueIdentifier>{b2a0e722-a16c-44ef-b234-31e985c1162a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.Components">
+      <UniqueIdentifier>{551603be-2794-4aaa-8fa6-66fefda93d45}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">

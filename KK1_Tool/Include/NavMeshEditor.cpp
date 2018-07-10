@@ -69,25 +69,7 @@ BOOL NavMeshEditor::OnInitDialog()
 void NavMeshEditor::PostNcDestroy()
 {
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
-	set_selected_point_.clear();
-
-	for (auto& nav_mesh : vec_nav_mesh_)
-		Engine::Safe_Delete(nav_mesh);
-	vec_nav_mesh_.clear();
-
-	for (auto& nav_point : vec_nav_point_)
-	{
-		while (true)
-		{
-			int ref_cnt = nav_point->Release();
-			if (ref_cnt == 0)
-			{
-				Engine::Safe_Delete(const_cast<NavPoint*>(nav_point));
-				break;
-			}
-		}
-	}
-	vec_nav_point_.clear();
+	Release_All();
 
 	CPropertyPage::PostNcDestroy();
 }
@@ -258,6 +240,8 @@ void NavMeshEditor::SetRay(Vector3 & ray_pos, Vector3 & ray_dir)
 	POINT mouse_pos;
 	Engine::Input()->GetMousePos(g_hwnd, &mouse_pos);
 
+	if (false == CheckMouseInScreen(mouse_pos)) return;
+
 	Tool()->ptr_stage_editor()->RayToViewSpace(ray_pos, ray_dir, mouse_pos);
 	Tool()->ptr_stage_editor()->RayToWorldSpace(ray_pos, ray_dir);
 }
@@ -345,8 +329,8 @@ void NavMeshEditor::Picking_NavMesh(Vector3& ray_pos, Vector3& ray_dir)
 			ptr_select_navi_ = nav_mesh;
 			navi_num_ = ptr_select_navi_->cell_num();
 			cell_option_ = ptr_select_navi_->option();
-			if(cell_option_ == 2)
-				link_cell_num_ = ptr_select_navi_->cell_num();
+			if (cell_option_ == 2)
+				link_cell_num_ = ptr_select_navi_->link_cell();
 			else
 				link_cell_num_ = 0;
 
@@ -382,6 +366,39 @@ void NavMeshEditor::Clear_Selected_Points()
 	set_selected_point_.clear();
 }
 
+void NavMeshEditor::Release_All()
+{
+	set_selected_point_.clear();
+
+	for (auto& nav_mesh : vec_nav_mesh_)
+		Engine::Safe_Delete(nav_mesh);
+	vec_nav_mesh_.clear();
+
+	for (auto& nav_point : vec_nav_point_)
+	{
+		while (true)
+		{
+			int ref_cnt = nav_point->Release();
+			if (ref_cnt == 0)
+			{
+				Engine::Safe_Delete(const_cast<NavPoint*>(nav_point));
+				break;
+			}
+		}
+	}
+	vec_nav_point_.clear();
+}
+
+bool NavMeshEditor::CheckMouseInScreen(const POINT & mouse_pos)
+{
+	if (mouse_pos.x < 0) return false;
+	else if (mouse_pos.x > g_kWinCx) return false;
+	else if (mouse_pos.y < 0) return false;
+	else if (mouse_pos.y > g_kWinCy) return false;
+
+	return true;
+}
+
 void NavMeshEditor::OnClick_Save()
 {
 	Tool()->SetFileMode(true);
@@ -401,12 +418,12 @@ void NavMeshEditor::OnClick_Save()
 	for (size_t i = 0; i < point_count; ++i)
 	{
 		vec_nav_point_[i]->index() = i;
-		WriteFile(file, &vec_nav_point_[i]->index(), sizeof(int), &byte, nullptr);
+		//WriteFile(file, &vec_nav_point_[i]->index(), sizeof(int), &byte, nullptr);
 		WriteFile(file, vec_nav_point_[i]->position(), sizeof(Vector3), &byte, nullptr);
 	}
 
-	size_t nav_mesh_count = vec_nav_mesh_.size();
-	WriteFile(file, &nav_mesh_count, sizeof(size_t), &byte, nullptr);
+	size_t cell_count = vec_nav_mesh_.size();
+	WriteFile(file, &cell_count, sizeof(size_t), &byte, nullptr);
 	for (auto& nav_mesh : vec_nav_mesh_)
 	{
 		WriteFile(file, &nav_mesh->GetNavPoint(0)->index(), sizeof(int), &byte, nullptr);
@@ -417,6 +434,8 @@ void NavMeshEditor::OnClick_Save()
 		WriteFile(file, &nav_mesh->option(), sizeof(int), &byte, nullptr);
 		WriteFile(file, &nav_mesh->link_cell(), sizeof(int), &byte, nullptr);
 	}
+	WriteFile(file, &last_cell_num_, sizeof(int), &byte, nullptr);
+
 	CloseHandle(file);
 
 	Tool()->SetFileMode(false);
@@ -431,12 +450,54 @@ void NavMeshEditor::OnClick_Load()
 
 	if (path.IsEmpty()) return;
 
-	HANDLE file = CreateFile(path, GENERIC_WRITE, 0, nullptr
-		, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+	Release_All();
 
-	size_t point_count = vec_nav_point_.size();
+	HANDLE file = CreateFile(path, GENERIC_READ, 0, nullptr
+		, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+	size_t point_count = 0;
+	size_t cell_count = 0;
 	DWORD byte = 0;
 
+
+	ReadFile(file, &point_count, sizeof(size_t), &byte, nullptr);
+	vec_nav_point_.reserve(point_count);
+	NavPoint* ptr_nav_point = nullptr;
+	for (size_t i = 0; i < point_count; ++i)
+	{
+		ptr_nav_point = NavPoint::Create(ptr_device_);
+		ReadFile(file, &ptr_nav_point->position(), sizeof(Vector3), &byte, nullptr);
+		vec_nav_point_.emplace_back(ptr_nav_point);
+	}
+
+	ReadFile(file, &cell_count, sizeof(size_t), &byte, nullptr);
+	vec_nav_mesh_.reserve(cell_count);
+	NavTri* ptr_nav_cell = nullptr;
+	int index = 0;
+	int cell_num = 0;
+	int option = 0;
+	int link_cell = 0;
+	std::array<NavPoint*, 3> nav_point_array;
+	for (size_t i = 0; i < cell_count; ++i)
+	{
+		ReadFile(file, &index, sizeof(int), &byte, nullptr);
+		nav_point_array[0] = vec_nav_point_[index];
+		ReadFile(file, &index, sizeof(int), &byte, nullptr);
+		nav_point_array[1] = vec_nav_point_[index];
+		ReadFile(file, &index, sizeof(int), &byte, nullptr);
+		nav_point_array[2] = vec_nav_point_[index];
+
+		ptr_nav_cell = NavTri::Create(ptr_device_, nav_point_array);
+
+		ReadFile(file, &ptr_nav_cell->cell_num(), sizeof(int), &byte, nullptr);
+		ReadFile(file, &ptr_nav_cell->option(), sizeof(int), &byte, nullptr);
+		ReadFile(file, &ptr_nav_cell->link_cell(), sizeof(int), &byte, nullptr);
+
+		vec_nav_mesh_.emplace_back(ptr_nav_cell);
+	}
+	ReadFile(file, &last_cell_num_, sizeof(int), &byte, nullptr);
+
+	CloseHandle(file);
 
 	Tool()->SetFileMode(false);
 }

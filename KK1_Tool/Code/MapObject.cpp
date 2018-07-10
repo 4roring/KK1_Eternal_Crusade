@@ -96,11 +96,11 @@ HRESULT MapObject::AddComponent(const std::wstring& mesh_key)
 	HRESULT hr = E_FAIL;
 
 	hr = Ready_Component(0, mesh_key, TEXT("StaticMesh"), ptr_mesh_);
-	assert(!FAILED(hr) && "ScreenImage Buffer ReadyComponent Failed");
+	assert(!FAILED(hr) && "StaticMesh Buffer ReadyComponent Failed");
 	hr = Ready_Component(0, TEXT("Component_Transform"), TEXT("Transform"), ptr_transform_);
 	assert(!FAILED(hr) && "Tranform Component ReadyComponent Failed");
 	hr = Ready_Component(0, TEXT("Shader_NormalMap"), TEXT("Shader"), ptr_shader_);
-	assert(!FAILED(hr) && "ScreenImage Shader ReadyComponent Failed");
+	assert(!FAILED(hr) && "Shader Shader ReadyComponent Failed");
 
 	return S_OK;
 }

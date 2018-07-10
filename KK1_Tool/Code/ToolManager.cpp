@@ -83,6 +83,9 @@ void CToolManager::Render()
 	switch (tab_id_)
 	{
 	case TabID::Stage:
+		if (nullptr != ptr_stage_editor_)
+			ptr_stage_editor_->Render();
+		break;
 	case TabID::NaviMesh:
 		if (nullptr != ptr_stage_editor_)
 			ptr_stage_editor_->Render();

@@ -8,6 +8,8 @@
 #include "DynamicMesh.h"
 #include "Shader.h"
 
+#include "SpaceMarin.h"
+
 #include "Stage.h"
 #include "LevelObject.h"
 #include "Transform.h"
@@ -84,6 +86,7 @@ HRESULT CLoading::Stage_Loading()
 
 	lstrcpy(loading_message_, TEXT("Stage Data Loading"));
 	StageDataLoad(MAINTAIN_STAGE, TEXT("../bin/Data/StageData/Test.dat"));
+	NavMeshDataLoad(TEXT("../bin/Data/StageData/Test_Nav.dat"));
 
 	lstrcpy(loading_message_, TEXT("Loading Complete"));
 
@@ -115,6 +118,12 @@ HRESULT CLoading::StageDataLoad(MAINTAINID stage_id, const TCHAR* path)
 		ReadFile(file, mesh_key, sizeof(mesh_key), &byte, nullptr);
 		ReadFile(file, object_key, sizeof(object_key), &byte, nullptr);
 
+		if (0 == lstrcmp(mesh_key, TEXT("SpaceMarin")))
+		{
+			AddDynamicObject(file, mesh_key, object_key, stage_id, byte);
+			continue;
+		}
+
 		ptr_component = Engine::GameManager()->FindComponent(stage_id, mesh_key);
 		if (nullptr == ptr_component)
 		{
@@ -131,6 +140,20 @@ HRESULT CLoading::StageDataLoad(MAINTAINID stage_id, const TCHAR* path)
 	CloseHandle(file);
 
 	return S_OK;
+}
+
+void CLoading::AddDynamicObject(HANDLE file, const TCHAR * mesh_key, const TCHAR * object_key, MAINTAINID stage_id, DWORD& byte)
+{
+	Engine::CGameObject* ptr_obj = CSpaceMarin::Create(ptr_device_);
+	assert(nullptr != ptr_obj && "SpaceMarin Create Failed");
+
+	(*pp_next_scene_)->AddObject(stage_id, object_key, ptr_obj);
+
+	Vector3 temp;
+
+	ReadFile(file, ptr_obj->transform()->position(), sizeof(Vector3), &byte, nullptr);
+	ReadFile(file, ptr_obj->transform()->rotation(), sizeof(Vector3), &byte, nullptr);
+	ReadFile(file, temp, sizeof(Vector3), &byte, nullptr);
 }
 
 HRESULT CLoading::FindAndLoadMesh(MAINTAINID stage_id, const std::wstring & mesh_key, const std::wstring & path)
@@ -167,6 +190,73 @@ HRESULT CLoading::FindAndLoadMesh(MAINTAINID stage_id, const std::wstring & mesh
 
 
 	return E_FAIL;
+}
+
+HRESULT CLoading::NavMeshDataLoad(const TCHAR * path)
+{
+	HANDLE file = CreateFile(path, GENERIC_READ, 0, nullptr
+		, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+	DWORD byte = 0;
+
+	size_t point_count = 0;
+	std::vector<Vector3> vec_nav_point;
+	ReadFile(file, &point_count, sizeof(size_t), &byte, nullptr);
+	vec_nav_point.resize(point_count);
+	for (size_t i = 0; i < point_count; ++i)
+		ReadFile(file, vec_nav_point[i], sizeof(Vector3), &byte, nullptr);
+
+	size_t nav_cell_count = 0;
+	int point_index = 0;
+	int cell_index = 0;
+	int option = 0;
+	int link_cell = 0;
+	std::array<Vector3, 3> cell_point_array;
+
+	ReadFile(file, &nav_cell_count, sizeof(size_t), &byte, nullptr);
+	Engine::GameManager()->Create_NavMeshAgent(nav_cell_count);
+	
+	for (size_t i = 0; i < nav_cell_count; ++i)
+	{
+		ReadFile(file, &point_index, sizeof(int), &byte, nullptr);
+		cell_point_array[0] = vec_nav_point[point_index];
+		ReadFile(file, &point_index, sizeof(int), &byte, nullptr);
+		cell_point_array[1] = vec_nav_point[point_index];
+		ReadFile(file, &point_index, sizeof(int), &byte, nullptr);
+		cell_point_array[2] = vec_nav_point[point_index];
+
+		while (false == ClockwiseCheckOfNavCell(cell_point_array));
+
+		ReadFile(file, &cell_index, sizeof(int), &byte, nullptr);
+		ReadFile(file, &option, sizeof(int), &byte, nullptr);
+		ReadFile(file, &link_cell, sizeof(int), &byte, nullptr);
+
+		Engine::GameManager()->AddNavCell(cell_point_array[0], cell_point_array[1], cell_point_array[2]
+			, cell_index, option, link_cell);
+	}
+	ReadFile(file, &point_index, sizeof(int), &byte, nullptr);
+
+	Engine::GameManager()->LinkCell();
+
+	CloseHandle(file);
+	return S_OK;
+}
+
+bool CLoading::ClockwiseCheckOfNavCell(std::array<Vector3, 3>& cell_point_array)
+{
+	Vector3 forward_vector = cell_point_array[1] - cell_point_array[0];
+	Vector3 right_vector = cell_point_array[2] - cell_point_array[0];
+	Vector3 normal = Vector3::Cross(forward_vector, right_vector);
+
+	if (normal.y > 0.f) return true;
+	else
+	{
+		const Vector3 temp = cell_point_array[1];
+		cell_point_array[1] = cell_point_array[2];
+		cell_point_array[2] = temp;
+		return false;
+	}
+	return true;
 }
 
 CLoading * CLoading::Create(LOADINGID loading_id, Engine::CScene** pp_scene_)

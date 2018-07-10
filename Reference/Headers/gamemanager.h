@@ -43,6 +43,9 @@ public:
 	void Render();
 	void LastFrame();
 
+private:
+	void Release();
+
 #ifdef _OLD_SCENE_SYSTEM
 public:
 	template<typename T>
@@ -52,14 +55,20 @@ public:
 public:
 	HRESULT SetNextScene(CScene* ptr_scene);
 
-private:
-	void Release();
+public:
+	HRESULT Create_NavMeshAgent(int cell_container_size);
+	HRESULT AddNavCell(const Vector3& point_a, const Vector3& point_b, const Vector3& point_c
+		, int index, int option, int link_cell_index);
+	void LinkCell();
+	int MoveFromNavMesh(Vector3& pos, const Vector3& dir, int current_index, int out_pass_fail_option = -1);
+	void ClearNavCell();
 
 private:
 	CScene* ptr_scene_ = nullptr;
 	CScene* ptr_next_scene_ = nullptr;
 	class CRenderer* ptr_renderer_ = nullptr;
 	class CComponentManager* ptr_component_manager_ = nullptr;
+	class CNavMeshAgent* ptr_nav_mesh_agent_ = nullptr;
 
 private:
 	LPDIRECT3DDEVICE9 ptr_device_;

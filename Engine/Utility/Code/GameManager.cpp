@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include "Renderer.h"
 #include "ComponentManager.h"
+#include "NavMeshAgent.h"
 
 Engine::CGameManager::CGameManager()
 {
@@ -74,6 +75,8 @@ void Engine::CGameManager::Render()
 #ifdef _DEBUG
 	if(nullptr != ptr_scene_)
 		ptr_scene_->Render();
+	if (nullptr != ptr_nav_mesh_agent_)
+		ptr_nav_mesh_agent_->Debug_Render();
 #endif	
 }
 
@@ -100,8 +103,38 @@ HRESULT Engine::CGameManager::SetNextScene(CScene * ptr_scene)
 	return S_OK;
 }
 
+HRESULT Engine::CGameManager::Create_NavMeshAgent(int cell_container_size)
+{
+	if (nullptr == ptr_device_) return E_FAIL;
+	ptr_nav_mesh_agent_ = CNavMeshAgent::Create(ptr_device_, cell_container_size);
+	if (nullptr == ptr_nav_mesh_agent_) return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT Engine::CGameManager::AddNavCell(const Vector3 & point_a, const Vector3 & point_b, const Vector3 & point_c, int index, int option, int link_cell_index)
+{
+	return ptr_nav_mesh_agent_->AddNavCell(point_a, point_b, point_c, index, option, link_cell_index);
+}
+
+void Engine::CGameManager::LinkCell()
+{
+	ptr_nav_mesh_agent_->LinkCell();
+}
+
+int Engine::CGameManager::MoveFromNavMesh(Vector3 & pos, const Vector3 & dir, int current_index, int out_pass_fail_option)
+{
+	return ptr_nav_mesh_agent_->MoveFromNavMesh(pos, dir, current_index, out_pass_fail_option);
+}
+
+void Engine::CGameManager::ClearNavCell()
+{
+	Safe_Delete(ptr_nav_mesh_agent_);
+}
+
 void Engine::CGameManager::Release()
 {
+	Safe_Delete(ptr_nav_mesh_agent_);
 	Safe_Delete(ptr_renderer_);
 	Safe_Delete(ptr_scene_);
 	Safe_Delete(ptr_component_manager_);

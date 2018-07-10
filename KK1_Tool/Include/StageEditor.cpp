@@ -73,7 +73,6 @@ BEGIN_MESSAGE_MAP(StageEditor, CPropertyPage)
 	ON_EN_CHANGE(IDC_EDIT7, &StageEditor::ChangeScaleX)
 	ON_EN_CHANGE(IDC_EDIT8, &StageEditor::ChangeScaleY)
 	ON_EN_CHANGE(IDC_EDIT9, &StageEditor::ChangeScaleZ)
-
 	ON_LBN_SELCHANGE(IDC_LIST2, &StageEditor::OnSelectObject)
 	ON_BN_CLICKED(IDC_BUTTON1, &StageEditor::OnClickSave)
 	ON_BN_CLICKED(IDC_BUTTON2, &StageEditor::OnClickLoad)
@@ -112,15 +111,7 @@ void StageEditor::PostNcDestroy()
 void StageEditor::OnClickAddObject()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	UpdateData(TRUE);
-	int select_list = resource_list_.GetCurSel();
-	CString select_name;
-	resource_list_.GetText(select_list, select_name);
-
-	MapObject* ptr_map_obj = MapObject::Create(ptr_device_, select_name.operator LPCWSTR());
-	AddMapObject(select_name.operator LPCWSTR(), ptr_map_obj);
-
-	UpdateData(FALSE);
+	AddMapObject(Vector3());
 }
 
 void StageEditor::OnClickDeleteObject()
@@ -207,9 +198,20 @@ void StageEditor::CheckInput()
 	if (Engine::Input()->GetKey(KEY::RBUTTON)) return;
 
 	if (Engine::Input()->GetKeyDown(KEY::LBUTTON))
-		PickObject();
-
-	if (Engine::Input()->GetKeyDown(KEY::W))
+	{
+		if(ctrl_mode_ == ControlMode::AddMode)
+			PickAddObject();
+		else
+			PickObject();
+	}
+		
+	if (Engine::Input()->GetKeyDown(KEY::Q))
+	{
+		ctrl_mode_ = (ctrl_mode_ != ControlMode::AddMode)
+			? ControlMode::AddMode : ControlMode::End;
+		Tool()->SetViewText(TEXT("Add Object Mode"));
+	}
+	else if (Engine::Input()->GetKeyDown(KEY::W))
 	{
 		ctrl_mode_ = (ctrl_mode_ != ControlMode::Position)
 			? ControlMode::Position : ControlMode::End;
@@ -247,38 +249,89 @@ void StageEditor::PickObject()
 	RayToViewSpace(ray_pos, ray_dir, mouse_pos);
 	RayToWorldSpace(ray_pos, ray_dir);
 
-	std::map<float, MapObject*> pick_object_map;
+	ptr_select_object_ = nullptr;
+	float pre_dist = 99999.f;
 	for (auto& pair : map_object_)
 	{
 		float dist = 0.f;
 		if (true == pair.second->RaycastToMesh(ray_pos, ray_dir, &dist))
-			pick_object_map.emplace(dist, pair.second);
+		{
+			if (pre_dist > dist)
+			{
+				ptr_select_object_ = pair.second;
+				pre_dist = dist;
+			}
+		}
 	}
 
-	if (true == pick_object_map.empty())
-	{
-		ptr_select_object_ = nullptr;
+	if (nullptr == ptr_select_object_)
 		object_list_.SetCurSel(-1);
-	}
 	else
 	{
-		ptr_select_object_ = pick_object_map.begin()->second;
 		int cursor_num = object_list_.FindString(0, ptr_select_object_->object_key().c_str());
 		object_list_.SetCurSel(cursor_num);
 	}
 }
 
-bool StageEditor::PickObject(Vector3 & ray_pos, Vector3 & ray_dir, float * dist)
+void StageEditor::PickAddObject()
 {
-	std::map<float, MapObject*> pick_object_map;
+	POINT mouse_pos;
+	Engine::Input()->GetMousePos(g_hwnd, &mouse_pos);
+
+	if (false == CheckMouseInScreen(mouse_pos)) return;
+
+	Vector3 ray_pos;
+	Vector3 ray_dir;
+
+	RayToViewSpace(ray_pos, ray_dir, mouse_pos);
+	RayToWorldSpace(ray_pos, ray_dir);
+
+
+	float dist = 0.f;
+	Vector3 point[4] = { Vector3(-100.f, 0.f, 100.f),  Vector3(100.f, 0.f, 100.f)
+		, Vector3(-100.f, 0.f, -100.f), Vector3(100.f, 0.f, -100.f) };
+
+	BOOL is_picking = FALSE;
+
+	is_picking = D3DXIntersectTri(&point[0], &point[1], &point[2], &ray_pos, &ray_dir, nullptr, nullptr, &dist);
+	if(FALSE == is_picking)
+		D3DXIntersectTri(&point[1], &point[3], &point[2], &ray_pos, &ray_dir, nullptr, nullptr, &dist);
+	
+	Vector3 obj_pos = ray_pos + ray_dir * dist;
+	obj_pos.x = std::floorf(obj_pos.x);
+	obj_pos.y = 0.f;
+	obj_pos.z = std::floorf(obj_pos.z);
+
+	AddMapObject(obj_pos);
+}
+
+void StageEditor::AddMapObject(const Vector3& obj_pos)
+{
+	UpdateData(TRUE);
+	int select_list = resource_list_.GetCurSel();
+	CString select_name;
+	resource_list_.GetText(select_list, select_name);
+
+	MapObject* ptr_map_obj = MapObject::Create(ptr_device_, select_name.operator LPCWSTR());
+	ptr_map_obj->transform()->position() = obj_pos;
+	AddMapObject(select_name.operator LPCWSTR(), ptr_map_obj);
+	UpdateData(FALSE);
+}
+
+bool StageEditor::PickObject(Vector3 & ray_pos, Vector3 & ray_dir, float * out_dist)
+{
+	*out_dist = 99999.f;
+	float new_dist = 99999.f;
 	for (auto& pair : map_object_)
 	{
-		if (true == pair.second->RaycastToMesh(ray_pos, ray_dir, dist))
-			pick_object_map.emplace(*dist, pair.second);
+		if (true == pair.second->RaycastToMesh(ray_pos, ray_dir, &new_dist))
+		{
+			if (*out_dist > new_dist)
+				*out_dist = new_dist;
+		}
 	}
-
-	if (true == pick_object_map.empty()) return false;
-	*dist = pick_object_map.begin()->first;
+	
+	if (new_dist == 99999.f) return false;
 	return true;
 }
 

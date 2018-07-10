@@ -4,7 +4,7 @@
 
 BEGIN(Engine)
 
-class ENGINE_DLL CLoader
+class CLoader
 	: public ID3DXAllocateHierarchy
 {
 private:

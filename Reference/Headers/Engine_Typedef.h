@@ -55,7 +55,7 @@ struct Vector3 : public D3DXVECTOR3
 	}
 
 	// Vector + Vector
-	Vector3 operator+(Vector3& dst)
+	Vector3 operator+(const Vector3& dst)
 	{
 		const float _x = x + dst.x;
 		const float _y = y + dst.y;
@@ -63,7 +63,7 @@ struct Vector3 : public D3DXVECTOR3
 
 		return Vector3(_x, _y, _z);
 	}
-	Vector3& operator+=(Vector3& dst)
+	Vector3& operator+=(const Vector3& dst)
 	{
 		x += dst.x;
 		y += dst.y;
@@ -91,7 +91,7 @@ struct Vector3 : public D3DXVECTOR3
 	}
 
 	// Vector - Vector
-	Vector3 operator-(Vector3& dst)
+	Vector3 operator-(const Vector3& dst)
 	{
 		const float _x = x - dst.x;
 		const float _y = y - dst.y;
@@ -99,7 +99,7 @@ struct Vector3 : public D3DXVECTOR3
 
 		return Vector3(_x, _y, _z);
 	}
-	Vector3& operator-=(Vector3& dst)
+	Vector3& operator-=(const Vector3& dst)
 	{
 		x -= dst.x;
 		y -= dst.y;
@@ -143,6 +143,20 @@ struct Vector3 : public D3DXVECTOR3
 		z /= value;
 
 		return *this;
+	}
+	bool operator==(const Vector3& rhs)
+	{
+		if (this->x != rhs.x) return false;
+		else if (this->y != rhs.y) return false;
+		else if (this->z != rhs.z) return false;
+		else return true;
+	}
+	bool operator!=(const Vector3& rhs)
+	{
+		if (this->x != rhs.x) return true;
+		else if (this->y != rhs.y) return true;
+		else if (this->z != rhs.z) return true;
+		else return false;
 	}
 
 	// Function

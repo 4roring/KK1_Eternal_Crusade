@@ -71,18 +71,6 @@ HRESULT CStage::Add_GameLogic_Layer()
 	//assert(nullptr != ptr_obj && "Test Plane2 Create Failed");
 	//AddObject(LAYER_GAMELOGIC, TEXT("TestPlane2"), ptr_obj);
 
-	for (int i = 0; i < 3; ++i)
-	{
-		for (int j = 0; j < 3; ++j)
-		{
-			ptr_obj = CSpaceMarin::Create(ptr_device_);
-			assert(nullptr != ptr_obj && "SpaceMarin Create Failed");
-
-			AddObject(LAYER_GAMELOGIC, TEXT("SpaceMarin"), ptr_obj);
-			ptr_obj->transform()->position() = Vector3(i * 5.f, 0.f, j * 5.f);
-		}
-	}
-
 	return S_OK;
 }
 
@@ -107,7 +95,7 @@ HRESULT CStage::Add_Light()
 	light_info.Direction = D3DXVECTOR3(0.f, -1.f, 1.f);
 
 	ptr_device_->SetLight(0, &light_info);
-	
+
 	return S_OK;
 }
 
