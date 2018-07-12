@@ -2,6 +2,7 @@
 
 #include "Engine_Include.h"
 #include "Engine_Singleton.h"
+#include "Scene.h"
 
 BEGIN(Engine)
 
@@ -19,13 +20,11 @@ private:
 
 public:
 	template<typename T>
-	const T* GetComponent(int layer_id
-		, const std::wstring& object_key, const std::wstring component_key);
+	T* GetComponent(int layer_id
+		, const std::wstring& object_key, const std::wstring & component_key) const;
 	void AddRenderLayer(RENDERLAYER render_id, CGameObject* ptr_object);
 
 public:
-	template<typename T>
-	const CComponent* GetComponent(int container_index, const std::wstring& component_key);
 	CComponent* FindComponent(int container_index, const std::wstring& component_key);
 	CComponent* CloneComponent(int container_index, const std::wstring& component_key);
 
@@ -61,6 +60,7 @@ public:
 		, int index, int option, int link_cell_index);
 	void LinkCell();
 	int MoveFromNavMesh(Vector3& pos, const Vector3& dir, int current_index, int out_pass_fail_option = -1);
+	int FindCellIndex(const Vector3& pos);
 	void ClearNavCell();
 
 private:
@@ -75,14 +75,11 @@ private:
 };
 
 template<typename T>
-inline const T * CGameManager::GetComponent(int layer_id, const std::wstring & object_key, const std::wstring component_key)
+inline T * CGameManager::GetComponent(int layer_id, const std::wstring & object_key, const std::wstring & component_key) const
 {
-	const CComponent* ptr_component = FindComponent(container_index, component_key);
-	if (ptr_component == nullptr)
+	T* ptr_component = dynamic_cast<T*>(ptr_scene_->GetComponentToLayerObject(layer_id, object_key, component_key));
+	if (nullptr == ptr_component)
 		return nullptr;
-
-	dynamic_cast<T>(ptr_component);
-	assert(nullptr != ptr_component && "GetComponent Dynamic_cast Error");
 
 	return ptr_component;
 }

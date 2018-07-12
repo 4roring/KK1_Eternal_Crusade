@@ -21,6 +21,7 @@ Engine::CCamera::CCamera(LPDIRECT3DDEVICE9 ptr_device)
 
 Engine::CCamera::~CCamera()
 {
+	Release();
 }
 
 Vector3 & Engine::CCamera::eye()
@@ -61,7 +62,7 @@ void Engine::CCamera::SetProjection(float fov_y, float aspect, float z_near, flo
 	Invalidate_Projection();
 }
 
-HRESULT Engine::CCamera::Initialize()
+HRESULT Engine::CCamera::InitCamera()
 {
 	ptr_camera_info_ = new CameraInfo;
 

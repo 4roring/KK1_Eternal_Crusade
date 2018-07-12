@@ -20,7 +20,7 @@ public:
 	static CNavLine* Create(const Vector3& start_point, const Vector3& end_point);
 
 public:
-	Vector3 refelction(const Vector3& in_vector);
+	Vector3 SlidingDirection(const Vector3& in_vector);
 
 private:
 	Vector2 start_point_ = Vector2(0.f, 0.f);

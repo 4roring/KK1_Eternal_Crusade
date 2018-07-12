@@ -11,7 +11,7 @@ Engine::CScene::~CScene()
 	Release();
 }
 
-const Engine::CComponent * Engine::CScene::GetComponent(int layer_id, const std::wstring & object_key, const std::wstring component_key)
+Engine::CComponent * Engine::CScene::GetComponentToLayerObject(int layer_id, const std::wstring & object_key, const std::wstring & component_key) const
 {
 	return ptr_layer_->GetComponent(layer_id, object_key, component_key);
 }
@@ -23,6 +23,11 @@ HRESULT Engine::CScene::InitScene()
 	if (nullptr == ptr_layer_)
 		return E_FAIL;
 
+	return S_OK;
+}
+
+HRESULT Engine::CScene::LateInit()
+{
 	return S_OK;
 }
 

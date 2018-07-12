@@ -26,7 +26,9 @@ public:
 
 public:
 	HRESULT StageDataLoad(MAINTAINID stage_id, const TCHAR* path);
-	void AddDynamicObject(HANDLE file, const TCHAR* mesh_key, const TCHAR* object_key, MAINTAINID stage_id, DWORD& byte);
+	void AddPlayerSpaceMarin(HANDLE file, const TCHAR* mesh_key, const TCHAR* object_key, MAINTAINID stage_id, DWORD& byte);
+	void AddTeamSpaceMarin(HANDLE file, const TCHAR* mesh_key, const TCHAR* object_key, MAINTAINID stage_id, DWORD& byte);
+	void AddEnemyObject(HANDLE file, const TCHAR* mesh_key, const TCHAR* object_key, MAINTAINID stage_id, DWORD& byte);
 	HRESULT FindAndLoadMesh(MAINTAINID stage_id, const std::wstring& mesh_key, const std::wstring& path);
 	HRESULT NavMeshDataLoad(const TCHAR* path);
 	bool ClockwiseCheckOfNavCell(std::array<Vector3, 3>& cell_point_array);

@@ -16,7 +16,7 @@ public:
 	~CLayer();
 
 public:
-	const CComponent* GetComponent(int layer_id, const std::wstring& object_key, const std::wstring& component_key);
+	CComponent* GetComponent(int layer_id, const std::wstring& object_key, const std::wstring& component_key) const;
 
 public:
 	HRESULT AddObject(int layer_id, const std::wstring& object_key, CGameObject* ptr_object);

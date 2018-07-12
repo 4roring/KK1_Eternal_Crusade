@@ -89,6 +89,7 @@ void Engine::CGameManager::LastFrame()
 	{
 		Safe_Delete(ptr_scene_);
 		ptr_scene_ = ptr_next_scene_;
+		ptr_scene_->LateInit();
 	}
 }
 
@@ -125,6 +126,11 @@ void Engine::CGameManager::LinkCell()
 int Engine::CGameManager::MoveFromNavMesh(Vector3 & pos, const Vector3 & dir, int current_index, int out_pass_fail_option)
 {
 	return ptr_nav_mesh_agent_->MoveFromNavMesh(pos, dir, current_index, out_pass_fail_option);
+}
+
+int Engine::CGameManager::FindCellIndex(const Vector3 & pos)
+{
+	return ptr_nav_mesh_agent_->FindCellIndex(pos);
 }
 
 void Engine::CGameManager::ClearNavCell()

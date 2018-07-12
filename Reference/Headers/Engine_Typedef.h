@@ -146,17 +146,14 @@ struct Vector3 : public D3DXVECTOR3
 	}
 	bool operator==(const Vector3& rhs)
 	{
-		if (this->x != rhs.x) return false;
-		else if (this->y != rhs.y) return false;
-		else if (this->z != rhs.z) return false;
-		else return true;
+		//float result = fabs((x - rhs.x) + (y - rhs.y) + (z - rhs.z));
+		//return result < 0.001f;
+
+		return x == rhs.x && y == rhs.y && z == rhs.z;
 	}
 	bool operator!=(const Vector3& rhs)
 	{
-		if (this->x != rhs.x) return true;
-		else if (this->y != rhs.y) return true;
-		else if (this->z != rhs.z) return true;
-		else return false;
+		return x != rhs.x || y != rhs.y || z != rhs.z;
 	}
 
 	// Function
@@ -168,7 +165,7 @@ struct Vector3 : public D3DXVECTOR3
 	{
 		return fabsf((*this - dst).Length());
 	}
-	Vector3 Normalize()
+	const Vector3 Normalize()
 	{
 		const float length = this->Length();
 		

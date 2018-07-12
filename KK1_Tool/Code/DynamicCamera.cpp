@@ -8,12 +8,12 @@ DynamicCamera::DynamicCamera(LPDIRECT3DDEVICE9 ptr_device)
 
 DynamicCamera::~DynamicCamera()
 {
-	Release();
+
 }
 
 HRESULT DynamicCamera::InitCamera(const Vector3 & eye, const Vector3 & at)
 {
-	CCamera::Initialize();
+	CCamera::InitCamera();
 	
 	speed_ = 15.f;
 

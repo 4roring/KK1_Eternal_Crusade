@@ -15,7 +15,7 @@ public:
 	~CComponentMap();
 
 public:
-	const CComponent* GetComponent(const std::wstring& component_key);
+	CComponent* GetComponent(const std::wstring& component_key) const;
 
 public:
 	void AddComponent(const std::wstring& instance_key, CComponent* ptr_component);

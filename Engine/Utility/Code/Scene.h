@@ -17,10 +17,11 @@ public:
 	virtual ~CScene();
 
 public:
-	const CComponent* GetComponent(int layer_id, const std::wstring& object_key, const std::wstring component_key);
+	CComponent* GetComponentToLayerObject(int layer_id, const std::wstring& object_key, const std::wstring& component_key) const;
 
 public:
-	virtual HRESULT InitScene() PURE;
+	virtual HRESULT InitScene();
+	virtual HRESULT LateInit();
 	virtual void Update(float delta_time) PURE;
 	virtual void Render();
 	virtual void LastFrame();

@@ -24,6 +24,7 @@ public:
 public:
 	void SetTrackPosition(DOUBLE position);
 	void SetAnimationTrack(uint32 anim_index);
+	void SetAnimationTrack(const char* anim_name);
 	void SetMaxAnimSet();
 	void FrameMove(float delta_time);
 

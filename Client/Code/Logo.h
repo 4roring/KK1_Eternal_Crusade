@@ -15,7 +15,7 @@ private:
 	explicit CLogo(LPDIRECT3DDEVICE9 ptr_device);
 
 private:
-	HRESULT InitScene();
+	virtual HRESULT InitScene() override;
 
 public:
 	virtual ~CLogo();

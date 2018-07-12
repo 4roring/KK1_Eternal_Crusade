@@ -24,12 +24,12 @@ public:
 	void SetProjection(float fov_y, float aspect, float z_near, float z_far);
 
 protected:
-	virtual HRESULT Initialize() override;
+	HRESULT InitCamera();
 
 public:
 	virtual void Update(float delta_time);
 
-protected:
+private:
 	void Release();
 
 private:

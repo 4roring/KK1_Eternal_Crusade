@@ -12,7 +12,7 @@ Engine::CGameObject::~CGameObject()
 	Release();
 }
 
-const Engine::CComponent * Engine::CGameObject::GetComponent(const std::wstring & component_key)
+Engine::CComponent * Engine::CGameObject::GetComponent(const std::wstring & component_key) const
 {
 	return ptr_component_map_->GetComponent(component_key);
 }

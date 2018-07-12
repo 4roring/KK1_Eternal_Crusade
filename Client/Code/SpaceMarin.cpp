@@ -6,6 +6,8 @@
 #include "DynamicMesh.h"
 #include "AnimController.h"
 
+#include "PlayerController.h"
+
 CSpaceMarin::CSpaceMarin(LPDIRECT3DDEVICE9 ptr_device)
 	: Engine::CGameObject(ptr_device)
 {
@@ -16,34 +18,37 @@ CSpaceMarin::~CSpaceMarin()
 	Release();
 }
 
-HRESULT CSpaceMarin::Initialize()
+HRESULT CSpaceMarin::Initialize(int ctrl_id)
 {
 	HRESULT hr = CGameObject::Initialize();
 	assert(!FAILED(hr) && "CGameObject::Initialize call failed in SpaceMarin");
 
-	hr = AddComponent();
+	hr = AddComponent(ctrl_id);
 	assert(!FAILED(hr) && "AddComponent call failed in SpaceMarin");
 
-	anim_track_ = rand() % 34;
+	ptr_anim_ctrl_->SetAnimationTrack("Idle");
 
-	
-
-	ptr_anim_ctrl_->SetAnimationTrack(anim_track_);
+	current_cell_index_ = -1;
 
 	return S_OK;
 }
 
 void CSpaceMarin::Update(float delta_time)
 {
-	Engine::GameManager()->AddRenderLayer(Engine::RENDERLAYER::LAYER_NONEALPHA, this);
+	if(current_cell_index_ == -1)
+		current_cell_index_ = Engine::GameManager()->FindCellIndex(ptr_transform_->position());
 
 	if (ptr_anim_ctrl_->GetPeriod() <= ptr_anim_ctrl_->GetTrackPosition())
-	{
-		ptr_anim_ctrl_->SetAnimationTrack(anim_track_);
 		ptr_anim_ctrl_->SetTrackPosition(0.0);
-	}
 
 	Engine::CGameObject::Update(delta_time);
+	current_cell_index_ = Engine::GameManager()->MoveFromNavMesh(ptr_transform_->position(), ptr_transform_->move_dir(), current_cell_index_, 0);
+	//ptr_transform_->position() += ptr_transform_->move_dir();
+}
+
+void CSpaceMarin::LateUpdate()
+{
+	Engine::GameManager()->AddRenderLayer(Engine::RENDERLAYER::LAYER_NONEALPHA, this);
 }
 
 void CSpaceMarin::Render()
@@ -66,10 +71,10 @@ void CSpaceMarin::Render()
 	ptr_mesh_->RenderMesh(ptr_effect);
 }
 
-CSpaceMarin * CSpaceMarin::Create(LPDIRECT3DDEVICE9 ptr_device)
+CSpaceMarin * CSpaceMarin::Create(LPDIRECT3DDEVICE9 ptr_device, int ctrl_id)
 {
 	CSpaceMarin* ptr_obj = new CSpaceMarin(ptr_device);
-	if (FAILED(ptr_obj->Initialize()))
+	if (FAILED(ptr_obj->Initialize(ctrl_id)))
 	{
 		Safe_Delete(ptr_obj);
 		assert(!"SpaceMarin Create Failed");
@@ -78,7 +83,7 @@ CSpaceMarin * CSpaceMarin::Create(LPDIRECT3DDEVICE9 ptr_device)
 	return ptr_obj;
 }
 
-HRESULT CSpaceMarin::AddComponent()
+HRESULT CSpaceMarin::AddComponent(int ctrl_id)
 {
 	HRESULT hr = E_FAIL;
 
@@ -89,6 +94,18 @@ HRESULT CSpaceMarin::AddComponent()
 	hr = Ready_Component(MAINTAIN_STAGE, TEXT("SpaceMarin_Mesh"), TEXT("Mesh"), ptr_mesh_);
 	assert(hr == S_OK && "Mesh ReadyComponent Failed");
 	ptr_anim_ctrl_ = ptr_mesh_->CloneAnimController();
+
+	if (0 == ctrl_id)
+	{
+		ptr_ctrl_ = CPlayerController::Create(ptr_transform_, 5.f, 5.f);
+		ptr_transform_->AddReferenceCount();
+		CGameObject::AddComponent(TEXT("PlayerController"), ptr_ctrl_);
+
+		if (nullptr != ptr_ctrl_)
+			Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE, TEXT("Component_PlayerController"), ptr_ctrl_->CloneComponent());
+	}
+	// TODO: ctrl_id 1일때 AIController 추가하기.
+
 	return S_OK;
 }
 

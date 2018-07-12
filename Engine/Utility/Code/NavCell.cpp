@@ -115,46 +115,46 @@ void Engine::CNavCell::Release()
 		Safe_Delete(nav_line);
 }
 
-bool Engine::CNavCell::ComparePoint(const Vector3 & first_point, const Vector3 & second_point, const CNavCell * ptr_neightbor)
+bool Engine::CNavCell::ComparePoint(const Vector3 & first_point, const Vector3 & second_point, CNavCell * ptr_neighbor)
 {
-	if (first_point == point_[POINT_A])
+	if (point_[POINT_A] == first_point)
 	{
-		if (second_point == point_[POINT_B])
+		if (point_[POINT_B] == second_point)
 		{
-			ptr_neighbor_[NEIGHBOR_AB] = *ptr_neighbor_;
+			ptr_neighbor_[NEIGHBOR_AB] = ptr_neighbor;
 			return true;
 		}
-		else if (second_point == point_[POINT_C])
+		else if (point_[POINT_C] == second_point)
 		{
-			ptr_neighbor_[NEIGHBOR_CA] = *ptr_neighbor_;
+			ptr_neighbor_[NEIGHBOR_CA] = ptr_neighbor;
 			return true;
 		}
 	}
-
-	if (first_point == point_[POINT_B])
+	
+	if (point_[POINT_B] == first_point)
 	{
-		if (second_point == point_[POINT_A])
+		if (point_[POINT_A] == second_point)
 		{
-			ptr_neighbor_[NEIGHBOR_AB] = *ptr_neighbor_;
+			ptr_neighbor_[NEIGHBOR_AB] = ptr_neighbor;
 			return true;
 		}
-		else if (second_point == point_[POINT_C])
+		else if (point_[POINT_C] == second_point)
 		{
-			ptr_neighbor_[NEIGHBOR_BC] = *ptr_neighbor_;
+			ptr_neighbor_[NEIGHBOR_BC] = ptr_neighbor;
 			return true;
 		}
 	}
-
-	if (first_point == point_[POINT_C])
+	
+	if (point_[POINT_C] == first_point)
 	{
-		if (second_point == point_[POINT_A])
+		if (point_[POINT_A] == second_point)
 		{
-			ptr_neighbor_[NEIGHBOR_CA] = *ptr_neighbor_;
+			ptr_neighbor_[NEIGHBOR_CA] = ptr_neighbor;
 			return true;
 		}
-		else if (second_point == point_[POINT_B])
+		else if (point_[POINT_B] == second_point)
 		{
-			ptr_neighbor_[NEIGHBOR_BC] = *ptr_neighbor_;
+			ptr_neighbor_[NEIGHBOR_BC] = ptr_neighbor;
 			return true;
 		}
 	}
@@ -166,7 +166,7 @@ bool Engine::CNavCell::CheckPass(const Vector3 & pos, const Vector3 & dir, NEIGH
 {
 	for (int i = 0; i < LINE_END; ++i)
 	{
-		if (ptr_nav_line_[i]->CheckLine(Vector2(pos.x + dir.x, pos.z + dir.z)))
+		if (true == ptr_nav_line_[i]->CheckLine(Vector2(pos.x + dir.x, pos.z + dir.z)))
 		{
 			neighbor_id = NEIGHBORID(i);
 			return true;
@@ -177,8 +177,19 @@ bool Engine::CNavCell::CheckPass(const Vector3 & pos, const Vector3 & dir, NEIGH
 
 bool Engine::CNavCell::NeighborNullCheck()
 {
-	for (auto& neighbor : ptr_neighbor_)
+	for (const auto& neighbor : ptr_neighbor_)
 		if (nullptr == neighbor) return true;
 
 	return false;
+}
+
+bool Engine::CNavCell::CheckInsideCell(const Vector3 & pos)
+{
+	for (auto& nav_line : ptr_nav_line_)
+	{
+		if (true == nav_line->CheckLine(Vector2(pos.x, pos.z)))
+			return false;
+	}
+
+	return true;
 }

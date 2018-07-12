@@ -9,6 +9,7 @@
 #include "Shader.h"
 
 #include "SpaceMarin.h"
+#include "PlayerCamera.h"
 
 #include "Stage.h"
 #include "LevelObject.h"
@@ -82,11 +83,12 @@ HRESULT CLoading::Stage_Loading()
 
 	lstrcpy(loading_message_, TEXT("Scene Initializing"));
 	*pp_next_scene_ = CStage::Create(ptr_device_);
-	(*pp_next_scene_)->InitScene();
+
+	// NavMesh
+	NavMeshDataLoad(TEXT("../bin/Data/StageData/Test_Nav.dat"));
 
 	lstrcpy(loading_message_, TEXT("Stage Data Loading"));
 	StageDataLoad(MAINTAIN_STAGE, TEXT("../bin/Data/StageData/Test.dat"));
-	NavMeshDataLoad(TEXT("../bin/Data/StageData/Test_Nav.dat"));
 
 	lstrcpy(loading_message_, TEXT("Loading Complete"));
 
@@ -120,7 +122,7 @@ HRESULT CLoading::StageDataLoad(MAINTAINID stage_id, const TCHAR* path)
 
 		if (0 == lstrcmp(mesh_key, TEXT("SpaceMarin")))
 		{
-			AddDynamicObject(file, mesh_key, object_key, stage_id, byte);
+			AddPlayerSpaceMarin(file, mesh_key, object_key, stage_id, byte);
 			continue;
 		}
 
@@ -142,7 +144,20 @@ HRESULT CLoading::StageDataLoad(MAINTAINID stage_id, const TCHAR* path)
 	return S_OK;
 }
 
-void CLoading::AddDynamicObject(HANDLE file, const TCHAR * mesh_key, const TCHAR * object_key, MAINTAINID stage_id, DWORD& byte)
+void CLoading::AddPlayerSpaceMarin(HANDLE file, const TCHAR * mesh_key, const TCHAR * object_key, MAINTAINID stage_id, DWORD & byte)
+{
+	Engine::CGameObject* ptr_obj = CSpaceMarin::Create(ptr_device_);
+	assert(nullptr != ptr_obj && "SpaceMarin Create Failed");
+	(*pp_next_scene_)->AddObject(stage_id, object_key, ptr_obj);
+
+	Vector3 temp;
+
+	ReadFile(file, ptr_obj->transform()->position(), sizeof(Vector3), &byte, nullptr);
+	ReadFile(file, ptr_obj->transform()->rotation(), sizeof(Vector3), &byte, nullptr);
+	ReadFile(file, temp, sizeof(Vector3), &byte, nullptr);
+}
+
+void CLoading::AddTeamSpaceMarin(HANDLE file, const TCHAR * mesh_key, const TCHAR * object_key, MAINTAINID stage_id, DWORD & byte)
 {
 	Engine::CGameObject* ptr_obj = CSpaceMarin::Create(ptr_device_);
 	assert(nullptr != ptr_obj && "SpaceMarin Create Failed");
@@ -154,6 +169,10 @@ void CLoading::AddDynamicObject(HANDLE file, const TCHAR * mesh_key, const TCHAR
 	ReadFile(file, ptr_obj->transform()->position(), sizeof(Vector3), &byte, nullptr);
 	ReadFile(file, ptr_obj->transform()->rotation(), sizeof(Vector3), &byte, nullptr);
 	ReadFile(file, temp, sizeof(Vector3), &byte, nullptr);
+}
+
+void CLoading::AddEnemyObject(HANDLE file, const TCHAR * mesh_key, const TCHAR * object_key, MAINTAINID stage_id, DWORD & byte)
+{
 }
 
 HRESULT CLoading::FindAndLoadMesh(MAINTAINID stage_id, const std::wstring & mesh_key, const std::wstring & path)
@@ -188,7 +207,6 @@ HRESULT CLoading::FindAndLoadMesh(MAINTAINID stage_id, const std::wstring & mesh
 		}
 	}
 
-
 	return E_FAIL;
 }
 
@@ -199,8 +217,10 @@ HRESULT CLoading::NavMeshDataLoad(const TCHAR * path)
 
 	DWORD byte = 0;
 
+	int vector_size = 0;
 	size_t point_count = 0;
 	std::vector<Vector3> vec_nav_point;
+	ReadFile(file, &vector_size, sizeof(int), &byte, nullptr);
 	ReadFile(file, &point_count, sizeof(size_t), &byte, nullptr);
 	vec_nav_point.resize(point_count);
 	for (size_t i = 0; i < point_count; ++i)
@@ -214,7 +234,7 @@ HRESULT CLoading::NavMeshDataLoad(const TCHAR * path)
 	std::array<Vector3, 3> cell_point_array;
 
 	ReadFile(file, &nav_cell_count, sizeof(size_t), &byte, nullptr);
-	Engine::GameManager()->Create_NavMeshAgent(nav_cell_count);
+	Engine::GameManager()->Create_NavMeshAgent(vector_size);
 	
 	for (size_t i = 0; i < nav_cell_count; ++i)
 	{
@@ -234,8 +254,7 @@ HRESULT CLoading::NavMeshDataLoad(const TCHAR * path)
 		Engine::GameManager()->AddNavCell(cell_point_array[0], cell_point_array[1], cell_point_array[2]
 			, cell_index, option, link_cell);
 	}
-	ReadFile(file, &point_index, sizeof(int), &byte, nullptr);
-
+	
 	Engine::GameManager()->LinkCell();
 
 	CloseHandle(file);
@@ -244,8 +263,8 @@ HRESULT CLoading::NavMeshDataLoad(const TCHAR * path)
 
 bool CLoading::ClockwiseCheckOfNavCell(std::array<Vector3, 3>& cell_point_array)
 {
-	Vector3 forward_vector = cell_point_array[1] - cell_point_array[0];
-	Vector3 right_vector = cell_point_array[2] - cell_point_array[0];
+	const Vector3 forward_vector = cell_point_array[1] - cell_point_array[0];
+	const Vector3 right_vector = cell_point_array[2] - cell_point_array[0];
 	Vector3 normal = Vector3::Cross(forward_vector, right_vector);
 
 	if (normal.y > 0.f) return true;

@@ -19,7 +19,7 @@ public:
 	virtual ~CScreenImage();
 
 private:
-	virtual HRESULT Initialize() override;
+	HRESULT Initialize();
 
 public:
 	virtual void Update(float delta_time) override;

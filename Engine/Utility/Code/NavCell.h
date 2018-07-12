@@ -45,14 +45,15 @@ private:
 	void Release();
 
 public:
-	bool ComparePoint(const Vector3& first_point, const Vector3& second_point, const CNavCell* ptr_neightbor);
+	bool ComparePoint(const Vector3& first_point, const Vector3& second_point, CNavCell* ptr_neightbor);
 	bool CheckPass(const Vector3& pos, const Vector3& dir, NEIGHBORID& neighbor_id);
 	bool NeighborNullCheck();
+	bool CheckInsideCell(const Vector3& pos);
 
-public:
+private:
 	CNavLine* ptr_nav_line_[LINE_END] = {};
 	Vector3 point_[POINT_END] = {};
-	CNavCell* ptr_neighbor_[NEIGHBOR_END] = {};
+	CNavCell* ptr_neighbor_[NEIGHBOR_END] = { nullptr };
 
 private:
 	int index_ = 0;

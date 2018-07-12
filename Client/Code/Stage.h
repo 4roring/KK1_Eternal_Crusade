@@ -12,7 +12,7 @@ public:
 	virtual ~CStage();
 
 private:
-	HRESULT InitScene();
+	virtual HRESULT LateInit() override;
 
 public:
 	virtual void Update(float delta_time) override;
@@ -23,6 +23,7 @@ public:
 private:
 	HRESULT Add_Environmemt_Layer();
 	HRESULT Add_GameLogic_Layer();
+	HRESULT Add_Camera_Layer();
 	HRESULT Add_UI_Layer();
 	HRESULT Add_Light();
 	void Release();

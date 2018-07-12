@@ -94,6 +94,45 @@ void Engine::CAnimController::SetAnimationTrack(uint32 anim_index)
 	ptr_anim_ctrl_->ResetTime();
 }
 
+void Engine::CAnimController::SetAnimationTrack(const char * anim_name)
+{
+	if (nullptr == anim_name)
+		assert(!"anim name is nullptr");
+
+	if (current_track_ == 0)
+		new_track_ = 1;
+	else
+		new_track_ = 0;
+
+	LPD3DXANIMATIONSET		ptr_anim_set = nullptr;
+	ptr_anim_ctrl_->GetAnimationSetByName(anim_name, &ptr_anim_set);
+
+	period_ = ptr_anim_set->GetPeriod();
+
+	ptr_anim_ctrl_->SetTrackAnimationSet(new_track_, ptr_anim_set);
+	ptr_anim_set->Release();
+
+	ptr_anim_ctrl_->UnkeyAllTrackEvents(current_track_);
+	ptr_anim_ctrl_->UnkeyAllTrackEvents(new_track_);
+
+	DOUBLE		duration = 0.25;
+
+	//현재트랙 종료
+	ptr_anim_ctrl_->KeyTrackEnable(current_track_, FALSE, acc_time_ + duration);
+	ptr_anim_ctrl_->KeyTrackSpeed(current_track_, 1.f, acc_time_, duration, D3DXTRANSITION_LINEAR);
+	ptr_anim_ctrl_->KeyTrackWeight(current_track_, 0.1f, acc_time_, duration, D3DXTRANSITION_LINEAR);
+
+	//새 트랙 시작
+	ptr_anim_ctrl_->SetTrackEnable(new_track_, TRUE);
+	ptr_anim_ctrl_->KeyTrackSpeed(new_track_, 1.f, acc_time_, duration, D3DXTRANSITION_LINEAR);
+	ptr_anim_ctrl_->KeyTrackWeight(new_track_, 0.9f, acc_time_, duration, D3DXTRANSITION_LINEAR);
+
+	acc_time_ = 0.0;
+	current_track_ = new_track_;
+	ptr_anim_ctrl_->SetTrackPosition(new_track_, 0.0);
+	ptr_anim_ctrl_->ResetTime();
+}
+
 void Engine::CAnimController::SetMaxAnimSet()
 {
 	max_anim_set_ = ptr_anim_ctrl_->GetMaxNumAnimationSets();

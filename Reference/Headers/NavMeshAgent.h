@@ -34,7 +34,8 @@ public:
 public:
 	void LinkCell();
 	int MoveFromNavMesh(Vector3& pos, const Vector3& dir, int current_index, int out_pass_fail_option = -1);
-	
+	int FindCellIndex(const Vector3& pos);
+
 private:
 	void SetPosY(Vector3& pos, int next_index);
 

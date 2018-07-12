@@ -10,7 +10,7 @@ Engine::CLayer::~CLayer()
 	Release();
 }
 
-const Engine::CComponent * Engine::CLayer::GetComponent(int layer_id, const std::wstring & object_key, const std::wstring & component_key)
+Engine::CComponent * Engine::CLayer::GetComponent(int layer_id, const std::wstring & object_key, const std::wstring & component_key) const
 {
 	auto layer_iter = object_layer_.find(layer_id);
 	if (layer_iter == object_layer_.end())
@@ -22,7 +22,7 @@ const Engine::CComponent * Engine::CLayer::GetComponent(int layer_id, const std:
 
 	for (auto& object : map_obj_list_iter->second)
 	{
-		const CComponent* ptr_component = object->GetComponent(component_key);
+		CComponent* ptr_component = object->GetComponent(component_key);
 		if (nullptr != ptr_component)
 			return ptr_component;
 	}

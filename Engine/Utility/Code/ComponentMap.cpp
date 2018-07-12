@@ -10,7 +10,7 @@ Engine::CComponentMap::~CComponentMap()
 	Release();
 }
 
-const Engine::CComponent * Engine::CComponentMap::GetComponent(const std::wstring & component_key)
+Engine::CComponent * Engine::CComponentMap::GetComponent(const std::wstring & component_key) const
 {
 	auto iter = map_component_.find(component_key);
 	if (iter == map_component_.end())
@@ -44,7 +44,7 @@ Engine::CComponentMap * Engine::CComponentMap::Create()
 void Engine::CComponentMap::Release()
 {
 	for (auto& pair : map_component_)
-		Safe_Release_Delete(pair.second);
+		Safe_Release(pair.second);
 
 	map_component_.clear();
 }

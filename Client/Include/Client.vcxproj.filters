@@ -34,15 +34,6 @@
     <Filter Include="02.GameObject\Environment">
       <UniqueIdentifier>{846e4bd0-2649-45f5-85b0-ab6d1a42e1fd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\GameLogic">
-      <UniqueIdentifier>{bba5964b-579d-4974-a9ed-559c8fb6cd35}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\GameLogic\SpaceMarin">
-      <UniqueIdentifier>{52e5ba68-2c8b-4ec4-9fef-1853df618add}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\GameLogic\Screen">
-      <UniqueIdentifier>{c0e2e4e6-189f-4904-a374-ff521478feeb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Headers">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
@@ -55,9 +46,6 @@
     </Filter>
     <Filter Include="02.GameObject\Camera\PlayerCamera">
       <UniqueIdentifier>{5066d90b-a1c9-4d73-8e29-e09c20b5e699}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\GameLogic\LevelObject">
-      <UniqueIdentifier>{0cc1f3b0-a567-476c-96c4-046b5854fa1b}</UniqueIdentifier>
     </Filter>
     <Filter Include="OldClass">
       <UniqueIdentifier>{a50a2908-3447-4c88-a05a-cd79d59605bd}</UniqueIdentifier>
@@ -73,6 +61,30 @@
     </Filter>
     <Filter Include="03.Components">
       <UniqueIdentifier>{551603be-2794-4aaa-8fa6-66fefda93d45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Components\Controller">
+      <UniqueIdentifier>{08aa05e5-2887-458d-9843-b333433f0ef6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Components\Controller\AIController">
+      <UniqueIdentifier>{a40e5c4f-6109-426a-8a1e-b0f0605bb702}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Components\Controller\PlayerController">
+      <UniqueIdentifier>{0a421d0e-6a31-44f9-a4e1-5f708f29bd2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject">
+      <UniqueIdentifier>{1ca2aedb-6b3a-46ab-aa31-db7cfa4ca825}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject\SpaceMarin">
+      <UniqueIdentifier>{52e5ba68-2c8b-4ec4-9fef-1853df618add}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\OtherObject">
+      <UniqueIdentifier>{bba5964b-579d-4974-a9ed-559c8fb6cd35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\OtherObject\Screen">
+      <UniqueIdentifier>{c0e2e4e6-189f-4904-a374-ff521478feeb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\OtherObject\LevelObject">
+      <UniqueIdentifier>{0cc1f3b0-a567-476c-96c4-046b5854fa1b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -101,7 +113,7 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="..\Code\ScreenImage.h">
-      <Filter>02.GameObject\GameLogic\Screen</Filter>
+      <Filter>02.GameObject\OtherObject\Screen</Filter>
     </ClInclude>
     <ClInclude Include="..\Code\DynamicCamera.h">
       <Filter>02.GameObject\Camera\DynamicCamera</Filter>
@@ -113,7 +125,7 @@
       <Filter>01.Scene\99.Loading</Filter>
     </ClInclude>
     <ClInclude Include="..\Code\SpaceMarin.h">
-      <Filter>02.GameObject\GameLogic\SpaceMarin</Filter>
+      <Filter>02.GameObject\ControlObject\SpaceMarin</Filter>
     </ClInclude>
     <ClInclude Include="..\Code\Stage.h">
       <Filter>01.Scene\02.Stage</Filter>
@@ -123,10 +135,19 @@
     </ClInclude>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="..\Code\LevelObject.h">
-      <Filter>02.GameObject\GameLogic\LevelObject</Filter>
+      <Filter>02.GameObject\OtherObject\LevelObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Code\SceneSelector.h">
       <Filter>OldClass</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\PlayerCamera.h">
+      <Filter>02.GameObject\Camera\PlayerCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Controller.h">
+      <Filter>03.Components\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\PlayerController.h">
+      <Filter>03.Components\Controller\PlayerController</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -140,7 +161,7 @@
       <Filter>01.Scene\00.Logo</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\ScreenImage.cpp">
-      <Filter>02.GameObject\GameLogic\Screen</Filter>
+      <Filter>02.GameObject\OtherObject\Screen</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\DynamicCamera.cpp">
       <Filter>02.GameObject\Camera\DynamicCamera</Filter>
@@ -152,7 +173,7 @@
       <Filter>01.Scene\99.Loading</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\SpaceMarin.cpp">
-      <Filter>02.GameObject\GameLogic\SpaceMarin</Filter>
+      <Filter>02.GameObject\ControlObject\SpaceMarin</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Stage.cpp">
       <Filter>01.Scene\02.Stage</Filter>
@@ -162,7 +183,16 @@
     </ClCompile>
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="..\Code\LevelObject.cpp">
-      <Filter>02.GameObject\GameLogic\LevelObject</Filter>
+      <Filter>02.GameObject\OtherObject\LevelObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\PlayerCamera.cpp">
+      <Filter>02.GameObject\Camera\PlayerCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Controller.cpp">
+      <Filter>03.Components\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\PlayerController.cpp">
+      <Filter>03.Components\Controller\PlayerController</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

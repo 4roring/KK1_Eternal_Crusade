@@ -6,3 +6,5 @@
 
 extern HWND g_hwnd;
 extern HINSTANCE g_hinstance;
+
+#define _FREECAMMODE

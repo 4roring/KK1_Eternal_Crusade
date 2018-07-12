@@ -9,7 +9,7 @@ struct Transform
 	Vector3 position;
 	Vector3 rotation;
 	Vector3 scale;
-	Vector3 direction;
+	Vector3 move_dir;
 	Matrix mat_world;
 };
 
@@ -29,8 +29,13 @@ public:
 	Vector3& position();
 	Vector3& rotation();
 	Vector3& scale();
-	Vector3& direction();
+	Vector3& move_dir();
 	Matrix& mat_world();
+
+public:
+	Vector3& Right() const;
+	Vector3& Up() const;
+	Vector3& Forward() const;
 
 public:
 	virtual void Update(float delta_time) override;

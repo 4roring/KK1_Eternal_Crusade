@@ -18,7 +18,7 @@ Engine::CNavMeshAgent::~CNavMeshAgent()
 HRESULT Engine::CNavMeshAgent::Initialize(int cell_container_size)
 {
 	cell_container_size_ = cell_container_size;
-	vec_nav_cell_.reserve(cell_container_size_);
+	vec_nav_cell_.resize(cell_container_size_, nullptr);
 
 	return D3DXCreateLine(ptr_device_, &ptr_line_);
 }
@@ -26,7 +26,10 @@ HRESULT Engine::CNavMeshAgent::Initialize(int cell_container_size)
 void Engine::CNavMeshAgent::Debug_Render()
 {
 	for (auto& nav_cell : vec_nav_cell_)
+	{
+		if (nullptr == nav_cell) continue;
 		nav_cell->Render(ptr_line_);
+	}
 }
 
 void Engine::CNavMeshAgent::Release()
@@ -57,40 +60,42 @@ HRESULT Engine::CNavMeshAgent::AddNavCell(const Vector3 & point_a, const Vector3
 {
 	CNavCell* ptr_nav_cell = CNavCell::Create(ptr_device_, point_a, point_b, point_c, index, option, link_cell_index);
 	if (nullptr == ptr_nav_cell) return E_FAIL;
-	vec_nav_cell_.emplace_back(ptr_nav_cell);
+	vec_nav_cell_[index] = ptr_nav_cell;
 
 	return S_OK;
 }
 
 void Engine::CNavMeshAgent::LinkCell()
 {
-	for (auto& dst_cell : vec_nav_cell_)
+	for (const auto& src_cell : vec_nav_cell_)
 	{
-		for (auto& src_cell : vec_nav_cell_)
+		if (nullptr == src_cell) continue;
+
+		for (auto& dst_cell : vec_nav_cell_)
 		{
-			if (dst_cell == src_cell)
+			if (dst_cell == src_cell || nullptr == dst_cell)
 				continue;
 
 			if (src_cell->ComparePoint(dst_cell->GetPoint(POINT_A)
 				, dst_cell->GetPoint(POINT_B), dst_cell))
 			{
-				src_cell->SetNeighbor(NEIGHBOR_AB, dst_cell);
+				dst_cell->SetNeighbor(NEIGHBOR_AB, src_cell);
 			}
-
+			
 			if (src_cell->ComparePoint(dst_cell->GetPoint(POINT_B)
 				, dst_cell->GetPoint(POINT_C), dst_cell))
 			{
-				src_cell->SetNeighbor(NEIGHBOR_BC, dst_cell);
+				dst_cell->SetNeighbor(NEIGHBOR_BC, src_cell);
 			}
-
+			
 			if (src_cell->ComparePoint(dst_cell->GetPoint(POINT_C)
 				, dst_cell->GetPoint(POINT_A), dst_cell))
 			{
-				src_cell->SetNeighbor(NEIGHBOR_CA, dst_cell);
+				dst_cell->SetNeighbor(NEIGHBOR_CA, src_cell);
 			}
 
-			if (false == src_cell->NeighborNullCheck())
-				break;
+			//if (false == src_cell->NeighborNullCheck())
+			//	break;
 		}
 	}
 }
@@ -100,14 +105,14 @@ int Engine::CNavMeshAgent::MoveFromNavMesh(Vector3 & pos, const Vector3 & dir, i
 	NEIGHBORID neighbor_id = NEIGHBOR_END;
 	int next_index = current_index;
 
-	if (vec_nav_cell_[current_index]->CheckPass(pos, dir, neighbor_id))
+	if (true == vec_nav_cell_[current_index]->CheckPass(pos, dir, neighbor_id))
 	{
 		const CNavCell* ptr_neighbor = vec_nav_cell_[current_index]->GetNeighbor(neighbor_id);
 		if (nullptr == ptr_neighbor)
 		{
 			out_pass_fail_option = vec_nav_cell_[current_index]->option();
-			Vector3 refelection_dir = vec_nav_cell_[current_index]->GetLine((LINEID)neighbor_id)->refelction(dir);
-			pos += refelection_dir;
+			Vector3 sliding_dir = vec_nav_cell_[current_index]->GetLine((LINEID)neighbor_id)->SlidingDirection(dir);
+			pos += sliding_dir;
 		}
 		else
 		{
@@ -120,6 +125,16 @@ int Engine::CNavMeshAgent::MoveFromNavMesh(Vector3 & pos, const Vector3 & dir, i
 
 	SetPosY(pos, next_index);
 	return next_index;
+}
+
+int Engine::CNavMeshAgent::FindCellIndex(const Vector3 & pos)
+{
+	for (auto& nav_cell : vec_nav_cell_)
+	{
+		if (true == nav_cell->CheckInsideCell(pos))
+			return nav_cell->index();
+	}
+	return -1;
 }
 
 void Engine::CNavMeshAgent::SetPosY(Vector3 & pos, int next_index)

@@ -152,6 +152,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Code\Controller.h" />
     <ClInclude Include="..\Code\DynamicCamera.h" />
     <ClInclude Include="..\Code\Enum.h" />
     <ClInclude Include="..\Code\Include.h" />
@@ -159,6 +160,8 @@
     <ClInclude Include="..\Code\Loading.h" />
     <ClInclude Include="..\Code\Logo.h" />
     <ClInclude Include="..\Code\MainGame.h" />
+    <ClInclude Include="..\Code\PlayerCamera.h" />
+    <ClInclude Include="..\Code\PlayerController.h" />
     <ClInclude Include="..\Code\SceneSelector.h" />
     <ClInclude Include="..\Code\ScreenImage.h" />
     <ClInclude Include="..\Code\SpaceMarin.h" />
@@ -172,11 +175,14 @@
     <ClInclude Include="TestPlane2.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Code\Controller.cpp" />
     <ClCompile Include="..\Code\DynamicCamera.cpp" />
     <ClCompile Include="..\Code\LevelObject.cpp" />
     <ClCompile Include="..\Code\Loading.cpp" />
     <ClCompile Include="..\Code\Logo.cpp" />
     <ClCompile Include="..\Code\MainGame.cpp" />
+    <ClCompile Include="..\Code\PlayerCamera.cpp" />
+    <ClCompile Include="..\Code\PlayerController.cpp" />
     <ClCompile Include="..\Code\ScreenImage.cpp" />
     <ClCompile Include="..\Code\SpaceMarin.cpp" />
     <ClCompile Include="..\Code\Stage.cpp" />

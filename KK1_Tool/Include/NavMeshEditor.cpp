@@ -414,6 +414,7 @@ void NavMeshEditor::OnClick_Save()
 	size_t point_count = vec_nav_point_.size();
 
 	DWORD byte = 0;
+	WriteFile(file, &last_cell_num_, sizeof(int), &byte, nullptr);
 	WriteFile(file, &point_count, sizeof(size_t), &byte, nullptr);
 	for (size_t i = 0; i < point_count; ++i)
 	{
@@ -434,7 +435,7 @@ void NavMeshEditor::OnClick_Save()
 		WriteFile(file, &nav_mesh->option(), sizeof(int), &byte, nullptr);
 		WriteFile(file, &nav_mesh->link_cell(), sizeof(int), &byte, nullptr);
 	}
-	WriteFile(file, &last_cell_num_, sizeof(int), &byte, nullptr);
+
 
 	CloseHandle(file);
 
@@ -459,7 +460,7 @@ void NavMeshEditor::OnClick_Load()
 	size_t cell_count = 0;
 	DWORD byte = 0;
 
-
+	ReadFile(file, &last_cell_num_, sizeof(int), &byte, nullptr);
 	ReadFile(file, &point_count, sizeof(size_t), &byte, nullptr);
 	vec_nav_point_.reserve(point_count);
 	NavPoint* ptr_nav_point = nullptr;
@@ -495,7 +496,7 @@ void NavMeshEditor::OnClick_Load()
 
 		vec_nav_mesh_.emplace_back(ptr_nav_cell);
 	}
-	ReadFile(file, &last_cell_num_, sizeof(int), &byte, nullptr);
+
 
 	CloseHandle(file);
 

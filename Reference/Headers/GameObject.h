@@ -18,7 +18,7 @@ private:
 	void Release();
 
 public:
-	const CComponent* GetComponent(const std::wstring& component_key);
+	CComponent* GetComponent(const std::wstring& component_key) const;
 	void AddComponent(const std::wstring& instance_key, CComponent* ptr_component);
 
 public:
@@ -36,7 +36,7 @@ public:
 	virtual ~CGameObject();
 	
 protected:
-	virtual HRESULT Initialize();
+	HRESULT Initialize();
 
 public:
 	virtual void Update(float delta_time);

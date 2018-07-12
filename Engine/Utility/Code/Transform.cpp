@@ -1,10 +1,10 @@
 #include "Transform.h"
 
-Engine::CTransform::CTransform(const Vector3 & look)
+Engine::CTransform::CTransform(const Vector3& look)
 {
 	D3DXMatrixIdentity(&transform_.mat_world);
 	transform_.scale = Vector3(1.f, 1.f, 1.f);
-	transform_.direction = look;
+	transform_.move_dir = look;
 	++reference_count_;
 }
 
@@ -15,7 +15,7 @@ Engine::CTransform::~CTransform()
 
 Engine::CComponent * Engine::CTransform::CloneComponent()
 {
-	return new CTransform(Vector3(0.f, 0.f, 1.f));
+	return new CTransform(Vector3(0.f, 0.f, 0.f));
 }
 
 Vector3 & Engine::CTransform::position()
@@ -33,14 +33,29 @@ Vector3 & Engine::CTransform::scale()
 	return transform_.scale;
 }
 
-Vector3 & Engine::CTransform::direction()
+Vector3 & Engine::CTransform::move_dir()
 {
-	return transform_.direction;
+	return transform_.move_dir;
 }
 
 Matrix & Engine::CTransform::mat_world()
 {
 	return transform_.mat_world;
+}
+
+Vector3 & Engine::CTransform::Right() const
+{
+	return *(Vector3*)&transform_.mat_world.m[0][0];
+}
+
+Vector3 & Engine::CTransform::Up() const
+{
+	return *(Vector3*)&transform_.mat_world.m[1][0];
+}
+
+Vector3 & Engine::CTransform::Forward() const
+{
+	return *(Vector3*)&transform_.mat_world.m[2][0];
 }
 
 void Engine::CTransform::Update(float delta_time)
