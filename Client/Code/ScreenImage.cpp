@@ -43,7 +43,7 @@ void CScreenImage::Render()
 	ptr_effect->SetMatrix("g_mat_world", &mat_identity);
 	ptr_effect->SetMatrix("g_mat_view", &mat_identity);
 	ptr_effect->SetMatrix("g_mat_projection", &mat_identity);
-	ptr_effect->SetTexture("g_base_texture", ptr_texture_->GetTexture(0));
+	ptr_effect->SetTexture("g_color_texture", ptr_texture_->GetTexture(0));
 
 	ptr_shader_->BegineShader(0);
 	ptr_buffer_->Render();

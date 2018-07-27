@@ -16,6 +16,11 @@ Engine::CComponent * Engine::CScene::GetComponentToLayerObject(int layer_id, con
 	return ptr_layer_->GetComponent(layer_id, object_key, component_key);
 }
 
+Engine::CGameObject * Engine::CScene::FindObjectInLayer(int layer_id, const std::wstring & object_key)
+{
+	return ptr_layer_->FindObject(layer_id, object_key);
+}
+
 HRESULT Engine::CScene::InitScene()
 {
 	ptr_layer_ = CLayer::Create();
@@ -28,6 +33,8 @@ HRESULT Engine::CScene::InitScene()
 
 HRESULT Engine::CScene::LateInit()
 {
+	ptr_layer_->LateInit();
+
 	return S_OK;
 }
 

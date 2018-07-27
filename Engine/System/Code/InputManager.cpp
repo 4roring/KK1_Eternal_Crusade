@@ -76,6 +76,13 @@ void Engine::CInputManager::GetMousePos(HWND hwnd, POINT * mouse_pos)
 	ScreenToClient(hwnd, mouse_pos);
 }
 
+void Engine::CInputManager::FixMouseCenter(HWND hwnd, WORD win_cx, WORD win_cy)
+{
+	POINT center = { win_cx >> 1, win_cy >> 1 };
+	ClientToScreen(hwnd, &center);
+	SetCursorPos(center.x, center.y);
+}
+
 HRESULT Engine::CInputManager::InitInputDevice(HINSTANCE hinstance, HWND hwnd)
 {
 	HRESULT hr = E_FAIL;

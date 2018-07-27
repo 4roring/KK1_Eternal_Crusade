@@ -4,10 +4,7 @@
 #include "Transform.h"
 #include "Shader.h"
 #include "StaticMesh.h"
-
-#include <filesystem>
-
-namespace FILESYSTEM = std::experimental::filesystem::v1;
+#include "Collider.h"
 
 CLevelObject::CLevelObject(LPDIRECT3DDEVICE9 ptr_device)
 	: Engine::CGameObject(ptr_device)
@@ -29,15 +26,23 @@ HRESULT CLevelObject::Initialize(const std::wstring & mesh_key)
 	return hr;
 }
 
+void CLevelObject::LateInit()
+{
+	Engine::CGameObject::Update(0.f);
+
+	Vector3 min, max;
+	ptr_mesh_->GetMinMax(min, max);
+	ptr_box_coll_->SetAABBCollider(min, max);
+}
+
 void CLevelObject::Update(float delta_time)
 {
 	Engine::CGameObject::Update(delta_time);
-
-	Engine::GameManager()->AddRenderLayer(Engine::RENDERLAYER::LAYER_NONEALPHA, this);
 }
 
 void CLevelObject::LateUpdate()
 {
+	Engine::GameManager()->AddRenderLayer(Engine::RENDERLAYER::LAYER_NONEALPHA, this);
 }
 
 void CLevelObject::Render()
@@ -58,6 +63,21 @@ void CLevelObject::Render()
 	ptr_effect->SetVector("g_light_dir", &Vector4(0.f, -1.f, 1.f, 0.f));
 
 	ptr_mesh_->RenderMesh(ptr_effect);
+
+#ifdef _DEBUG
+	ptr_effect = ptr_debug_shader_->GetEffectHandle();
+
+	Matrix mat_identity;
+	D3DXMatrixIdentity(&mat_identity);
+
+	ptr_effect->SetMatrix("g_mat_world", &ptr_transform_->mat_world());
+	ptr_effect->SetMatrix("g_mat_view", &mat_view);
+	ptr_effect->SetMatrix("g_mat_projection", &mat_proj);
+
+	ptr_debug_shader_->BegineShader(1);
+	ptr_box_coll_->DebugRender();
+	ptr_debug_shader_->EndShader();
+#endif
 }
 
 CLevelObject * CLevelObject::Create(LPDIRECT3DDEVICE9 ptr_device, const std::wstring & mesh_key)
@@ -83,51 +103,16 @@ HRESULT CLevelObject::AddComponent(const std::wstring & mesh_key)
 	hr = Ready_Component(MAINTAIN_STATIC, TEXT("Shader_NormalMap"), TEXT("Shader"), ptr_shader_);
 	assert(!FAILED(hr) && "ReadyComponent Failed of LevelObject Shader Component");
 
+	ptr_box_coll_ = Engine::CCollider::Create(ptr_device_, this, ColliderType::Collider_AABB);
+
+#ifdef _DEBUG
+	hr = Ready_Component(MAINTAIN_STATIC, TEXT("Shader_Default"), TEXT("Debug_Shader"), ptr_debug_shader_);
+#endif
+
 	return S_OK;
 }
 
 void CLevelObject::Release()
 {
-}
-
-HRESULT CLevelObject::LoadMesh(const std::wstring & mesh_key, MAINTAINID stage_id)
-{
-	const std::wstring path = TEXT("..\\bin\\Resources\\Mesh\\MapData");
-
-	return FindMesh(mesh_key, path, stage_id);
-}
-
-HRESULT CLevelObject::FindMesh(const std::wstring& mesh_key, const std::wstring & path, MAINTAINID stage_id)
-{
-	FILESYSTEM::path find_file(path);
-
-	if (false == FILESYSTEM::is_directory(find_file))
-		return E_FAIL;
-
-	for (const auto& directory : FILESYSTEM::directory_iterator(find_file))
-	{
-		if (true == FILESYSTEM::is_directory(directory.status()))
-		{
-			if (!FAILED(FindMesh(mesh_key, directory.path(), stage_id)))
-				return S_OK;
-		}
-
-		if (FILESYSTEM::is_regular_file(directory.status()) && directory.path().extension() == TEXT(".X"))
-		{
-			if (0 == mesh_key.compare(directory.path().stem()))
-			{
-				std::wstring file_path = directory.path().c_str();
-				const std::wstring file_name = mesh_key + TEXT(".X");
-				auto iter = file_path.rfind(TEXT("\\"));
-				file_path = file_path.substr(0, ++iter);
-
-				ptr_mesh_ = Engine::CStaticMesh::Create(ptr_device_
-					, file_path.c_str(), file_name.c_str(), stage_id);
-				ptr_mesh_->AddReferenceCount();
-
-				Engine::GameManager()->Add_Prototype(stage_id, mesh_key, ptr_mesh_);
-			}
-		}
-	}
-	return E_FAIL;
+	Safe_Delete(ptr_box_coll_);
 }

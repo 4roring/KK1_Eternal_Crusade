@@ -18,6 +18,11 @@ void Engine::CGameManager::AddRenderLayer(RENDERLAYER render_id, class CGameObje
 	ptr_renderer_->AddRenderLayer(render_id, ptr_object);
 }
 
+Engine::CScene * Engine::CGameManager::GetCurrentScene() const
+{
+	return ptr_scene_;
+}
+
 Engine::CComponent * Engine::CGameManager::FindComponent(int container_index, const std::wstring & component_key)
 {
 	return ptr_component_manager_->FindComponent(container_index, component_key);
@@ -26,6 +31,11 @@ Engine::CComponent * Engine::CGameManager::FindComponent(int container_index, co
 Engine::CComponent * Engine::CGameManager::CloneComponent(int container_index, const std::wstring & component_key)
 {
 	return ptr_component_manager_->CloneComponent(container_index, component_key);
+}
+
+Engine::CGameObject * Engine::CGameManager::FindObject(int layer_id, const std::wstring & object_key)
+{
+	return ptr_scene_->FindObjectInLayer(layer_id, object_key);
 }
 
 HRESULT Engine::CGameManager::InitComponentManager(const int container_size)
@@ -136,6 +146,16 @@ int Engine::CGameManager::FindCellIndex(const Vector3 & pos)
 void Engine::CGameManager::ClearNavCell()
 {
 	Safe_Delete(ptr_nav_mesh_agent_);
+}
+
+bool Engine::CGameManager::PathFinder(int start_cell, int end_cell, std::vector<Vector3>& path)
+{
+	return ptr_nav_mesh_agent_->PathFinder(start_cell, end_cell, path);
+}
+
+bool Engine::CGameManager::PathFinder(int start_cell, const Vector3 & end_point, std::vector<Vector3>& path)
+{
+	return ptr_nav_mesh_agent_->PathFinder(start_cell, end_point, path);
 }
 
 void Engine::CGameManager::Release()

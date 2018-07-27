@@ -1,7 +1,7 @@
 #include "BaseShader.hlsl"
 
-Matrix matrix_palette[35];
-int num_bone_influences = 4;
+float4x3 matrix_palette[55];
+int num_bone_influences = 2;
 
 float g_alpha = 1.f;
 
@@ -9,7 +9,6 @@ vector g_light_diffuse;
 vector g_light_ambient;
 vector g_light_dir;
 
-vector g_mtrl_diffuse = (vector) 1.f;
 vector g_mtrl_ambient = (vector) 0.2f;
 
 struct VS_IN
@@ -47,12 +46,12 @@ VS_OUT VS_MAIN(VS_IN In)
     for (int i = 0; i < num; ++i)
     {
         last_weight += In.weights[i];
-        new_pos += In.weights[i] * mul(In.position, matrix_palette[In.bone_indices[i]]);
+        new_pos += In.weights[i] * vector(mul(In.position, matrix_palette[In.bone_indices[i]]), 1.f);
         new_normal += In.weights[i] * mul(vector(In.normal, 0.f), matrix_palette[In.bone_indices[i]]);
     }
 
     last_weight = 1.f - last_weight;
-    new_pos += last_weight * mul(In.position, matrix_palette[In.bone_indices[num]]);
+    new_pos += last_weight * vector(mul(In.position, matrix_palette[In.bone_indices[num]]), 1.f);
     new_pos.w = 1.f;
     new_normal += last_weight * mul(vector(In.normal, 0.f), matrix_palette[In.bone_indices[num]]);
 
@@ -122,8 +121,6 @@ PS_OUT PS_MAIN(PS_IN In)
     float3 diffuse = saturate(dot(world_normal, -light_dir));
 
     vector color = tex2D(color_sampler, In.texture_uv);
-    color = color.r * vector(0.98f, 0.91f, 0.95f, 1.f)
-     + color.g * vector(1.2f, 0.2f, 0.2f, 1.f) + color.b * vector(0.1f, 0.1f, 0.1f, 1.f);
 
     diffuse = g_light_diffuse.rgb * color.rgb * diffuse;
     

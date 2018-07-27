@@ -11,6 +11,9 @@
 #include "SpaceMarin.h"
 #include "PlayerCamera.h"
 
+#include "Ork.h"
+#include "Tyranid.h"
+
 #include "Stage.h"
 #include "LevelObject.h"
 #include "Transform.h"
@@ -66,6 +69,12 @@ HRESULT CLoading::Stage_Loading()
 			, TEXT("../../Reference/Shader/DynamicMeshShader.hlsl")));
 	assert(hr == S_OK && "Shader_DynamicMesh Component Add Failed");
 
+	//hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
+	//	, TEXT("Shader_DynamicMesh_Color")
+	//	, Engine::CShader::Create(ptr_device_
+	//		, TEXT("../../Reference/Shader/DynamicMeshShaderColor.hlsl")));
+	//assert(hr == S_OK && "Shader_DynamicMesh_Color Component Add Failed");
+
 	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
 		, TEXT("Shader_NormalMap")
 		, Engine::CShader::Create(ptr_device_
@@ -80,6 +89,42 @@ HRESULT CLoading::Stage_Loading()
 			, TEXT("../bin/Resources/Mesh/SpaceMarin/")
 			, TEXT("SpaceMarin.X")));
 	assert(hr == S_OK && "SpaceMarin Mesh Add Failed");
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("Ork_Mesh")
+		, Engine::CDynamicMesh::Create(ptr_device_
+			, TEXT("../bin/Resources/Mesh/Ork/")
+			, TEXT("Ork.X")));
+	assert(hr == S_OK && "Ork Mesh Add Failed");
+	
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("Tyranid_Mesh")
+		, Engine::CDynamicMesh::Create(ptr_device_
+			, TEXT("../bin/Resources/Mesh/Tyranid/")
+			, TEXT("Tyranid.X")));
+	assert(hr == S_OK && "Tyranid Mesh Add Failed");
+
+	// Weapon
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("Gun_Phobos_Mesh")
+		, Engine::CStaticMesh::Create(ptr_device_
+			, TEXT("..\\bin\\Resources\\Mesh\\Weapon\\Gun_Phobos\\")
+			, TEXT("Gun_Phobos.X"), MAINTAIN_STAGE));
+	assert(hr == S_OK && "Gun_Phobos Mesh Add Failed");
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("Ork_Gun_Mesh")
+		, Engine::CStaticMesh::Create(ptr_device_
+			, TEXT("..\\bin\\Resources\\Mesh\\Weapon\\Ork_Gun\\")
+			, TEXT("Ork_Gun.X"), MAINTAIN_STAGE));
+	assert(hr == S_OK && "Ork_Gun Mesh Add Failed");
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("Ork_Sword_Mesh")
+		, Engine::CStaticMesh::Create(ptr_device_
+			, TEXT("..\\bin\\Resources\\Mesh\\Weapon\\Ork_Sword\\")
+			, TEXT("Ork_Sword.X"), MAINTAIN_STAGE));
+	assert(hr == S_OK && "Ork_Sword Mesh Add Failed");
 
 	lstrcpy(loading_message_, TEXT("Scene Initializing"));
 	*pp_next_scene_ = CStage::Create(ptr_device_);
@@ -126,12 +171,19 @@ HRESULT CLoading::StageDataLoad(MAINTAINID stage_id, const TCHAR* path)
 			continue;
 		}
 
+		if (0 == lstrcmp(mesh_key, TEXT("Ork")))
+		{
+			AddEnemyOrk(file, mesh_key, object_key, stage_id, byte);
+			continue;
+		}
+
 		ptr_component = Engine::GameManager()->FindComponent(stage_id, mesh_key);
 		if (nullptr == ptr_component)
 		{
 			hr = FindAndLoadMesh(stage_id, mesh_key, TEXT("..\\bin\\Resources\\Mesh\\MapData\\"));
 			assert(!FAILED(hr) && "Failed to FindAndLoadMesh in Loading Class");
 		}
+
 		ptr_obj = CLevelObject::Create(ptr_device_, mesh_key);
 		(*pp_next_scene_)->AddObject(stage_id, object_key, ptr_obj);
 
@@ -151,15 +203,30 @@ void CLoading::AddPlayerSpaceMarin(HANDLE file, const TCHAR * mesh_key, const TC
 	(*pp_next_scene_)->AddObject(stage_id, object_key, ptr_obj);
 
 	Vector3 temp;
-
 	ReadFile(file, ptr_obj->transform()->position(), sizeof(Vector3), &byte, nullptr);
 	ReadFile(file, ptr_obj->transform()->rotation(), sizeof(Vector3), &byte, nullptr);
 	ReadFile(file, temp, sizeof(Vector3), &byte, nullptr);
+
+	// Test Dummy SpaceMarin
+	ptr_obj = CSpaceMarin::Create(ptr_device_, 1);
+	assert(nullptr != ptr_obj && "SpaceMarin Create Failed");
+	(*pp_next_scene_)->AddObject(stage_id, TEXT("Space_Marin_1"), ptr_obj);
+
+	ptr_obj->transform()->position() = Vector3(0.f, 0.f, 0.f);
+	ptr_obj->transform()->rotation() = Vector3(0.f, 1.7f, 0.f);
+
+	ptr_obj = CSpaceMarin::Create(ptr_device_, 2);
+	assert(nullptr != ptr_obj && "SpaceMarin Create Failed");
+	(*pp_next_scene_)->AddObject(stage_id, TEXT("Space_Marin_2"), ptr_obj);
+
+	ptr_obj->transform()->position() = Vector3(1.f, 0.f, 0.f);
+	ptr_obj->transform()->rotation() = Vector3(0.f, 1.f, 0.f);
+
 }
 
 void CLoading::AddTeamSpaceMarin(HANDLE file, const TCHAR * mesh_key, const TCHAR * object_key, MAINTAINID stage_id, DWORD & byte)
 {
-	Engine::CGameObject* ptr_obj = CSpaceMarin::Create(ptr_device_);
+	Engine::CGameObject* ptr_obj = CSpaceMarin::Create(ptr_device_, ++space_marin_count_);
 	assert(nullptr != ptr_obj && "SpaceMarin Create Failed");
 
 	(*pp_next_scene_)->AddObject(stage_id, object_key, ptr_obj);
@@ -171,8 +238,18 @@ void CLoading::AddTeamSpaceMarin(HANDLE file, const TCHAR * mesh_key, const TCHA
 	ReadFile(file, temp, sizeof(Vector3), &byte, nullptr);
 }
 
-void CLoading::AddEnemyObject(HANDLE file, const TCHAR * mesh_key, const TCHAR * object_key, MAINTAINID stage_id, DWORD & byte)
+void CLoading::AddEnemyOrk(HANDLE file, const TCHAR * mesh_key, const TCHAR * object_key, MAINTAINID stage_id, DWORD & byte)
 {
+	Engine::CGameObject* ptr_obj = COrk::Create(ptr_device_, ork_count_++);
+	assert(nullptr != ptr_obj && "Ork Create Failed");
+
+	(*pp_next_scene_)->AddObject(stage_id, object_key, ptr_obj);
+
+	Vector3 temp;
+
+	ReadFile(file, ptr_obj->transform()->position(), sizeof(Vector3), &byte, nullptr);
+	ReadFile(file, ptr_obj->transform()->rotation(), sizeof(Vector3), &byte, nullptr);
+	ReadFile(file, temp, sizeof(Vector3), &byte, nullptr);
 }
 
 HRESULT CLoading::FindAndLoadMesh(MAINTAINID stage_id, const std::wstring & mesh_key, const std::wstring & path)

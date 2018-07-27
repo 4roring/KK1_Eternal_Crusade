@@ -34,6 +34,7 @@ public:
 	BYTE GetDIMouseState(MOUSECLICK key_flag);
 	long GetDIMouseMove(MOUSEMOVE key_flag);
 	void GetMousePos(HWND hwnd, POINT* mouse_pos);
+	void FixMouseCenter(HWND hwnd, WORD win_cx, WORD win_cy);
 
 private:
 	HRESULT InitKeyBoard(HWND hwnd);

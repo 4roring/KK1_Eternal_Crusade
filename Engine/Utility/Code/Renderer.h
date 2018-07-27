@@ -4,6 +4,7 @@
 
 BEGIN(Engine)
 
+class G_Buffer;
 class CGameObject;
 
 class CRenderer
@@ -17,14 +18,15 @@ public:
 public:
 	static CRenderer* Create(LPDIRECT3DDEVICE9 ptr_device);
 
-public:
-	void RenderGroupRelease();
+private:
+	HRESULT Initialize();
 
 public:
 	void Render();
 
 public:
 	void AddRenderLayer(RENDERLAYER render_id, CGameObject* ptr_object);
+	void RenderGroupRelease();
 
 private:
 	void Render_Priority();
@@ -32,6 +34,8 @@ private:
 	void Render_Alpha();
 	void Render_UI();
 
+private:
+	void Render_Deferred();
 
 private:
 	void Release();
@@ -41,6 +45,9 @@ private:
 
 private:
 	std::vector<CGameObject*> render_layer_[LAYER_END];
+
+private:
+	G_Buffer* ptr_g_buffer = nullptr;
 };
 
 END

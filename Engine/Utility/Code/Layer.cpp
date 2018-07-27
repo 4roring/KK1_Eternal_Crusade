@@ -16,17 +16,29 @@ Engine::CComponent * Engine::CLayer::GetComponent(int layer_id, const std::wstri
 	if (layer_iter == object_layer_.end())
 		return nullptr;
 
-	auto map_obj_list_iter = layer_iter->second.find(object_key);
-	if (map_obj_list_iter == layer_iter->second.end())
+	auto map_obj_iter = layer_iter->second.find(object_key);
+	if (map_obj_iter == layer_iter->second.end())
 		return nullptr;
 
-	for (auto& object : map_obj_list_iter->second)
-	{
-		CComponent* ptr_component = object->GetComponent(component_key);
-		if (nullptr != ptr_component)
-			return ptr_component;
-	}
-	return nullptr;
+	
+	CComponent* ptr_component = map_obj_iter->second->GetComponent(component_key);
+	if (nullptr == ptr_component)
+		return nullptr;
+	
+	return ptr_component;
+}
+
+Engine::CGameObject * Engine::CLayer::FindObject(int layer_id, const std::wstring & object_key) const
+{
+	auto layer_iter = object_layer_.find(layer_id);
+	if (layer_iter == object_layer_.end())
+		return nullptr;
+
+	auto map_obj_iter = layer_iter->second.find(object_key);
+	if (map_obj_iter == layer_iter->second.end())
+		return nullptr;
+
+	return map_obj_iter->second;
 }
 
 HRESULT Engine::CLayer::AddObject(int layer_id, const std::wstring & object_key, Engine::CGameObject * ptr_object)
@@ -37,15 +49,24 @@ HRESULT Engine::CLayer::AddObject(int layer_id, const std::wstring & object_key,
 	{
 		auto layer_iter = object_layer_.find(layer_id);
 		if (layer_iter == object_layer_.end())
-			object_layer_.emplace(layer_id, MapObjectList());
+			object_layer_.emplace(layer_id, MapObject());
 
-		auto map_obj_list_iter = object_layer_[layer_id].find(object_key);
-		if (map_obj_list_iter == object_layer_[layer_id].end())
-			object_layer_[layer_id].emplace(object_key, ObjectList());
-
-		object_layer_[layer_id][object_key].emplace_back(ptr_object);
+		auto map_obj_iter = object_layer_[layer_id].find(object_key);
+		if (map_obj_iter == object_layer_[layer_id].end())
+			object_layer_[layer_id].emplace(object_key, ptr_object);
 	}
 	return S_OK;
+}
+
+void Engine::CLayer::LateInit()
+{
+	for (auto& layer_pair : object_layer_)
+	{
+		for (auto& pair : layer_pair.second)
+		{
+			pair.second->LateInit();
+		}
+	}
 }
 
 void Engine::CLayer::Update(float delta_time)
@@ -54,8 +75,7 @@ void Engine::CLayer::Update(float delta_time)
 	{
 		for (auto& pair : layer_pair.second)
 		{
-			for (auto& object : pair.second)
-				object->Update(delta_time);
+			pair.second->Update(delta_time);
 		}
 	}
 }
@@ -66,8 +86,7 @@ void Engine::CLayer::LateUpdate()
 	{
 		for (auto& pair : layer_pair.second)
 		{
-			for (auto& object : pair.second)
-				object->LateUpdate();
+			pair.second->LateUpdate();
 		}
 	}
 }
@@ -76,20 +95,17 @@ void Engine::CLayer::LastFrame()
 {
 	for (auto& layer_pair : object_layer_)
 	{
-		for (auto& pair : layer_pair.second)
-		{
-			auto iter = pair.second.begin();
-			auto iter_end = pair.second.end();
+		auto iter = layer_pair.second.begin();
+		auto iter_end = layer_pair.second.end();
 
-			for (; iter != iter_end; )
-			{
-				if (true == (*iter)->destroy())
-					iter = pair.second.erase(iter);
-				else if (false == (*iter)->active())
-					continue;
-				else
-					++iter;
-			}
+		for (; iter != iter_end; )
+		{
+			if (true == iter->second->destroy())
+				iter = layer_pair.second.erase(iter);
+			else if (false == iter->second->active())
+				continue;
+			else
+				++iter;
 		}
 	}
 }
@@ -104,12 +120,7 @@ void Engine::CLayer::Release()
 	for (auto& layer_pair : object_layer_)
 	{
 		for (auto& pair : layer_pair.second)
-		{
-			for (auto& object : pair.second)
-				Safe_Delete(object);
-
-			pair.second.clear();
-		}
+			Safe_Delete(pair.second);
 		layer_pair.second.clear();
 	}
 	object_layer_.clear();

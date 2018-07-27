@@ -23,7 +23,6 @@ public:
 private:
 	void InputCheck(float delta_time);
 	void MouseMove();
-	void MouseFixMove();
 
 private:
 	float speed_ = 0.f;

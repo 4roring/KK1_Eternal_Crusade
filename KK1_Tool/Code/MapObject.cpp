@@ -68,7 +68,7 @@ void MapObject::Render()
 	ptr_mesh_->RenderMesh(ptr_effect);
 }
 
-bool MapObject::RaycastToMesh(Vector3 & ray_pos, Vector3 & ray_dir, float * hit_dir)
+bool MapObject::RaycastToMesh(Vector3 & ray_pos, Vector3 & ray_dir, float * hit_dist)
 {
 	Matrix local_matrix;
 	D3DXMatrixInverse(&local_matrix, nullptr, &ptr_transform_->mat_world());
@@ -76,7 +76,7 @@ bool MapObject::RaycastToMesh(Vector3 & ray_pos, Vector3 & ray_dir, float * hit_
 	D3DXVec3TransformCoord(&local_ray_pos, &ray_pos, &local_matrix);
 	D3DXVec3TransformNormal(&local_ray_dir, &ray_dir, &local_matrix);
 
-	return ptr_mesh_->RaycastToMesh(local_ray_pos, local_ray_dir, hit_dir);
+	return ptr_mesh_->RaycastToMesh(local_ray_pos, local_ray_dir, hit_dist);
 }
 
 MapObject * MapObject::Create(LPDIRECT3DDEVICE9 ptr_device, const std::wstring& mesh_key)

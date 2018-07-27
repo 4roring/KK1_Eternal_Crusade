@@ -18,7 +18,7 @@ HRESULT CPlayerCamera::InitCamera(MAINTAINID stage_id)
 	assert(!FAILED(hr) && "Camera Init Failed");
 	hr = GetComponent(stage_id);
 
-	SetProjection(D3DXToRadian(45.f), float(kWinCx) / kWinCy, 1.f, 1000.f);
+	SetProjection(D3DXToRadian(60.f), float(kWinCx) / kWinCy, 0.2f, 1000.f);
 	return hr;
 }
 
@@ -30,7 +30,7 @@ void CPlayerCamera::Update(float delta_time)
 	Vector3 player_up = ptr_player_transform_->Up().Normalize();
 	Vector3 player_forward = ptr_player_transform_->Forward().Normalize();
 
-	eye() = ptr_player_transform_->position() + player_up * 2.f - player_forward * 5.f + player_right * 1.5f;
+	eye() = ptr_player_transform_->position() + player_up * 2.f - player_forward * 3.5f + player_right * 1.5f;
 	at() = eye() + player_forward * 100.f;
 }
 

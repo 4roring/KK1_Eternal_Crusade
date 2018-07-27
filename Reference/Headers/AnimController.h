@@ -40,6 +40,7 @@ private:
 private:
 	uint32 max_anim_set_ = 0;
 	uint32 current_track_ = 0;
+	const char* current_track_name_ = "";
 	uint32 new_track_ = 0;
 	DOUBLE acc_time_ = 0.0;
 	DOUBLE period_ = 0.0;

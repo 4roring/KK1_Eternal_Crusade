@@ -152,6 +152,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Code\EnemyAIController.h" />
+    <ClInclude Include="..\Code\Function.h" />
+    <ClInclude Include="..\Code\Gun_Phobos.h" />
     <ClInclude Include="..\Code\Controller.h" />
     <ClInclude Include="..\Code\DynamicCamera.h" />
     <ClInclude Include="..\Code\Enum.h" />
@@ -160,14 +163,19 @@
     <ClInclude Include="..\Code\Loading.h" />
     <ClInclude Include="..\Code\Logo.h" />
     <ClInclude Include="..\Code\MainGame.h" />
+    <ClInclude Include="..\Code\Ork.h" />
+    <ClInclude Include="..\Code\Ork_Gun.h" />
+    <ClInclude Include="..\Code\Ork_Sword.h" />
     <ClInclude Include="..\Code\PlayerCamera.h" />
     <ClInclude Include="..\Code\PlayerController.h" />
     <ClInclude Include="..\Code\SceneSelector.h" />
     <ClInclude Include="..\Code\ScreenImage.h" />
     <ClInclude Include="..\Code\SpaceMarin.h" />
     <ClInclude Include="..\Code\Stage.h" />
+    <ClInclude Include="..\Code\Tyranid.h" />
     <ClInclude Include="..\Code\Value.h" />
     <ClInclude Include="Client.h" />
+    <ClInclude Include="CollisionSystem.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -177,16 +185,23 @@
   <ItemGroup>
     <ClCompile Include="..\Code\Controller.cpp" />
     <ClCompile Include="..\Code\DynamicCamera.cpp" />
+    <ClCompile Include="..\Code\EnemyAIController.cpp" />
+    <ClCompile Include="..\Code\Gun_Phobos.cpp" />
     <ClCompile Include="..\Code\LevelObject.cpp" />
     <ClCompile Include="..\Code\Loading.cpp" />
     <ClCompile Include="..\Code\Logo.cpp" />
     <ClCompile Include="..\Code\MainGame.cpp" />
+    <ClCompile Include="..\Code\Ork.cpp" />
+    <ClCompile Include="..\Code\Ork_Gun.cpp" />
+    <ClCompile Include="..\Code\Ork_Sword.cpp" />
     <ClCompile Include="..\Code\PlayerCamera.cpp" />
     <ClCompile Include="..\Code\PlayerController.cpp" />
     <ClCompile Include="..\Code\ScreenImage.cpp" />
     <ClCompile Include="..\Code\SpaceMarin.cpp" />
     <ClCompile Include="..\Code\Stage.cpp" />
+    <ClCompile Include="..\Code\Tyranid.cpp" />
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="CollisionSystem.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

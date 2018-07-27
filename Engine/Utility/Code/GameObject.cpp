@@ -65,6 +65,10 @@ HRESULT Engine::CGameObject::Initialize()
 	return S_OK;
 }
 
+void Engine::CGameObject::LateInit()
+{
+}
+
 void Engine::CGameObject::Update(float delta_time)
 {
 	ptr_component_map_->Update(delta_time);
@@ -76,6 +80,15 @@ void Engine::CGameObject::LateUpdate()
 
 void Engine::CGameObject::Render()
 {
+}
+
+void Engine::CGameObject::ApplyDamage(int damage)
+{
+}
+
+bool Engine::CGameObject::CheckRaycast(const Vector3 & ray_pos, const Vector3 & ray_dir, float * hit_dist)
+{
+	return false;
 }
 
 void Engine::CGameObject::Release()

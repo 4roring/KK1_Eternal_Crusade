@@ -34,9 +34,6 @@
     <Filter Include="04.Component\Transform">
       <UniqueIdentifier>{fa3620fa-99e1-404d-9ffe-8e1173ecf258}</UniqueIdentifier>
     </Filter>
-    <Filter Include="04.Component\Collision">
-      <UniqueIdentifier>{43d67e3c-e735-465b-9bfb-4191e8b52f36}</UniqueIdentifier>
-    </Filter>
     <Filter Include="04.Component\Shader">
       <UniqueIdentifier>{cd1e24f7-c2cd-43f6-8a1b-af733c18ab7f}</UniqueIdentifier>
     </Filter>
@@ -93,6 +90,21 @@
     </Filter>
     <Filter Include="06.NaviMesh\NavMeshAgent">
       <UniqueIdentifier>{4efae8a3-7984-43c9-8f47-71643714d172}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Component\Collider">
+      <UniqueIdentifier>{43d67e3c-e735-465b-9bfb-4191e8b52f36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Component\Collider\ColliderInfo">
+      <UniqueIdentifier>{3a4dd678-a7ef-405c-8c45-d28fd2ea1222}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07.Deferred">
+      <UniqueIdentifier>{dc139194-c468-4d6a-b5cf-2ab0cf2951ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07.Deferred\G_Buffer">
+      <UniqueIdentifier>{b07a95f4-a505-41a8-85f3-1fcf138f8a3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07.Deferred\G_Buffer\TargetBuffer">
+      <UniqueIdentifier>{1d9628b9-0414-4eda-9ba0-806adaa31964}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -165,9 +177,6 @@
     <ClInclude Include="..\Code\ComponentMap.h">
       <Filter>03.GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="..\Code\Collision.h">
-      <Filter>04.Component\Collision</Filter>
-    </ClInclude>
     <ClInclude Include="..\Code\Sphere.h">
       <Filter>05.Resources\Shape\Sphere</Filter>
     </ClInclude>
@@ -179,6 +188,18 @@
     </ClInclude>
     <ClInclude Include="..\Code\NavMeshAgent.h">
       <Filter>06.NaviMesh\NavMeshAgent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Collider.h">
+      <Filter>04.Component\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\ColliderInfo.h">
+      <Filter>04.Component\Collider\ColliderInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\TargetBuffer.h">
+      <Filter>07.Deferred\G_Buffer\TargetBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\G_Buffer.h">
+      <Filter>07.Deferred\G_Buffer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -248,9 +269,6 @@
     <ClCompile Include="..\Code\ComponentMap.cpp">
       <Filter>03.GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\Collision.cpp">
-      <Filter>04.Component\Collision</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\Sphere.cpp">
       <Filter>05.Resources\Shape\Sphere</Filter>
     </ClCompile>
@@ -262,6 +280,15 @@
     </ClCompile>
     <ClCompile Include="..\Code\NavMeshAgent.cpp">
       <Filter>06.NaviMesh\NavMeshAgent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Collider.cpp">
+      <Filter>04.Component\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\TargetBuffer.cpp">
+      <Filter>07.Deferred\G_Buffer\TargetBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\G_Buffer.cpp">
+      <Filter>07.Deferred\G_Buffer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

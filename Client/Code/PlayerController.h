@@ -2,6 +2,7 @@
 
 #include "Controller.h"
 
+class CPlayerCamera;
 class CSpaceMarin;
 
 class CPlayerController
@@ -17,26 +18,37 @@ public:
 	virtual Engine::CComponent* CloneComponent() override;
 
 private:
-	HRESULT Initialize(Engine::CTransform* ptr_target_transform, float speed, float sensitivity);
+	HRESULT Initialize(CSpaceMarin * ptr_target, float speed, float sensitivity);
 
 public:
+	void LateInit();
 	virtual void Update(float delta_time) override;
 
 public:
 	virtual int Release() override;
 
 public:
-	static CPlayerController* Create(Engine::CTransform* ptr_target_transform, float speed, float sensitivity);
+	static CPlayerController* Create(CSpaceMarin * ptr_target, float speed, float sensitivity);
 
 private:
 	void CheckInput(float delta_time);
-	void InputKeyboard(float delta_time);
-	void MoveToMouse(float delta_time);
+	void ControlMove(float delta_time);
+	void ControlAimPoint(float delta_time);
+	void ControlZoom(float delta_time);
+	void ControlAttack(float delta_time);
 
 private:
-	CSpaceMarin* ctrl_unit_ = nullptr;
-	
+	void ComputeShootRay(Vector3& ray_pos, Vector3& ray_dir);
+
 private:
+	Engine::CTransform* ptr_forward_transform_ = nullptr;
+	CSpaceMarin* ptr_ctrl_unit_ = nullptr;
+	CPlayerCamera* ptr_ctrl_camera_ = nullptr;
+
+private:
+	bool zoom_ = false;
+	float fov_y = 0.f;
 	float speed_ = 0.f;
 	float sensitivity_ = 0.f;
+	float attack_delay_ = 0.f;
 };

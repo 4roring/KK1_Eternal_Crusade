@@ -38,6 +38,9 @@ public:
 	Vector3& Forward() const;
 
 public:
+	void LookAt(Vector3& look_target);
+
+public:
 	virtual void Update(float delta_time) override;
 	virtual int Release() override;
 

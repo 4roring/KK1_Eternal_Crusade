@@ -25,8 +25,12 @@ public:
 	void AddRenderLayer(RENDERLAYER render_id, CGameObject* ptr_object);
 
 public:
+	CScene* GetCurrentScene() const;
+
+public:
 	CComponent* FindComponent(int container_index, const std::wstring& component_key);
 	CComponent* CloneComponent(int container_index, const std::wstring& component_key);
+	CGameObject* FindObject(int layer_id, const std::wstring& object_key);
 
 public:
 	HRESULT InitComponentManager(const int container_size);
@@ -62,6 +66,10 @@ public:
 	int MoveFromNavMesh(Vector3& pos, const Vector3& dir, int current_index, int out_pass_fail_option = -1);
 	int FindCellIndex(const Vector3& pos);
 	void ClearNavCell();
+
+public:
+	bool PathFinder(int start_cell, int end_cell, std::vector<Vector3>& path);
+	bool PathFinder(int start_cell, const Vector3& end_point, std::vector<Vector3>& path);
 
 private:
 	CScene* ptr_scene_ = nullptr;

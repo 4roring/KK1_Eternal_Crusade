@@ -4,6 +4,7 @@
 
 BEGIN(Engine)
 class CStaticMesh;
+class CCollider;
 END
 
 class CLevelObject
@@ -19,6 +20,7 @@ private:
 	HRESULT Initialize(const std::wstring& mesh_key);
 
 public:
+	virtual void LateInit() override;
 	virtual void Update(float delta_time) override;
 	virtual void LateUpdate() override;
 	virtual void Render() override;
@@ -31,9 +33,13 @@ private:
 	void Release();
 
 private:
-	HRESULT LoadMesh(const std::wstring& mesh_key, MAINTAINID stage_id);
-	HRESULT FindMesh(const std::wstring& mesh_key, const std::wstring& path, MAINTAINID stage_id);
-
-private:
 	Engine::CStaticMesh* ptr_mesh_ = nullptr;
+	Engine::CCollider* ptr_sphere_coll_ = nullptr;
+	Engine::CCollider* ptr_box_coll_ = nullptr;
+
+#ifdef _DEBUG
+private:
+	Engine::CShader* ptr_debug_shader_ = nullptr;
+#endif
+
 };

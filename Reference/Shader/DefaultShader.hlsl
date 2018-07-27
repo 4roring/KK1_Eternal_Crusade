@@ -1,11 +1,11 @@
 #include "BaseShader.hlsl"
 
 float g_alpha = 1.f;
-texture g_base_texture;
+texture g_color_texture;
 
 sampler base_sampler = sampler_state
 {
-	texture = g_base_texture;
+    texture = g_color_texture;
 	MINFILTER = LINEAR;
 	MAGFILTER = LINEAR;
 };

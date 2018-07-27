@@ -18,6 +18,7 @@ public:
 
 public:
 	void SetBoundingBox(const Vector3& min, const Vector3& max, DWORD color);
+	void SetColor(DWORD color);
 
 private:
 	HRESULT CreateBuffer(const Vector3& min, const Vector3& max, DWORD color);

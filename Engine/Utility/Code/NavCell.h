@@ -26,6 +26,8 @@ public:
 	int index() const;
 	int option() const;
 	int link_cell_index() const;
+	Vector3 normal() const;
+	Vector3 center() const;
 
 public:
 	void SetNeighbor(NEIGHBORID neighbor_id, CNavCell* ptr_neighbor);
@@ -54,6 +56,8 @@ private:
 	CNavLine* ptr_nav_line_[LINE_END] = {};
 	Vector3 point_[POINT_END] = {};
 	CNavCell* ptr_neighbor_[NEIGHBOR_END] = { nullptr };
+	Vector3 normal_ = Vector3();
+	Vector3 center_ = Vector3();
 
 private:
 	int index_ = 0;

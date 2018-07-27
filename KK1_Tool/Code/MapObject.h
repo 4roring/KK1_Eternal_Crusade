@@ -30,7 +30,7 @@ public:
 	virtual void Render() override;
 
 public:
-	bool RaycastToMesh(Vector3& ray_pos, Vector3& ray_dir, float* hit_dir);
+	bool RaycastToMesh(Vector3& ray_pos, Vector3& ray_dir, float* hit_dist);
 
 public:
 	static MapObject* Create(LPDIRECT3DDEVICE9 ptr_device, const std::wstring& mesh_key);

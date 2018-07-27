@@ -46,7 +46,7 @@ Vector3 Engine::CNavLine::SlidingDirection(const Vector3 & in_dir)
 	Vector2 temp_normal = Vector2(0.f, 0.f);
 	D3DXVec2Normalize(&temp_normal, &normal_);
 	temp_normal *= D3DXVec2Dot(&-out_dir, &normal_);
-	out_dir += temp_normal;
+	out_dir += temp_normal * 1.1f;
 
 	return Vector3(out_dir.x, in_dir.y, out_dir.y);
 }

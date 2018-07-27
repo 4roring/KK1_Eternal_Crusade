@@ -286,7 +286,6 @@ void StageEditor::PickAddObject()
 	RayToViewSpace(ray_pos, ray_dir, mouse_pos);
 	RayToWorldSpace(ray_pos, ray_dir);
 
-
 	float dist = 0.f;
 	Vector3 point[4] = { Vector3(-100.f, 0.f, 100.f),  Vector3(100.f, 0.f, 100.f)
 		, Vector3(-100.f, 0.f, -100.f), Vector3(100.f, 0.f, -100.f) };

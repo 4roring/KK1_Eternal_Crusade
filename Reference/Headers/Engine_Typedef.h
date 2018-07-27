@@ -157,6 +157,10 @@ struct Vector3 : public D3DXVECTOR3
 	}
 
 	// Function
+	float Magnitude()
+	{
+		return (x * x) + (y * y) + (z * z);
+	}
 	float Length()
 	{
 		return sqrt((x * x) + (y * y) + (z * z));

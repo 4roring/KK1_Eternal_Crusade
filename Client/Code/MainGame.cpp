@@ -95,6 +95,7 @@ void CMainGame::LastFrame()
 	if (true == NullCheckOfManager()) return;
 
 	ptr_game_manager_->LastFrame();
+	CollSystem()->LastFrame();
 }
 
 CMainGame * CMainGame::Create()
@@ -126,6 +127,7 @@ void CMainGame::Render_FPS()
 
 void CMainGame::Release()
 {
+	CollSystem()->DestroyInstance();
 	ptr_input_->DestroyInstance();
 	ptr_input_ = nullptr;
 	ptr_game_manager_->DestroyInstance();

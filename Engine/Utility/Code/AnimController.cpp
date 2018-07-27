@@ -99,6 +99,9 @@ void Engine::CAnimController::SetAnimationTrack(const char * anim_name)
 	if (nullptr == anim_name)
 		assert(!"anim name is nullptr");
 
+	if (0 == strcmp(current_track_name_, anim_name))
+		return;
+
 	if (current_track_ == 0)
 		new_track_ = 1;
 	else

@@ -39,9 +39,14 @@ protected:
 	HRESULT Initialize();
 
 public:
+	virtual void LateInit();
 	virtual void Update(float delta_time);
 	virtual void LateUpdate();
 	virtual void Render();
+
+public:
+	virtual void ApplyDamage(int damage);
+	virtual bool CheckRaycast(const Vector3& ray_pos, const Vector3& ray_dir, float* hit_dist);
 
 protected:
 	template<typename T>
@@ -54,6 +59,10 @@ protected:
 	LPDIRECT3DDEVICE9 ptr_device_ = nullptr;
 	CTransform* ptr_transform_ = nullptr;
 	CShader* ptr_shader_ = nullptr;
+#ifdef _DEBUG
+	CShader* ptr_debug_shader_ = nullptr;
+#endif
+
 
 protected:
 	float view_z_ = 0.f;

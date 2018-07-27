@@ -17,12 +17,41 @@ Engine::CResources * Engine::CStaticMesh::CloneComponent()
 	return this;
 }
 
-void Engine::CStaticMesh::GetComputeBoundingBox(const Vector3 & min, const Vector3 & max) const
+void Engine::CStaticMesh::GetMinMax(Vector3 & min, Vector3 & max)
 {
+	min = bounding_box_.min_;
+	max = bounding_box_.max_;
 }
 
-void Engine::CStaticMesh::GetComputeBoundingSphere(const Vector3 & min, const Vector3 & max) const
+HRESULT Engine::CStaticMesh::ComputeBoundingBox()
 {
+	D3DVERTEXELEMENT9 vertex_element[MAX_FVF_DECL_SIZE] = {};
+	ptr_mesh_->GetDeclaration(vertex_element);
+
+	WORD offset = -1;
+	for (size_t i = 0; i < MAX_FVF_DECL_SIZE; ++i)
+	{
+		if (vertex_element[i].Type == D3DDECLTYPE_UNUSED)
+			break;
+
+		if (vertex_element[i].Usage == D3DDECLUSAGE_POSITION)
+		{
+			offset = vertex_element[i].Offset;
+			break;
+		}
+	}
+
+	void* vertex_info = nullptr;
+	ptr_mesh_->LockVertexBuffer(0, &vertex_info);
+
+	if (FAILED(D3DXComputeBoundingBox((D3DXVECTOR3*)((BYTE*)vertex_info + offset)
+		, ptr_mesh_->GetNumVertices(), D3DXGetDeclVertexSize(vertex_element, 0)
+		, &bounding_box_.min_, &bounding_box_.max_)))
+		return E_FAIL;
+
+	ptr_mesh_->UnlockVertexBuffer();
+
+	return S_OK;
 }
 
 void Engine::CStaticMesh::RenderMesh(LPD3DXEFFECT ptr_effect)
@@ -84,11 +113,11 @@ int Engine::CStaticMesh::Release()
 	return reference_count_;
 }
 
-bool Engine::CStaticMesh::RaycastToMesh(const Vector3 & ray_pos, const Vector3 & ray_dir, float* hit_dir)
+bool Engine::CStaticMesh::RaycastToMesh(const Vector3 & ray_pos, const Vector3 & ray_dir, float* hit_dist)
 {
 	HRESULT hr = E_FAIL;
 	BOOL is_hit = FALSE;
-	hr = D3DXIntersect(ptr_mesh_, &ray_pos, &ray_dir, &is_hit, nullptr, nullptr, nullptr, hit_dir, nullptr, nullptr);
+	hr = D3DXIntersect(ptr_mesh_, &ray_pos, &ray_dir, &is_hit, nullptr, nullptr, nullptr, hit_dist, nullptr, nullptr);
 	
 	if (FALSE == is_hit) return false;
 	return true;
@@ -148,6 +177,10 @@ HRESULT Engine::CStaticMesh::LoadMeshFromFile(const TCHAR * path, const TCHAR * 
 
 		if (nullptr != ptr_texture) Safe_Release(ptr_texture);
 	}
+
+	hr = ComputeBoundingBox();
+	assert(!FAILED(hr) && "Static Mesh ComputeBoundingBox Failed");
+
 	return S_OK;
 }
 

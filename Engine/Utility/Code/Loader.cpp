@@ -84,8 +84,11 @@ STDOVERRIDEMETHODIMP Engine::CLoader::CreateMeshContainer(LPCSTR ptr_name
 			full_path = full_path.substr(0, ++iter);
 
 			hr = D3DXCreateTextureFromFileW(ptr_device_, (full_path + TEXT("Mk.tga")).c_str(), &ptr_mesh_container->pp_color_texture[i]);
-			if(FAILED(hr))
+			if (FAILED(hr))
 				hr = D3DXCreateTextureFromFileW(ptr_device_, (full_path + TEXT("M.tga")).c_str(), &ptr_mesh_container->pp_color_texture[i]);
+			if (FAILED(hr))
+				hr = D3DXCreateTextureFromFileW(ptr_device_, (full_path + TEXT("BC.tga")).c_str(), &ptr_mesh_container->pp_color_texture[i]);
+
 			assert(!FAILED(hr) && "mesh_container Texture Create Failed");
 
 			hr = D3DXCreateTextureFromFileW(ptr_device_, (full_path + TEXT("N.tga")).c_str(), &ptr_mesh_container->pp_normal_texture[i]);
@@ -137,16 +140,12 @@ STDOVERRIDEMETHODIMP Engine::CLoader::CreateMeshContainer(LPCSTR ptr_name
 
 		ptr_skin_info->ConvertToIndexedBlendedMesh(ptr_mesh_data->pMesh
 			, D3DXMESH_MANAGED | D3DXMESH_WRITEONLY
-			, 30
+			, 50
 			, nullptr, nullptr, nullptr, nullptr
 			, &max_vertex_in_fluences
 			, &num_bone_combo_entries
 			, &ptr_mesh_container->ptr_bone_combination_buf
 			, &ptr_mesh_container->MeshData.pMesh);
-
-		// Normal Data
-		//if (!(ptr_mesh->GetFVF() & D3DFVF_NORMAL))
-		//	D3DXComputeNormals(ptr_mesh_container->MeshData.pMesh, ptr_mesh_container->pAdjacency);
 
 		DWORD num_bones = ptr_skin_info->GetNumBones();
 		ptr_mesh_container->ptr_frame_offset_matrix = new Matrix[num_bones];

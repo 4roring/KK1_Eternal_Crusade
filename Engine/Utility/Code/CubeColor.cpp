@@ -15,20 +15,20 @@ Engine::CComponent * Engine::CCubeColor::CloneComponent()
 	return this;
 }
 
-void Engine::CCubeColor::SetBoundingBox(const Vector3 & min, const Vector3 & max, DWORD color)
+void Engine::CCubeColor::SetBoundingBox(const Vector3 & _min, const Vector3 & _max, DWORD color)
 {
 	VertexColor* ptr_vertex = nullptr;
 	ptr_vertex_buffer_->Lock(0, 0, (void**)&ptr_vertex, 0);
 
-	ptr_vertex[0].position = Vector3(min.x, max.x, min.z);
-	ptr_vertex[1].position = Vector3(max.x, max.x, min.z);
-	ptr_vertex[2].position = Vector3(max.x, min.z, min.z);
-	ptr_vertex[3].position = Vector3(min.z, min.z, min.z);
+	ptr_vertex[0].position = Vector3(_min.x, _max.y, _min.z);
+	ptr_vertex[1].position = Vector3(_max.x, _max.y, _min.z);
+	ptr_vertex[2].position = Vector3(_max.x, _min.y, _min.z);
+	ptr_vertex[3].position = Vector3(_min.x, _min.y, _min.z);
 
-	ptr_vertex[4].position = Vector3(min.z, max.x, max.x);
-	ptr_vertex[5].position = Vector3(max.x, max.x, max.x);
-	ptr_vertex[6].position = Vector3(max.x, min.z, max.x);
-	ptr_vertex[7].position = Vector3(min.z, min.z, max.x);
+	ptr_vertex[4].position = Vector3(_min.x, _max.y, _max.z);
+	ptr_vertex[5].position = Vector3(_max.x, _max.y, _max.z);
+	ptr_vertex[6].position = Vector3(_max.x, _min.y, _max.z);
+	ptr_vertex[7].position = Vector3(_min.x, _min.y, _max.z);
 
 	for (int i = 0; i < 8; ++i)
 		ptr_vertex[i].color = color;
@@ -36,7 +36,18 @@ void Engine::CCubeColor::SetBoundingBox(const Vector3 & min, const Vector3 & max
 	ptr_vertex_buffer_->Unlock();
 }
 
-HRESULT Engine::CCubeColor::CreateBuffer(const Vector3 & min, const Vector3 & max, DWORD color)
+void Engine::CCubeColor::SetColor(DWORD color)
+{
+	VertexColor* ptr_vertex = nullptr;
+	ptr_vertex_buffer_->Lock(0, 0, (void**)&ptr_vertex, 0);
+
+	for (int i = 0; i < 8; ++i)
+		ptr_vertex[i].color = color;
+
+	ptr_vertex_buffer_->Unlock();
+}
+
+HRESULT Engine::CCubeColor::CreateBuffer(const Vector3 & _min, const Vector3 & _max, DWORD color)
 {
 	vertex_size_ = sizeof(VertexColor);
 	vertex_count_ = 8;
@@ -52,15 +63,15 @@ HRESULT Engine::CCubeColor::CreateBuffer(const Vector3 & min, const Vector3 & ma
 	VertexColor* ptr_vertex = nullptr;
 	ptr_vertex_buffer_->Lock(0, 0, (void**)&ptr_vertex, 0);
 
-	ptr_vertex[0].position = Vector3(min.x, max.x, min.z);
-	ptr_vertex[1].position = Vector3(max.x, max.x, min.z);
-	ptr_vertex[2].position = Vector3(max.x, min.z, min.z);
-	ptr_vertex[3].position = Vector3(min.z, min.z, min.z);
+	ptr_vertex[0].position = Vector3(_min.x, _max.y, _min.z);
+	ptr_vertex[1].position = Vector3(_max.x, _max.y, _min.z);
+	ptr_vertex[2].position = Vector3(_max.x, _min.y, _min.z);
+	ptr_vertex[3].position = Vector3(_min.x, _min.y, _min.z);
 
-	ptr_vertex[4].position = Vector3(min.z, max.x, max.x);
-	ptr_vertex[5].position = Vector3(max.x, max.x, max.x);
-	ptr_vertex[6].position = Vector3(max.x, min.z, max.x);
-	ptr_vertex[7].position = Vector3(min.z, min.z, max.x);
+	ptr_vertex[4].position = Vector3(_min.x, _max.y, _max.z);
+	ptr_vertex[5].position = Vector3(_max.x, _max.y, _max.z);
+	ptr_vertex[6].position = Vector3(_max.x, _min.y, _max.z);
+	ptr_vertex[7].position = Vector3(_min.x, _min.y, _max.z);
 
 	for (int i = 0; i < 8; ++i)
 		ptr_vertex[i].color = color;
@@ -98,10 +109,10 @@ HRESULT Engine::CCubeColor::CreateBuffer(const Vector3 & min, const Vector3 & ma
 	return S_OK;
 }
 
-Engine::CCubeColor * Engine::CCubeColor::Create(LPDIRECT3DDEVICE9 ptr_device, const Vector3 & min, const Vector3 & max, DWORD color)
+Engine::CCubeColor * Engine::CCubeColor::Create(LPDIRECT3DDEVICE9 ptr_device, const Vector3 & _min, const Vector3 & _max, DWORD color)
 {
 	CCubeColor* ptr_buffer = new CCubeColor(ptr_device);
-	if (FAILED(ptr_buffer->CreateBuffer(min, max, color)))
+	if (FAILED(ptr_buffer->CreateBuffer(_min, _max, color)))
 	{
 		Safe_Delete(ptr_buffer);
 		assert(!"CubeColor Create Failed");

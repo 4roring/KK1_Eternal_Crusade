@@ -44,7 +44,7 @@ Engine::CComponentMap * Engine::CComponentMap::Create()
 void Engine::CComponentMap::Release()
 {
 	for (auto& pair : map_component_)
-		Safe_Release(pair.second);
+		Safe_Release_Delete(pair.second);
 
 	map_component_.clear();
 }

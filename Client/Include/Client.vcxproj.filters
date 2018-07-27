@@ -16,9 +16,6 @@
     <Filter Include="01.Scene\01.Title">
       <UniqueIdentifier>{522cfd24-2b54-42f4-9ce1-4aadbde602a9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Scene\03.Special_Island">
-      <UniqueIdentifier>{07645524-43ae-423a-96bc-01a07a2b6241}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Scene\99.Loading">
       <UniqueIdentifier>{3fbf6f4c-ecd1-4e84-99e9-a7d90b8ff4c2}</UniqueIdentifier>
     </Filter>
@@ -83,8 +80,29 @@
     <Filter Include="02.GameObject\OtherObject\Screen">
       <UniqueIdentifier>{c0e2e4e6-189f-4904-a374-ff521478feeb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\OtherObject\LevelObject">
+    <Filter Include="02.GameObject\ControlObject\SpaceMarin\Gun_Phobos">
+      <UniqueIdentifier>{ecb94be2-f7cd-416f-9d35-f0cb2bd1d10f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Environment\LevelObject">
       <UniqueIdentifier>{0cc1f3b0-a567-476c-96c4-046b5854fa1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.CollisionSystem">
+      <UniqueIdentifier>{ad0cd351-1da5-450f-ac9d-303577eb7207}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject\Ork">
+      <UniqueIdentifier>{746f5ec5-fda6-4197-b811-8d16840596dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OldClass\Tyranid">
+      <UniqueIdentifier>{f2839e2e-5eda-408d-a14c-90caac4c67bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject\Ork\Ork_Gun">
+      <UniqueIdentifier>{75ebb22f-b237-4cd3-a1da-c9194e0e06f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject\Ork\Ork_Sword">
+      <UniqueIdentifier>{673bba1e-5b08-4e26-a925-1c2ca92b143b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Components\Controller\EnemyAIController">
+      <UniqueIdentifier>{60b13917-bf97-467b-bc16-279c8d647dd0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -135,7 +153,7 @@
     </ClInclude>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="..\Code\LevelObject.h">
-      <Filter>02.GameObject\OtherObject\LevelObject</Filter>
+      <Filter>02.GameObject\Environment\LevelObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Code\SceneSelector.h">
       <Filter>OldClass</Filter>
@@ -148,6 +166,30 @@
     </ClInclude>
     <ClInclude Include="..\Code\PlayerController.h">
       <Filter>03.Components\Controller\PlayerController</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Gun_Phobos.h">
+      <Filter>02.GameObject\ControlObject\SpaceMarin\Gun_Phobos</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionSystem.h">
+      <Filter>04.CollisionSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Ork.h">
+      <Filter>02.GameObject\ControlObject\Ork</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Tyranid.h">
+      <Filter>OldClass\Tyranid</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Ork_Gun.h">
+      <Filter>02.GameObject\ControlObject\Ork\Ork_Gun</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Ork_Sword.h">
+      <Filter>02.GameObject\ControlObject\Ork\Ork_Sword</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\EnemyAIController.h">
+      <Filter>03.Components\Controller\EnemyAIController</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Function.h">
+      <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -183,7 +225,7 @@
     </ClCompile>
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="..\Code\LevelObject.cpp">
-      <Filter>02.GameObject\OtherObject\LevelObject</Filter>
+      <Filter>02.GameObject\Environment\LevelObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\PlayerCamera.cpp">
       <Filter>02.GameObject\Camera\PlayerCamera</Filter>
@@ -193,6 +235,27 @@
     </ClCompile>
     <ClCompile Include="..\Code\PlayerController.cpp">
       <Filter>03.Components\Controller\PlayerController</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Gun_Phobos.cpp">
+      <Filter>02.GameObject\ControlObject\SpaceMarin\Gun_Phobos</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionSystem.cpp">
+      <Filter>04.CollisionSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Ork.cpp">
+      <Filter>02.GameObject\ControlObject\Ork</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Tyranid.cpp">
+      <Filter>OldClass\Tyranid</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Ork_Gun.cpp">
+      <Filter>02.GameObject\ControlObject\Ork\Ork_Gun</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Ork_Sword.cpp">
+      <Filter>02.GameObject\ControlObject\Ork\Ork_Sword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\EnemyAIController.cpp">
+      <Filter>03.Components\Controller\EnemyAIController</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

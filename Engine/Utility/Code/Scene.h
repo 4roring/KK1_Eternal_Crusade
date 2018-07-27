@@ -18,6 +18,7 @@ public:
 
 public:
 	CComponent* GetComponentToLayerObject(int layer_id, const std::wstring& object_key, const std::wstring& component_key) const;
+	CGameObject* FindObjectInLayer(int layer_id, const std::wstring& object_key);
 
 public:
 	virtual HRESULT InitScene();

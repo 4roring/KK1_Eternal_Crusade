@@ -58,6 +58,19 @@ Vector3 & Engine::CTransform::Forward() const
 	return *(Vector3*)&transform_.mat_world.m[2][0];
 }
 
+void Engine::CTransform::LookAt(Vector3& look_target)
+{
+	const Vector3 dir = Vector3(0.f, 0.f, 1.f);
+	const Vector3 target_dir = (look_target - transform_.position).Normalize();
+
+	float cos = Vector3::Dot(dir, target_dir);
+	transform_.rotation.y = acosf(cos);
+	if (look_target.x < transform_.position.x)
+		transform_.rotation.y *= -1.f;
+
+	this->Update(0.f);
+}
+
 void Engine::CTransform::Update(float delta_time)
 {
 	Matrix mat_scale, mat_rot, mat_trans;

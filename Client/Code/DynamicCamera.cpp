@@ -29,7 +29,7 @@ void CDynamicCamera::Update(float delta_time)
 	InputCheck(delta_time);
 	if (true == mouse_fix_)
 	{
-		MouseFixMove();
+		Engine::Input()->FixMouseCenter(g_hwnd, kWinCx, kWinCy);
 		MouseMove();
 	}
 }
@@ -127,11 +127,4 @@ void CDynamicCamera::MouseMove()
 
 		at() = eye() + dir;
 	}
-}
-
-void CDynamicCamera::MouseFixMove()
-{
-	POINT mouse_fix_pos = { kWinCx >> 1, kWinCy >> 1 };
-	ClientToScreen(g_hwnd, &mouse_fix_pos);
-	SetCursorPos(mouse_fix_pos.x, mouse_fix_pos.y);
 }

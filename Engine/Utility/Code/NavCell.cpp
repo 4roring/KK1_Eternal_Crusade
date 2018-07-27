@@ -44,6 +44,16 @@ int Engine::CNavCell::link_cell_index() const
 	return link_cell_index_;
 }
 
+Vector3 Engine::CNavCell::normal() const
+{
+	return normal_;
+}
+
+Vector3 Engine::CNavCell::center() const
+{
+	return center_;
+}
+
 void Engine::CNavCell::SetNeighbor(NEIGHBORID neighbor_id, CNavCell* ptr_neighbor)
 {
 	ptr_neighbor_[neighbor_id] = ptr_neighbor;
@@ -61,6 +71,14 @@ HRESULT Engine::CNavCell::InitNavCell(int index, int option, int link_cell_index
 	if (nullptr == ptr_nav_line_[LINE_BC]) return E_FAIL;
 	ptr_nav_line_[LINE_CA] = CNavLine::Create(point_[POINT_C], point_[POINT_A]);
 	if (nullptr == ptr_nav_line_[LINE_CA]) return E_FAIL;
+
+	const Vector3 forward_vector = point_[POINT_B] - point_[POINT_A];
+	const Vector3 right_vector = point_[POINT_C] - point_[POINT_A];
+	normal_ = Vector3::Cross(forward_vector, right_vector).Normalize();
+
+	center_.x = (point_[POINT_A].x + point_[POINT_B].x + point_[POINT_C].x) / 3.f;
+	center_.y = (point_[POINT_A].y + point_[POINT_B].y + point_[POINT_C].y) / 3.f;
+	center_.z = (point_[POINT_A].z + point_[POINT_B].z + point_[POINT_C].z) / 3.f;
 
 	return S_OK;
 }

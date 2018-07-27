@@ -14,6 +14,8 @@
 #include "DynamicCamera.h"
 #include "PlayerCamera.h"
 
+//#define _FREECAMMODE
+
 CStage::CStage(LPDIRECT3DDEVICE9 ptr_device)
 	: Engine::CScene(ptr_device)
 {
@@ -38,6 +40,8 @@ HRESULT CStage::LateInit()
 	hr = Add_Light();
 	assert(!FAILED(hr) && "Add_Light Call Failed");
 	
+	CScene::LateInit();
+
 	return S_OK;
 }
 
@@ -78,11 +82,12 @@ HRESULT CStage::Add_Camera_Layer()
 		, Vector3(0.f, 0.f, 0.f));
 	assert(nullptr != ptr_obj && "Dynamic Camera Create Failed");
 	AddObject(LAYER_UI, TEXT("DynamicCamera"), ptr_obj);
-#else
+#endif
+
 	ptr_obj = CPlayerCamera::Create(ptr_device_, MAINTAIN_STAGE);
 	assert(nullptr != ptr_obj && "Player Camera Create Failed");
 	AddObject(LAYER_CAMERA, TEXT("Player_Camera"), ptr_obj);
-#endif
+
 	return S_OK;
 }
 

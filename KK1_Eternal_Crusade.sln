@@ -34,6 +34,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "98.Shader", "98.Shader", "{
 		Reference\Shader\BaseShader.hlsl = Reference\Shader\BaseShader.hlsl
 		Reference\Shader\DefaultShader.hlsl = Reference\Shader\DefaultShader.hlsl
 		Reference\Shader\DynamicMeshShader.hlsl = Reference\Shader\DynamicMeshShader.hlsl
+		Reference\Shader\DynamicMeshShaderColor.hlsl = Reference\Shader\DynamicMeshShaderColor.hlsl
 		Reference\Shader\MeshShader.hlsl = Reference\Shader\MeshShader.hlsl
 		Reference\Shader\NormalMapShader.hlsl = Reference\Shader\NormalMapShader.hlsl
 	EndProjectSection
@@ -41,6 +42,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02.Tool", "02.Tool", "{4A792490-EA8C-44F5-8864-BDCB14242600}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KK1_Tool", "KK1_Tool\Include\MapTool.vcxproj", "{74F841BD-EDA5-47A4-8274-09A355A00F48}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deferred", "Deferred", "{6FA2CB32-8583-4C53-BF74-05D2598AEF05}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -92,5 +95,6 @@ Global
 		{0102F401-78A0-4235-A185-4C83E193D1A6} = {7EAE5D7F-1C32-4788-BFC5-B2493C3F0EE5}
 		{923818D7-20BC-4FBD-B26B-DC8D41E3110E} = {7EAE5D7F-1C32-4788-BFC5-B2493C3F0EE5}
 		{74F841BD-EDA5-47A4-8274-09A355A00F48} = {4A792490-EA8C-44F5-8864-BDCB14242600}
+		{6FA2CB32-8583-4C53-BF74-05D2598AEF05} = {4FEF042B-3FE1-46A9-B349-D37617A28560}
 	EndGlobalSection
 EndGlobal

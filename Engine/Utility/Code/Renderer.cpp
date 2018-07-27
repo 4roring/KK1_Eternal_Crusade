@@ -1,5 +1,6 @@
 #include "Renderer.h"
 #include "GameObject.h"
+#include "G_Buffer.h"
 
 Engine::CRenderer::CRenderer(LPDIRECT3DDEVICE9 ptr_device)
 	: ptr_device_(ptr_device)
@@ -14,10 +15,25 @@ Engine::CRenderer::~CRenderer()
 Engine::CRenderer * Engine::CRenderer::Create(LPDIRECT3DDEVICE9 ptr_device)
 {
 	CRenderer* ptr_renderer = new CRenderer(ptr_device);
-#ifdef _DEBUG
 	assert(nullptr != ptr_renderer && "Renderer Create Failed");
-#endif
+
 	return ptr_renderer;
+}
+
+HRESULT Engine::CRenderer::Initialize()
+{
+	// GBuffer 积己
+	HRESULT hr = E_FAIL;
+	D3DVIEWPORT9 view_port = {};
+	ptr_device_->GetViewport(&view_port);
+
+	hr = ptr_g_buffer->AddTargetBuffer(ptr_device_, TEXT("Albedo"), view_port.Width, view_port.Height, D3DFMT_A8B8G8R8, D3DXCOLOR(0.f, 0.f, 0.f, 1.f));
+
+	hr = ptr_g_buffer->AddTargetBuffer(ptr_device_, TEXT("Normal"), view_port.Width, view_port.Height, D3DFMT_A16B16G16R16F, D3DXCOLOR(0.f, 0.f, 0.f, 1.f));
+
+
+
+	return S_OK;
 }
 
 void Engine::CRenderer::RenderGroupRelease()
@@ -28,7 +44,7 @@ void Engine::CRenderer::RenderGroupRelease()
 void Engine::CRenderer::Render()
 {
 	Render_Priority();
-	Render_NoneAlpha();
+	Render_Deferred();
 	Render_Alpha();
 	Render_UI();
 
@@ -79,4 +95,11 @@ void Engine::CRenderer::Render_UI()
 
 	ptr_device_->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 	ptr_device_->SetRenderState(D3DRS_ZENABLE, TRUE);
+}
+
+void Engine::CRenderer::Render_Deferred()
+{
+	// GBuffer肺 何磐 Albedo, Normal, Depth 弊府扁.
+
+	Render_NoneAlpha();
 }

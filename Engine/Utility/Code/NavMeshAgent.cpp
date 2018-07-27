@@ -1,6 +1,7 @@
 #include "NavMeshAgent.h"
 #include "NavCell.h"
 #include "NavLine.h"
+#include <queue>
 
 Engine::CNavMeshAgent* Engine::CNavMeshAgent::ptr_nav_mesh_agent_ = nullptr;
 
@@ -112,8 +113,20 @@ int Engine::CNavMeshAgent::MoveFromNavMesh(Vector3 & pos, const Vector3 & dir, i
 		{
 			out_pass_fail_option = vec_nav_cell_[current_index]->option();
 			Vector3 sliding_dir = vec_nav_cell_[current_index]->GetLine((LINEID)neighbor_id)->SlidingDirection(dir);
-			pos += sliding_dir;
-		}
+			
+			if (true == vec_nav_cell_[current_index]->CheckPass(pos, sliding_dir, neighbor_id))
+			{
+				if (nullptr != ptr_neighbor)
+				{
+					next_index = ptr_neighbor->index();
+					pos += sliding_dir;
+				}
+				else
+					out_pass_fail_option = vec_nav_cell_[current_index]->option();
+			}
+			else
+				pos += sliding_dir;
+		}	
 		else
 		{
 			next_index = ptr_neighbor->index();
@@ -135,6 +148,108 @@ int Engine::CNavMeshAgent::FindCellIndex(const Vector3 & pos)
 			return nav_cell->index();
 	}
 	return -1;
+}
+
+bool Engine::CNavMeshAgent::PathFinder(int start_cell, int end_cell, std::vector<Vector3>& path)
+{
+	if (start_cell == end_cell)
+		return false;
+
+	path.clear();
+	return ComputePathAsAStar(start_cell, end_cell, path);
+}
+
+bool Engine::CNavMeshAgent::PathFinder(int start_cell, const Vector3 & end_point, std::vector<Vector3>& path)
+{
+	int end_cell = FindCellIndex(end_point);
+
+	if (start_cell == end_cell || end_cell == -1)
+		return false;
+
+	path.clear();
+	return ComputePathAsAStar(start_cell, end_cell, path);
+}
+
+bool Engine::CNavMeshAgent::ComputePathAsAStar(int start_cell, int end_cell, std::vector<Vector3>& path)
+{
+	AStarNode* parent_node = new AStarNode;
+	parent_node->parent = nullptr;
+	parent_node->index = start_cell;
+	parent_node->cost = 0.f;
+
+	int index = start_cell;
+	std::list<AStarNode*> open_list;
+	std::list<AStarNode*> close_list;
+
+	close_list.emplace_back(parent_node);
+
+	while (true)
+	{
+		for (int i = 0; i < NEIGHBOR_END; ++i)
+		{
+			const CNavCell* neighbor = vec_nav_cell_[parent_node->index]->GetNeighbor((NEIGHBORID)i);
+			if (nullptr == neighbor)
+				continue;
+			
+			index = neighbor->index();
+
+			if (false == CheckListIndex(index, open_list, close_list))
+				continue;
+			
+			AStarNode* node = MakeNode(index, end_cell, parent_node);
+			open_list.emplace_back(node);
+		}
+		open_list.sort([](auto& src, auto& dst)->bool { return src->cost < dst->cost; });
+		parent_node = open_list.front();
+		if (parent_node->index == end_cell)
+			break;
+
+		open_list.pop_front();
+		close_list.emplace_back(parent_node);
+	}
+
+	while (nullptr != parent_node->parent)
+	{
+		path.emplace_back(vec_nav_cell_[parent_node->index]->center());
+		parent_node = parent_node->parent;
+	}
+
+	for (auto& node : open_list) Safe_Delete(node);
+	open_list.clear();
+	for (auto& node : close_list) Safe_Delete(node);
+	close_list.clear();
+
+	return true;
+}
+
+Engine::AStarNode * Engine::CNavMeshAgent::MakeNode(int index, int end_cell, AStarNode * parent)
+{
+	AStarNode* node = new AStarNode;
+	float g = (vec_nav_cell_[index]->center() - vec_nav_cell_[parent->index]->center()).Magnitude();
+	float h = (vec_nav_cell_[end_cell]->center() - vec_nav_cell_[index]->center()).Magnitude();
+
+	node->cost = g + h;
+	node->index = index;
+	node->parent = parent;
+
+	return node;
+}
+
+bool Engine::CNavMeshAgent::CheckListIndex(int index, const std::list<AStarNode*>& open_list, const std::list<AStarNode*>& close_list)
+{
+	if (false == open_list.empty())
+	{
+		auto iter_open = std::find_if(open_list.begin(), open_list.end(), [index](auto& node)->bool { return node->index == index; });
+		if (iter_open != open_list.end()) return false;
+	}
+
+	if (false == close_list.empty())
+	{
+		auto iter_close = std::find_if(close_list.begin(), close_list.end(), [index](auto& node)->bool { return node->index == index; });
+		if (iter_close != close_list.end()) return false;
+	}
+
+	return true;
 }
 
 void Engine::CNavMeshAgent::SetPosY(Vector3 & pos, int next_index)

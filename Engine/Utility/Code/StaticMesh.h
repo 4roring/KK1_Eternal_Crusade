@@ -2,6 +2,12 @@
 
 #include "Mesh.h"
 
+struct BoundingBox
+{
+	Vector3 min_;
+	Vector3 max_;
+};
+
 BEGIN(Engine)
 
 class ENGINE_DLL CStaticMesh
@@ -17,8 +23,10 @@ public:
 	virtual CResources* CloneComponent() override;
 	
 public:
-	virtual void GetComputeBoundingBox(const Vector3 & min, const Vector3 & max) const override;
-	virtual void GetComputeBoundingSphere(const Vector3 & min, const Vector3 & max) const override;
+	void GetMinMax(Vector3& min, Vector3& max);
+
+public:
+	HRESULT ComputeBoundingBox();
 
 public:
 	virtual void RenderMesh(LPD3DXEFFECT ptr_effect) override;
@@ -27,7 +35,7 @@ public:
 	virtual int Release() override;
 	
 public:
-	bool RaycastToMesh(const Vector3 & ray_pos, const Vector3 & ray_dir, float* hit_dir);
+	bool RaycastToMesh(const Vector3 & ray_pos, const Vector3 & ray_dir, float* hit_dist);
 
 private:
 	HRESULT LoadMeshFromFile(const TCHAR* path, const TCHAR* file_name, int stage_index);
@@ -49,6 +57,9 @@ private:
 	LPD3DXBUFFER ptr_subset_buffer_ = nullptr;
 	LPD3DXMATERIAL ptr_subset_ = nullptr;
 	DWORD subset_count_ = 0;
+
+private:
+	BoundingBox bounding_box_ = {};
 
 private:
 	DWORD reference_func_ = 0;
