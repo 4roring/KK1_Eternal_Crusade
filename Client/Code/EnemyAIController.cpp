@@ -39,6 +39,7 @@ void CEnemyAIController::LateInit()
 	current_state_ = State::Idle;
 
 	ptr_target_ = dynamic_cast<CSpaceMarin*>(Engine::GameManager()->FindObject(MAINTAIN_STAGE, TEXT("SpaceMarin")));
+	ptr_target_transform_ = ptr_target_->transform();
 }
 
 void CEnemyAIController::Update(float delta_time)
@@ -50,6 +51,8 @@ void CEnemyAIController::Update(float delta_time)
 	case State::Idle: Idle(delta_time);
 		break;
 	case State::Move: MoveToTarget(delta_time);
+		break;
+	case State::MovingShoot: MovingShootToTarget(delta_time);
 		break;
 	case State::Gun_Attack: Gun_Attack(delta_time);
 		break;
@@ -71,26 +74,41 @@ int CEnemyAIController::Release()
 
 void CEnemyAIController::Idle(float delta_time)
 {
-	if (true == path_.empty())
+	condition_ = random_range(0, 1);
+	if (condition_ == 0)
+	{
 		Engine::GameManager()->PathFinder(ptr_ctrl_unit_->current_cell_index(), ptr_target_->current_cell_index(), path_);
-	else
 		current_state_ = State::Move;
+	}
+	else
+	{
+		condition_ = 0;
+		current_state_ = State::MovingShoot;
+	}
 }
 
 void CEnemyAIController::MoveToTarget(float delta_time)
 {
 	Vector3 move_dir = Vector3();
-	constexpr float square_dist = 3.f * 3.f;
+	Vector3 next_path = (true == path_.empty()) ? ptr_target_transform_->position() : path_.back();
+	const float square_target_dist = (ptr_ctrl_transform_->position() - ptr_target_->transform()->position()).Magnitude();
+	const float square_path_dist = (next_path - ptr_ctrl_transform_->position()).Magnitude();
+	constexpr float square_attack_dist = 3.f * 3.f;
+	constexpr float square_path_end_dist = 4.f * 4.f;
 
-	if ((ptr_ctrl_transform_->position() - ptr_target_->transform()->position()).Magnitude() < square_dist)
+	if (square_path_dist < square_path_end_dist)
+	{
+		if(false == path_.empty())
+			path_.pop_back();
+	}
+
+	if (square_target_dist < square_attack_dist)
 	{
 		current_state_ = State::Sword_Attack;
 		ptr_ctrl_transform_->move_dir() = Vector3();
+		path_.clear();
 		return;
 	}
-
-	if ((path_.back() - ptr_ctrl_transform_->position()).Magnitude() < 9.f)
-		path_.pop_back();
 
 	if (true == path_.empty())
 	{
@@ -99,32 +117,70 @@ void CEnemyAIController::MoveToTarget(float delta_time)
 		return;
 	}
 
-	ptr_ctrl_transform_->LookAt(path_.back());
+	ptr_ctrl_transform_->LookAt(next_path);
 	move_dir = ptr_ctrl_transform_->Forward().Normalize();
 	ptr_ctrl_transform_->move_dir() = move_dir * speed_ * delta_time;
+}
+
+void CEnemyAIController::MovingShootToTarget(float delta_time)
+{
+	Vector3 move_dir = Vector3();
+	const float square_target_dist = (ptr_ctrl_transform_->position() - ptr_target_->transform()->position()).Magnitude();
+	constexpr float square_shoot_dist = 9.f * 9.f;
+	constexpr float square_escape_dist = 5.f * 5.f;
+
+	ptr_ctrl_transform_->LookAt(ptr_target_transform_->position());
+	Gun_Attack(delta_time);
+	move_dir = ptr_ctrl_transform_->Forward().Normalize();
+
+	if (square_target_dist < square_escape_dist)
+		move_dir *= -1.f;
+	else if (square_target_dist < square_shoot_dist)
+	{
+		current_state_ = State::Gun_Attack;
+		move_dir = Vector3();
+	}
+	
+	ptr_ctrl_transform_->move_dir() = move_dir * speed_ * delta_time;
+
+	if (condition_ > 5)
+		current_state_ = State::Idle;
 }
 
 void CEnemyAIController::Gun_Attack(float delta_time)
 {
 	attack_delay_ -= delta_time;
+	const float square_target_dist = (ptr_ctrl_transform_->position() - ptr_target_transform_->position()).Magnitude();
+	constexpr float square_shoot_dist = 9.f * 9.f;
+	constexpr float square_dist = 4.f * 4.f;
 	if (attack_delay_ <= 0.f)
 	{
 		ptr_ctrl_unit_->set_fire(true);
-		attack_delay_ = 3.f;
+		ptr_ctrl_transform_->LookAt(ptr_target_transform_->position());
+		attack_delay_ = 1.f;
+		++condition_;
 	}
+
+	if (square_target_dist < square_dist)
+		current_state_ = State::MovingShoot;
+	else if (square_target_dist > square_shoot_dist || condition_ >= 4)
+		current_state_ = State::Idle;
 }
 
 void CEnemyAIController::Sword_Attack(float delta_time)
 {
 	attack_delay_ -= delta_time;
-	constexpr float square_dist = 5.f * 5.f;
-	//if (attack_delay_ <= 0.f)
-	//{
-	//	ptr_ctrl_unit_->set_slash(true);
-	//	attack_delay_ = 1.f;
-	//}
+	const float square_target_dist = (ptr_ctrl_transform_->position() - ptr_target_transform_->position()).Magnitude();
+	constexpr float square_dist = 6.f * 6.f;
+	if (attack_delay_ <= 0.f)
+	{
+		ptr_ctrl_unit_->set_slash(true);
+		ptr_ctrl_transform_->LookAt(ptr_target_transform_->position());
+		attack_delay_ = 1.f;
+		++condition_;
+	}
 
-	if ((ptr_ctrl_transform_->position() - ptr_target_->transform()->position()).Magnitude() < square_dist)
+	if (condition_ >=2 || square_target_dist > square_dist)
 		current_state_ = State::Idle;
 }
 

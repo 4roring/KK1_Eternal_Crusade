@@ -12,7 +12,7 @@ public:
 	enum MRT { MRT_DEFERRED, MRT_LIGHT, MRT_END };
 
 private:
-	G_Buffer();
+	explicit G_Buffer(LPDIRECT3DDEVICE9 ptr_device);
 
 public:
 	~G_Buffer();
@@ -35,6 +35,9 @@ private:
 	// 지속적인 탐색을 하는 wstring를 열거형으로 바꾸도록 하자.
 	std::unordered_map<std::wstring, CTargetBuffer*> map_target_;
 	//std::unordered_map<std::wstring, TargetBufferList> multi_render_target_;
+
+private:
+	LPDIRECT3DDEVICE9 ptr_device_ = nullptr;
 };
 
 END

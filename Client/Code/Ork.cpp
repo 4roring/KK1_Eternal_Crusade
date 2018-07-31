@@ -109,11 +109,10 @@ void COrk::Update(float delta_time)
 void COrk::LateUpdate()
 {
 	Engine::GameManager()->AddRenderLayer(Engine::RENDERLAYER::LAYER_NONEALPHA, this);
-	UpdateLowerAnimState();
-	UpdateUpperAnimState();
-
 	Fire();
 	Slash();
+	UpdateLowerAnimState();
+	UpdateUpperAnimState();
 	CollSystem()->CollisionCheck(ptr_body_collider_, TAG_ENEMY);
 }
 
@@ -134,7 +133,7 @@ void COrk::Render()
 	ptr_body_collider_->SetSphereCollider(0.5f, Vector3(*(Vector3*)&ptr_body_frame_->combined_matrix.m[3][0]));
 
 	ptr_mesh_->RenderMesh(ptr_effect);
-	
+
 #ifdef _DEBUG
 	DebugRender();
 #endif // _DEBUG
@@ -201,12 +200,11 @@ HRESULT COrk::AddComponent()
 
 HRESULT COrk::AddWeapon()
 {
-	// TODO: ÃÑ, Ä® ¹«±â Ãß°¡
 	ptr_gun_ = COrk_Gun::Create(ptr_device_);
 	ptr_left_hand_matrix_ = ptr_mesh_->FindFrameMatrix("joint_WeaponLT_01");
 	if (nullptr == ptr_left_hand_matrix_) return E_FAIL;
 	ptr_gun_->SetParentMatrix(&ptr_lower_transform_->mat_world());
-	
+
 	TCHAR object_key[128] = TEXT("");
 	wsprintf(object_key, TEXT("Ork_Gun_%d"), control_id_);
 	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, object_key, ptr_gun_);
@@ -256,11 +254,7 @@ void COrk::UpdateState(float delta_time)
 		break;
 	case LowerState::Attack_1:
 	case LowerState::Attack_2:
-		if (ptr_upper_anim_ctrl_->GetPeriod() - 0.1 <= ptr_upper_anim_ctrl_->GetTrackPosition())
-		{
-			next_lower_state_ = LowerState::Idle;
-			next_upper_state_ = UpperState::Idle;
-		}
+		AttackState(delta_time);
 		break;
 	case LowerState::Down:
 		if (ptr_upper_anim_ctrl_->GetPeriod() - 0.1 <= ptr_upper_anim_ctrl_->GetTrackPosition())
@@ -275,6 +269,31 @@ void COrk::UpdateState(float delta_time)
 			anim_time_ = 0.f;
 		break;
 	}
+}
+
+void COrk::AttackState(float delta_time)
+{
+	anim_time_ *= 0.7f;
+	ptr_sword_->ptr_sphere_coll()->enable_ = true;
+	if (ptr_upper_anim_ctrl_->GetPeriod() - 0.1 <= ptr_upper_anim_ctrl_->GetTrackPosition())
+	{
+		anim_time_ = 0.f;
+		attack_delay_ += delta_time;
+		ptr_sword_->ptr_sphere_coll()->enable_ = false;
+		if (attack_delay_ >= 1.f)
+		{
+			next_lower_state_ = LowerState::Idle;
+			next_upper_state_ = UpperState::Idle;
+			ptr_transform_->move_dir() = Vector3();
+			condition_ = 0;
+		}
+	}
+	else
+	{
+		ptr_transform_->move_dir() = ptr_transform_->Forward() * 1.f * delta_time;
+		Run();
+	}
+
 }
 
 void COrk::UpdateLowerAnimState()
@@ -316,10 +335,9 @@ void COrk::UpdateUpperAnimState()
 		{
 		case UpperState::Idle:
 			ptr_upper_anim_ctrl_->SetAnimationTrack("Idle");
-			//ptr_upper_anim_ctrl_->SetAnimationTrack("Attack_1");
 			break;
 		case UpperState::Shoot:
-			ptr_upper_anim_ctrl_->SetAnimationTrack("Idle");
+			ptr_upper_anim_ctrl_->SetAnimationTrack("Idle_Aim");
 			break;
 		case UpperState::Run:
 			ptr_upper_anim_ctrl_->SetAnimationTrack("Run");
@@ -355,16 +373,24 @@ void COrk::Fire()
 {
 	if (true == fire_)
 	{
+		Vector3 fire_dir = transform()->Forward();
+		fire_dir.x += random_range(-30, 30) * 0.01f;
+		fire_dir.y += random_range(-30, 30) * 0.01f;
+		fire_dir = fire_dir.Normalize();
+
 		switch (pre_upper_state_)
 		{
-		case UpperState::Run:
+		case UpperState::Idle:
 			next_upper_state_ = UpperState::Shoot;
 			break;
-		case UpperState::Idle:
+		case UpperState::Run:
+			next_upper_state_ = UpperState::Run_Aiming;
+			break;
 		case UpperState::Shoot:
 		case UpperState::Run_Aiming:
 			// Fire!!!
-			
+			ray_pos_ = ptr_gun_->GetFirePos();
+			ray_dir_ = fire_dir * 5.f;
 			fire_ = false;
 			break;
 		}
@@ -375,21 +401,18 @@ void COrk::Slash()
 {
 	if (true == slash_)
 	{
-		switch (pre_upper_state_)
+		if (condition_++ == 0)
 		{
-		case UpperState::Attack_1:
+			next_upper_state_ = UpperState::Attack_1;
+			next_lower_state_ = LowerState::Attack_1;
+		}
+		else
+		{
 			next_upper_state_ = UpperState::Attack_2;
 			next_lower_state_ = LowerState::Attack_2;
-			break;
-		case UpperState::Attack_2:
-			next_upper_state_ = UpperState::Attack_1;
-			next_lower_state_ = LowerState::Attack_1;
-			break;	
-		default:
-			next_upper_state_ = UpperState::Attack_1;
-			next_lower_state_ = LowerState::Attack_1;
-			break;
+			condition_ = 0;
 		}
+		slash_ = false;
 	}
 }
 
@@ -432,21 +455,25 @@ void COrk::DebugRender()
 	ptr_body_collider_->DebugRender();
 	ptr_debug_shader_->EndShader();
 
-	//	Vector3 line_[2] = { ray_pos_, ray_pos_ + ray_dir_ * 100.f };
-	//
-	//	for (auto& point : line_)
-	//	{
-	//		D3DXVec3TransformCoord(&point, &point, &mat_view);
-	//		if (point.z < 0.f)
-	//			point.z = 0.f;
-	//		D3DXVec3TransformCoord(&point, &point, &mat_proj);
-	//	}
-	//
-	//	ptr_line_->SetWidth(2.f);
-	//	ptr_line_->Begin();
-	//
-	//	ptr_line_->DrawTransform(line_, 2, nullptr, D3DXCOLOR(1.f, 0.f, 0.f, 1.f));
-	//
-	//	ptr_line_->End();
+	Matrix mat_view, mat_proj;
+	ptr_device_->GetTransform(D3DTS_VIEW, &mat_view);
+	ptr_device_->GetTransform(D3DTS_PROJECTION, &mat_proj);
+
+	Vector3 line_[2] = { ray_pos_, ray_pos_ + ray_dir_};
+
+	for (auto& point : line_)
+	{
+		D3DXVec3TransformCoord(&point, &point, &mat_view);
+		if (point.z < 0.f)
+			point.z = 0.f;
+		D3DXVec3TransformCoord(&point, &point, &mat_proj);
+	}
+
+	ptr_line_->SetWidth(2.f);
+	ptr_line_->Begin();
+
+	ptr_line_->DrawTransform(line_, 2, nullptr, D3DXCOLOR(1.f, 1.f, 0.f, 1.f));
+
+	ptr_line_->End();
 }
 #endif // _DEBUG

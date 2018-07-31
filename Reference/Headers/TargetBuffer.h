@@ -12,7 +12,7 @@ private:
 public:
 	~CTargetBuffer();
 
-public:
+private:
 	HRESULT Initialize(uint32 size_x, uint32 size_y, const D3DFORMAT& format, const D3DXCOLOR& clear_color);
 
 private:
@@ -20,6 +20,10 @@ private:
 
 public:
 	static CTargetBuffer* Create(LPDIRECT3DDEVICE9 ptr_device, uint32 size_x, uint32 size_y, const D3DFORMAT& format, const D3DXCOLOR& clear_color);
+
+public:
+	HRESULT CreateDebugBuffer(float _x, float _y, float size_x, float size_y);
+	HRESULT RenderDebugBuffer();
 
 public:
 	HRESULT ClearBuffer();
@@ -34,6 +38,10 @@ private:
 
 private:
 	D3DXCOLOR clear_color_;
+
+private:
+	LPDIRECT3DVERTEXBUFFER9 ptr_vertex_buffer_ = nullptr;
+	LPDIRECT3DINDEXBUFFER9 ptr_index_buffer_ = nullptr;
 };
 
 END

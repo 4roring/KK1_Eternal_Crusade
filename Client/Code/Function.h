@@ -2,7 +2,7 @@
 
 #include <random>
 
-int random_range(int _min, int _max)
+static int random_range(int _min, int _max)
 {
 	std::random_device _random_device;
 	std::mt19937 mt(_random_device());

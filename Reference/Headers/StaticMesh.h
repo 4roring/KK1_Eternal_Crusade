@@ -8,6 +8,12 @@ struct BoundingBox
 	Vector3 max_;
 };
 
+struct BoundingSphere
+{
+	float radius;
+	Vector3 center;
+};
+
 BEGIN(Engine)
 
 class ENGINE_DLL CStaticMesh
@@ -24,9 +30,11 @@ public:
 	
 public:
 	void GetMinMax(Vector3& min, Vector3& max);
+	void GetSphere(float& radius, Vector3& center);
 
 public:
 	HRESULT ComputeBoundingBox();
+	HRESULT ComputeBoundingSphere();
 
 public:
 	virtual void RenderMesh(LPD3DXEFFECT ptr_effect) override;
@@ -60,6 +68,7 @@ private:
 
 private:
 	BoundingBox bounding_box_ = {};
+	BoundingSphere bounding_sphere_ = {};
 
 private:
 	DWORD reference_func_ = 0;

@@ -17,6 +17,11 @@ COrk_Sword::~COrk_Sword()
 	Release();
 }
 
+Engine::CCollider * COrk_Sword::ptr_sphere_coll()
+{
+	return ptr_sphere_coll_;
+}
+
 void COrk_Sword::SetParentMatrix(const Matrix * ptr_parent_matrix)
 {
 	ptr_parent_matrix_ = ptr_parent_matrix;
@@ -35,13 +40,8 @@ HRESULT COrk_Sword::Initialize()
 	hr = AddComponent();
 	assert(!FAILED(hr) && "AddComponent call failed in SpaceMarin");
 
-	//ptr_transform_->position().x = 4.f;
-	//ptr_transform_->position().y = 5.f;
-	//ptr_transform_->position().z = -15.f;
-
 	ptr_transform_->rotation().x = D3DXToRadian(90.f);
-	//ptr_transform_->rotation().y = D3DXToRadian(5.f);
-	//ptr_transform_->rotation().z = D3DXToRadian(90.f);
+	ptr_sphere_coll_->enable_ = false;
 
 	return hr;
 }
@@ -51,7 +51,8 @@ void COrk_Sword::Update(float delta_time)
 	Engine::CGameObject::Update(delta_time);
 	ptr_transform_->mat_world() *= hand_matrix_ * (*ptr_parent_matrix_);
 
-	ptr_sphere_coll_->SetSphereCollider(0.3f, Vector3(0.f, 80.f, -40.f));
+	if (true == ptr_sphere_coll_->enable_)
+		ptr_sphere_coll_->SetSphereCollider(0.3f, Vector3(0.f, 80.f, -40.f));
 }
 
 void COrk_Sword::LateUpdate()
@@ -79,17 +80,20 @@ void COrk_Sword::Render()
 	ptr_mesh_->RenderMesh(ptr_effect);
 
 #ifdef _DEBUG
-	ptr_effect = ptr_debug_shader_->GetEffectHandle();
-	Matrix mat_coll;
-	D3DXMatrixIdentity(&mat_coll);
-	mat_coll._41 = ptr_sphere_coll_->GetSpherePos().x;
-	mat_coll._42 = ptr_sphere_coll_->GetSpherePos().y;
-	mat_coll._43 = ptr_sphere_coll_->GetSpherePos().z;
-	ptr_effect->SetMatrix("g_mat_world", &mat_coll);
+	if (true == ptr_sphere_coll_->enable_)
+	{
+		ptr_effect = ptr_debug_shader_->GetEffectHandle();
+		Matrix mat_coll;
+		D3DXMatrixIdentity(&mat_coll);
+		mat_coll._41 = ptr_sphere_coll_->GetSpherePos().x;
+		mat_coll._42 = ptr_sphere_coll_->GetSpherePos().y;
+		mat_coll._43 = ptr_sphere_coll_->GetSpherePos().z;
+		ptr_effect->SetMatrix("g_mat_world", &mat_coll);
 
-	ptr_debug_shader_->BegineShader(1);
-	ptr_sphere_coll_->DebugRender();
-	ptr_debug_shader_->EndShader();
+		ptr_debug_shader_->BegineShader(1);
+		ptr_sphere_coll_->DebugRender();
+		ptr_debug_shader_->EndShader();
+	}
 #endif // _DEBUG
 }
 
@@ -122,7 +126,6 @@ HRESULT COrk_Sword::AddComponent()
 	assert(!FAILED(hr) && "ReadyComponent Failed of LevelObject Shader Component");
 #endif
 	return S_OK;
-
 }
 
 void COrk_Sword::Release()

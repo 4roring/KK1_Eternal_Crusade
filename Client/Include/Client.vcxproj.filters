@@ -62,9 +62,6 @@
     <Filter Include="03.Components\Controller">
       <UniqueIdentifier>{08aa05e5-2887-458d-9843-b333433f0ef6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03.Components\Controller\AIController">
-      <UniqueIdentifier>{a40e5c4f-6109-426a-8a1e-b0f0605bb702}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03.Components\Controller\PlayerController">
       <UniqueIdentifier>{0a421d0e-6a31-44f9-a4e1-5f708f29bd2a}</UniqueIdentifier>
     </Filter>
@@ -103,6 +100,12 @@
     </Filter>
     <Filter Include="03.Components\Controller\EnemyAIController">
       <UniqueIdentifier>{60b13917-bf97-467b-bc16-279c8d647dd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject\Ork_WarBoss">
+      <UniqueIdentifier>{de440f19-2ea2-4157-aa2e-93a16b56c80c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Components\Controller\TeamAIController">
+      <UniqueIdentifier>{a40e5c4f-6109-426a-8a1e-b0f0605bb702}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -191,6 +194,9 @@
     <ClInclude Include="..\Code\Function.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="..\Code\Ork_WarBoss.h">
+      <Filter>02.GameObject\ControlObject\Ork_WarBoss</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -256,6 +262,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\EnemyAIController.cpp">
       <Filter>03.Components\Controller\EnemyAIController</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Ork_WarBoss.cpp">
+      <Filter>02.GameObject\ControlObject\Ork_WarBoss</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

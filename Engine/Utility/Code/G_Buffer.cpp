@@ -1,7 +1,8 @@
 #include "G_Buffer.h"
 #include "TargetBuffer.h"
 
-Engine::G_Buffer::G_Buffer()
+Engine::G_Buffer::G_Buffer(LPDIRECT3DDEVICE9 ptr_device)
+	: ptr_device_(ptr_device)
 {
 }
 

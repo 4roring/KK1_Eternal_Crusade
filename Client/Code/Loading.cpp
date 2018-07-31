@@ -12,7 +12,7 @@
 #include "PlayerCamera.h"
 
 #include "Ork.h"
-#include "Tyranid.h"
+#include "Ork_WarBoss.h"
 
 #include "Stage.h"
 #include "LevelObject.h"
@@ -98,11 +98,18 @@ HRESULT CLoading::Stage_Loading()
 	assert(hr == S_OK && "Ork Mesh Add Failed");
 	
 	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
-		, TEXT("Tyranid_Mesh")
+		, TEXT("Ork_WarBoss_Mesh")
 		, Engine::CDynamicMesh::Create(ptr_device_
-			, TEXT("../bin/Resources/Mesh/Tyranid/")
-			, TEXT("Tyranid.X")));
-	assert(hr == S_OK && "Tyranid Mesh Add Failed");
+			, TEXT("../bin/Resources/Mesh/Ork_WarBoss/")
+			, TEXT("Ork_WarBoss.X")));
+	assert(hr == S_OK && "Ork Mesh Add Failed");
+
+	//hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+	//	, TEXT("Tyranid_Mesh")
+	//	, Engine::CDynamicMesh::Create(ptr_device_
+	//		, TEXT("../bin/Resources/Mesh/Tyranid/")
+	//		, TEXT("Tyranid.X")));
+	//assert(hr == S_OK && "Tyranid Mesh Add Failed");
 
 	// Weapon
 	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
@@ -177,6 +184,12 @@ HRESULT CLoading::StageDataLoad(MAINTAINID stage_id, const TCHAR* path)
 			continue;
 		}
 
+		if (0 == lstrcmp(mesh_key, TEXT("Ork_WarBoss")))
+		{
+			AddOrkWarBoss(file, mesh_key, object_key, stage_id, byte);
+			continue;
+		}
+
 		ptr_component = Engine::GameManager()->FindComponent(stage_id, mesh_key);
 		if (nullptr == ptr_component)
 		{
@@ -198,7 +211,7 @@ HRESULT CLoading::StageDataLoad(MAINTAINID stage_id, const TCHAR* path)
 
 void CLoading::AddPlayerSpaceMarin(HANDLE file, const TCHAR * mesh_key, const TCHAR * object_key, MAINTAINID stage_id, DWORD & byte)
 {
-	Engine::CGameObject* ptr_obj = CSpaceMarin::Create(ptr_device_);
+	Engine::CGameObject* ptr_obj = CSpaceMarin::Create(ptr_device_, space_marin_count_++);
 	assert(nullptr != ptr_obj && "SpaceMarin Create Failed");
 	(*pp_next_scene_)->AddObject(stage_id, object_key, ptr_obj);
 
@@ -208,19 +221,19 @@ void CLoading::AddPlayerSpaceMarin(HANDLE file, const TCHAR * mesh_key, const TC
 	ReadFile(file, temp, sizeof(Vector3), &byte, nullptr);
 
 	// Test Dummy SpaceMarin
-	ptr_obj = CSpaceMarin::Create(ptr_device_, 1);
-	assert(nullptr != ptr_obj && "SpaceMarin Create Failed");
-	(*pp_next_scene_)->AddObject(stage_id, TEXT("Space_Marin_1"), ptr_obj);
+	//ptr_obj = CSpaceMarin::Create(ptr_device_, 1);
+	//assert(nullptr != ptr_obj && "SpaceMarin Create Failed");
+	//(*pp_next_scene_)->AddObject(stage_id, TEXT("Space_Marin_1"), ptr_obj);
 
-	ptr_obj->transform()->position() = Vector3(0.f, 0.f, 0.f);
-	ptr_obj->transform()->rotation() = Vector3(0.f, 1.7f, 0.f);
+	//ptr_obj->transform()->position() = Vector3(0.f, 0.f, 0.f);
+	//ptr_obj->transform()->rotation() = Vector3(0.f, 1.7f, 0.f);
 
-	ptr_obj = CSpaceMarin::Create(ptr_device_, 2);
-	assert(nullptr != ptr_obj && "SpaceMarin Create Failed");
-	(*pp_next_scene_)->AddObject(stage_id, TEXT("Space_Marin_2"), ptr_obj);
+	//ptr_obj = CSpaceMarin::Create(ptr_device_, 2);
+	//assert(nullptr != ptr_obj && "SpaceMarin Create Failed");
+	//(*pp_next_scene_)->AddObject(stage_id, TEXT("Space_Marin_2"), ptr_obj);
 
-	ptr_obj->transform()->position() = Vector3(1.f, 0.f, 0.f);
-	ptr_obj->transform()->rotation() = Vector3(0.f, 1.f, 0.f);
+	//ptr_obj->transform()->position() = Vector3(1.f, 0.f, 0.f);
+	//ptr_obj->transform()->rotation() = Vector3(0.f, 1.f, 0.f);
 
 }
 
@@ -241,6 +254,20 @@ void CLoading::AddTeamSpaceMarin(HANDLE file, const TCHAR * mesh_key, const TCHA
 void CLoading::AddEnemyOrk(HANDLE file, const TCHAR * mesh_key, const TCHAR * object_key, MAINTAINID stage_id, DWORD & byte)
 {
 	Engine::CGameObject* ptr_obj = COrk::Create(ptr_device_, ork_count_++);
+	assert(nullptr != ptr_obj && "Ork Create Failed");
+
+	(*pp_next_scene_)->AddObject(stage_id, object_key, ptr_obj);
+
+	Vector3 temp;
+
+	ReadFile(file, ptr_obj->transform()->position(), sizeof(Vector3), &byte, nullptr);
+	ReadFile(file, ptr_obj->transform()->rotation(), sizeof(Vector3), &byte, nullptr);
+	ReadFile(file, temp, sizeof(Vector3), &byte, nullptr);
+}
+
+void CLoading::AddOrkWarBoss(HANDLE file, const TCHAR * mesh_key, const TCHAR * object_key, MAINTAINID stage_id, DWORD & byte)
+{
+	Engine::CGameObject* ptr_obj = COrk_WarBoss::Create(ptr_device_);
 	assert(nullptr != ptr_obj && "Ork Create Failed");
 
 	(*pp_next_scene_)->AddObject(stage_id, object_key, ptr_obj);

@@ -18,7 +18,7 @@ IMPLEMENT_DYNAMIC(StageEditor, CPropertyPage)
 
 StageEditor::StageEditor()
 	: CPropertyPage(IDD_STAGEEDITOR)
-	, pos_offset_(1.f)
+	, pos_offset_(0.5f)
 	, pos_x_(0.f)
 	, pos_y_(0.f)
 	, pos_z_(0.f)
@@ -28,8 +28,8 @@ StageEditor::StageEditor()
 	, scale_x_(0.f)
 	, scale_y_(0.f)
 	, scale_z_(0.f)
-	, rot_offset_(45.f)
-	, scale_offset_(0.1f)
+	, rot_offset_(30.f)
+	, scale_offset_(0.01f)
 {
 
 }
@@ -287,8 +287,8 @@ void StageEditor::PickAddObject()
 	RayToWorldSpace(ray_pos, ray_dir);
 
 	float dist = 0.f;
-	Vector3 point[4] = { Vector3(-100.f, 0.f, 100.f),  Vector3(100.f, 0.f, 100.f)
-		, Vector3(-100.f, 0.f, -100.f), Vector3(100.f, 0.f, -100.f) };
+	Vector3 point[4] = { Vector3(-1000.f, 0.f, 1000.f),  Vector3(1000.f, 0.f, 1000.f)
+		, Vector3(-1000.f, 0.f, -1000.f), Vector3(1000.f, 0.f, -1000.f) };
 
 	BOOL is_picking = FALSE;
 

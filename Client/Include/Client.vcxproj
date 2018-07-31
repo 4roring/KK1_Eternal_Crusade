@@ -166,6 +166,7 @@
     <ClInclude Include="..\Code\Ork.h" />
     <ClInclude Include="..\Code\Ork_Gun.h" />
     <ClInclude Include="..\Code\Ork_Sword.h" />
+    <ClInclude Include="..\Code\Ork_WarBoss.h" />
     <ClInclude Include="..\Code\PlayerCamera.h" />
     <ClInclude Include="..\Code\PlayerController.h" />
     <ClInclude Include="..\Code\SceneSelector.h" />
@@ -194,6 +195,7 @@
     <ClCompile Include="..\Code\Ork.cpp" />
     <ClCompile Include="..\Code\Ork_Gun.cpp" />
     <ClCompile Include="..\Code\Ork_Sword.cpp" />
+    <ClCompile Include="..\Code\Ork_WarBoss.cpp" />
     <ClCompile Include="..\Code\PlayerCamera.cpp" />
     <ClCompile Include="..\Code\PlayerController.cpp" />
     <ClCompile Include="..\Code\ScreenImage.cpp" />

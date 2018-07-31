@@ -31,8 +31,6 @@ HRESULT Engine::CRenderer::Initialize()
 
 	hr = ptr_g_buffer->AddTargetBuffer(ptr_device_, TEXT("Normal"), view_port.Width, view_port.Height, D3DFMT_A16B16G16R16F, D3DXCOLOR(0.f, 0.f, 0.f, 1.f));
 
-
-
 	return S_OK;
 }
 

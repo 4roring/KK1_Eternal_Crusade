@@ -29,7 +29,6 @@ HRESULT Engine::CTargetBuffer::Initialize(uint32 size_x, uint32 size_y, const D3
 void Engine::CTargetBuffer::Release()
 {
 	Safe_Release(ptr_old_surface_);
-	Safe_Release(ptr_surface_);
 	Safe_Release(ptr_target_tex_);
 }
 

@@ -57,11 +57,12 @@ private:
 
 private: // Update Function
 	void UpdateState(float delta_time);
-	void UpdateLowerAnimState();
-	void UpdateUpperAnimState();
+	void AttackState(float delta_time);
 	void Run();
 
 private: // LateUpdate Function
+	void UpdateLowerAnimState();
+	void UpdateUpperAnimState();
 	void Fire();
 	void Slash();
 
@@ -96,7 +97,7 @@ private:
 	Vector3 fire_range_pos_ = Vector3();
 	bool fire_ = false;
 	bool slash_ = false;
-	bool hit_motion_ = false;
+	float attack_delay_ = 0.f;
 
 private:
 	float anim_time_ = 0.f;
@@ -117,6 +118,7 @@ private:
 
 private:
 	int hp_ = 0;
+	int condition_ = 0;
 
 #ifdef _DEBUG
 private:

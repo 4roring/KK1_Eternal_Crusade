@@ -9,7 +9,7 @@ vector g_light_diffuse;
 vector g_light_ambient;
 vector g_light_dir;
 
-vector g_mtrl_ambient = (vector) 0.2f;
+vector g_mtrl_ambient = (vector) 0.3f;
 
 struct VS_IN
 {

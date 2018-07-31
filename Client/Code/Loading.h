@@ -29,6 +29,8 @@ public:
 	void AddPlayerSpaceMarin(HANDLE file, const TCHAR* mesh_key, const TCHAR* object_key, MAINTAINID stage_id, DWORD& byte);
 	void AddTeamSpaceMarin(HANDLE file, const TCHAR* mesh_key, const TCHAR* object_key, MAINTAINID stage_id, DWORD& byte);
 	void AddEnemyOrk(HANDLE file, const TCHAR* mesh_key, const TCHAR* object_key, MAINTAINID stage_id, DWORD& byte);
+	void AddOrkWarBoss(HANDLE file, const TCHAR* mesh_key, const TCHAR* object_key, MAINTAINID stage_id, DWORD& byte);
+
 
 	HRESULT FindAndLoadMesh(MAINTAINID stage_id, const std::wstring& mesh_key, const std::wstring& path);
 	HRESULT NavMeshDataLoad(const TCHAR* path);

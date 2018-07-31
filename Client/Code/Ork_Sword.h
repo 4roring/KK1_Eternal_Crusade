@@ -17,6 +17,9 @@ public:
 	virtual ~COrk_Sword();
 
 public:
+	Engine::CCollider* ptr_sphere_coll();
+
+public:
 	void SetParentMatrix(const Matrix* ptr_parent_matrix);
 	void SetHandMatrix(const Matrix* ptr_hand_matrix);
 

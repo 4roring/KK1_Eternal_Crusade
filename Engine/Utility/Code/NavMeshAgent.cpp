@@ -144,6 +144,7 @@ int Engine::CNavMeshAgent::FindCellIndex(const Vector3 & pos)
 {
 	for (auto& nav_cell : vec_nav_cell_)
 	{
+		if (nullptr == nav_cell) continue;
 		if (true == nav_cell->CheckInsideCell(pos))
 			return nav_cell->index();
 	}

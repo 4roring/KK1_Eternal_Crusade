@@ -23,6 +23,12 @@ void Engine::CStaticMesh::GetMinMax(Vector3 & min, Vector3 & max)
 	max = bounding_box_.max_;
 }
 
+void Engine::CStaticMesh::GetSphere(float & radius, Vector3 & center)
+{
+	radius = bounding_sphere_.radius;
+	center = bounding_sphere_.center;
+}
+
 HRESULT Engine::CStaticMesh::ComputeBoundingBox()
 {
 	D3DVERTEXELEMENT9 vertex_element[MAX_FVF_DECL_SIZE] = {};
@@ -47,6 +53,37 @@ HRESULT Engine::CStaticMesh::ComputeBoundingBox()
 	if (FAILED(D3DXComputeBoundingBox((D3DXVECTOR3*)((BYTE*)vertex_info + offset)
 		, ptr_mesh_->GetNumVertices(), D3DXGetDeclVertexSize(vertex_element, 0)
 		, &bounding_box_.min_, &bounding_box_.max_)))
+		return E_FAIL;
+
+	ptr_mesh_->UnlockVertexBuffer();
+
+	return S_OK;
+}
+
+HRESULT Engine::CStaticMesh::ComputeBoundingSphere()
+{
+	D3DVERTEXELEMENT9 vertex_element[MAX_FVF_DECL_SIZE] = {};
+	ptr_mesh_->GetDeclaration(vertex_element);
+
+	WORD offset = -1;
+	for (size_t i = 0; i < MAX_FVF_DECL_SIZE; ++i)
+	{
+		if (vertex_element[i].Type == D3DDECLTYPE_UNUSED)
+			break;
+
+		if (vertex_element[i].Usage == D3DDECLUSAGE_POSITION)
+		{
+			offset = vertex_element[i].Offset;
+			break;
+		}
+	}
+
+	void* vertex_info = nullptr;
+	ptr_mesh_->LockVertexBuffer(0, &vertex_info);
+
+	if (FAILED(D3DXComputeBoundingSphere((D3DXVECTOR3*)((BYTE*)vertex_info + offset)
+		, ptr_mesh_->GetNumVertices(), D3DXGetDeclVertexSize(vertex_element, 0)
+		, &bounding_sphere_.center, &bounding_sphere_.radius)))
 		return E_FAIL;
 
 	ptr_mesh_->UnlockVertexBuffer();

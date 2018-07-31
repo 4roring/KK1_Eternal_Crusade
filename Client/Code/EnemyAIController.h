@@ -8,7 +8,8 @@ class CSpaceMarin;
 class CEnemyAIController
 	: public CController
 {
-	enum class State { Idle, Move, Gun_Attack, Sword_Attack, End };
+private:
+	enum class State { Idle, Move, MovingShoot, Gun_Attack, Sword_Attack, End };
 private:
 	explicit CEnemyAIController();
 
@@ -31,6 +32,7 @@ public:
 private:
 	void Idle(float delta_time);
 	void MoveToTarget(float delta_time);
+	void MovingShootToTarget(float delta_time);
 	void Gun_Attack(float delta_time);
 	void Sword_Attack(float delta_time);
 
@@ -42,11 +44,14 @@ private:
 	COrk* ptr_ctrl_unit_ = nullptr;
 	std::vector<CSpaceMarin*> vec_target_;
 	CSpaceMarin* ptr_target_ = nullptr;
+	Engine::CTransform* ptr_target_transform_ = nullptr;
+
 
 private:
 	State current_state_ = State::End;
 	float speed_ = 0.f;
 	float attack_delay_ = 0.f;
+	int condition_ = 0;
 
 private:
 	std::vector<Vector3> path_;
