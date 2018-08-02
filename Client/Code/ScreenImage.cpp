@@ -28,7 +28,7 @@ HRESULT CScreenImage::Initialize()
 
 void CScreenImage::Update(float delta_time)
 {
-	Engine::GameManager()->AddRenderLayer(Engine::RENDERLAYER::LAYER_NONEALPHA, this);
+	Engine::GameManager()->AddRenderLayer(Engine::RENDERLAYER::LAYER_UI, this);
 	Engine::CGameObject::Update(delta_time);
 }
 

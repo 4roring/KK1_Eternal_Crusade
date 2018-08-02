@@ -47,6 +47,7 @@ private:
 
 private:
 	bool zoom_ = false;
+	float pre_fov_y = 0.f;
 	float fov_y = 0.f;
 	float speed_ = 0.f;
 	float sensitivity_ = 0.f;

@@ -70,6 +70,8 @@ HRESULT COrk::Initialize(int ctrl_id)
 	hp_ = 100;
 	next_lower_state_ = LowerState::Idle;
 
+	ptr_ctrl_->enable_ = false;
+
 	return S_OK;
 }
 
@@ -174,8 +176,11 @@ HRESULT COrk::AddComponent()
 
 	hr = Ready_Component(MAINTAIN_STATIC, TEXT("Shader_DynamicMesh"), TEXT("Shader"), ptr_shader_);
 	assert(hr == S_OK && "Ork Shader_DynamicMesh ReadyComponent Failed");
+
+#ifdef _DEBUG
 	hr = Ready_Component(MAINTAIN_STATIC, TEXT("Shader_Default"), TEXT("Debug_Shader"), ptr_debug_shader_);
 	assert(hr == S_OK && "Ork Shader_Default ReadyComponent Failed");
+#endif
 
 	hr = Ready_Component(MAINTAIN_STAGE, TEXT("Ork_Mesh"), TEXT("Mesh"), ptr_mesh_);
 	assert(hr == S_OK && "Mesh ReadyComponent Failed");

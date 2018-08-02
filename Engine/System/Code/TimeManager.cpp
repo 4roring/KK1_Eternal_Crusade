@@ -9,6 +9,12 @@ Engine::CTimeManager::~CTimeManager()
 {
 }
 
+void Engine::CTimeManager::SetMaxFrame(int max_frame)
+{
+	max_frame_ = max_frame;
+	fps_ = float(cpu_tick_.QuadPart / max_frame_);
+}
+
 void Engine::CTimeManager::InitTime()
 {
 	QueryPerformanceCounter(&frame_time_);

@@ -56,8 +56,8 @@ VS_OUT_DEFAULT VS_DEFAULT(VS_IN_DEFAULT vs_in)
 
     vs_out.position = world_pos;
     vs_out.texture_uv = vs_in.texture_uv;
-    vs_out.texture_uv = vs_in.texture_uv;
     vs_out.normal = mul(vs_in.normal, (float3x3) g_mat_world);
+    vs_out.proj_pos = vs_out.position;
 
     return vs_out;
 }
@@ -99,46 +99,40 @@ struct VS_OUT
 {
 	vector position : POSITION;
 	float2 texture_uv : TEXCOORD0;
-    float3 light_dir : TEXCOORD1;
-    float3 view_dir : TEXCOORD2;
-    float3 T : TEXCOORD3;
-    float3 B : TEXCOORD4;
-    float3 N : TEXCOORD5;
-    vector proj_pos : TEXCOORD6;
+    float3 T : TEXCOORD1;
+    float3 B : TEXCOORD2;
+    float3 N : TEXCOORD3;
+    vector proj_pos : TEXCOORD4;
 };
 
-VS_OUT VS_MAIN(VS_IN In)
+VS_OUT VS_MAIN(VS_IN vs_in)
 {
-	VS_OUT Out = (VS_OUT)0;
+	VS_OUT vs_out = (VS_OUT)0;
 	
 	Matrix mat_transform;
 
 	mat_transform = mul(mul(g_mat_world, g_mat_view), g_mat_projection);
 
-    vector world_pos = mul(vector(In.position.xyz, 1.f), mat_transform);
+    vector world_pos = mul(vector(vs_in.position.xyz, 1.f), mat_transform);
 
-    Out.position = world_pos;
-	Out.texture_uv = In.texture_uv;
+    vs_out.position = world_pos;
+    vs_out.texture_uv = vs_in.texture_uv;
     
-    float3 view_dir = normalize(world_pos - g_camera_position);
-    Out.view_dir = view_dir;
+    vs_out.T = mul(vs_in.tangent, (float3x3) g_mat_world);
+    vs_out.B = mul(vs_in.binormal, (float3x3) g_mat_world);
+    vs_out.N = mul(vs_in.normal, (float3x3) g_mat_world);
+    vs_out.proj_pos = vs_out.position;
 
-    Out.T = mul(In.tangent, (float3x3) g_mat_world);
-    Out.B = mul(In.binormal, (float3x3) g_mat_world);
-    Out.N = mul(In.normal, (float3x3) g_mat_world);
-
-	return Out;
+    return vs_out;
 }
 
 struct PS_IN
 {
 	float2 texture_uv : TEXCOORD0;
-    float3 light_dir : TEXCOORD1;
-    float3 view_dir : TEXCOORD2;
-    float3 T : TEXCOORD3;
-    float3 B : TEXCOORD4;
-    float3 N : TEXCOORD5;
-    vector proj_pos : TEXCOORD6;
+    float3 T : TEXCOORD1;
+    float3 B : TEXCOORD2;
+    float3 N : TEXCOORD3;
+    vector proj_pos : TEXCOORD4;
 };
 
 struct PS_OUT
@@ -192,21 +186,21 @@ PS_OUT PS_COLOR_MAIN(PS_IN ps_in)
 
 technique Default_Technique
 {
-	pass Default
-	{
-        VertexShader = compile vs_3_0 VS_DEFAULT();
-		PixelShader = compile ps_3_0 PS_DEFAULT();
-    }
-
-    pass Normal
+    pass SetBumpMap
     {
         VertexShader = compile vs_3_0 VS_MAIN();
         PixelShader = compile ps_3_0 PS_MAIN();
     }
 
-    pass Color
+    pass SetColor
     {
         VertexShader = compile vs_3_0 VS_MAIN();
         PixelShader = compile ps_3_0 PS_COLOR_MAIN();
+    }
+
+	pass Default
+	{
+        VertexShader = compile vs_3_0 VS_DEFAULT();
+		PixelShader = compile ps_3_0 PS_DEFAULT();
     }
 }

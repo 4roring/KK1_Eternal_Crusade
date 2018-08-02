@@ -140,7 +140,11 @@ void CPlayerController::ControlZoom(float delta_time)
 	else
 		fov_y = min(max_fov_y, fov_y += zoom_speed * delta_time);
 		
-	ptr_ctrl_camera_->SetProjection(D3DXToRadian(fov_y), float(kWinCx) / kWinCy, 0.2f, 1000.f);
+	if (pre_fov_y != fov_y)
+	{
+		ptr_ctrl_camera_->SetProjection(D3DXToRadian(fov_y), float(kWinCx) / kWinCy, 0.2f, 1000.f);
+		pre_fov_y = fov_y;
+	}
 }
 
 void CPlayerController::ControlAttack(float delta_time)

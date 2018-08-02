@@ -192,7 +192,7 @@ HRESULT CSpaceMarin::AddComponent()
 
 	if (0 == control_id_)
 	{
-		ptr_ctrl_ = CPlayerController::Create(this, 5.f, 1.f);
+		ptr_ctrl_ = CPlayerController::Create(this, 5.f, 0.5f);
 		CGameObject::AddComponent(TEXT("0.PlayerController"), ptr_ctrl_);
 
 		if (nullptr != ptr_ctrl_)

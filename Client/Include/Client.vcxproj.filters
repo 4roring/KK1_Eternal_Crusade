@@ -92,12 +92,6 @@
     <Filter Include="OldClass\Tyranid">
       <UniqueIdentifier>{f2839e2e-5eda-408d-a14c-90caac4c67bf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\ControlObject\Ork\Ork_Gun">
-      <UniqueIdentifier>{75ebb22f-b237-4cd3-a1da-c9194e0e06f5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\ControlObject\Ork\Ork_Sword">
-      <UniqueIdentifier>{673bba1e-5b08-4e26-a925-1c2ca92b143b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03.Components\Controller\EnemyAIController">
       <UniqueIdentifier>{60b13917-bf97-467b-bc16-279c8d647dd0}</UniqueIdentifier>
     </Filter>
@@ -109,6 +103,24 @@
     </Filter>
     <Filter Include="04.CollisionSystem\FrustumCollider">
       <UniqueIdentifier>{2a2c5771-b92a-461b-b3f4-f38abc5d1859}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject\Ork_Weapon">
+      <UniqueIdentifier>{e9e9bb1d-2b7d-4e87-aa93-3007bc8518d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject\Ork_Weapon\Ork_Gun">
+      <UniqueIdentifier>{75ebb22f-b237-4cd3-a1da-c9194e0e06f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject\Ork_Weapon\Ork_Sword">
+      <UniqueIdentifier>{673bba1e-5b08-4e26-a925-1c2ca92b143b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject\Ork_Weapon\Ork_Klaw">
+      <UniqueIdentifier>{d399c214-47be-43d6-a442-45a06bcb0aaa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject\Ork_Weapon\Ork_HeavyGun">
+      <UniqueIdentifier>{861054cc-dc6a-47d9-a0e5-370763e4ed0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject\SpaceMarin\ChainSword">
+      <UniqueIdentifier>{b6d8d243-4a91-4a31-94d1-169721ed6c0b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -186,10 +198,10 @@
       <Filter>OldClass\Tyranid</Filter>
     </ClInclude>
     <ClInclude Include="..\Code\Ork_Gun.h">
-      <Filter>02.GameObject\ControlObject\Ork\Ork_Gun</Filter>
+      <Filter>02.GameObject\ControlObject\Ork_Weapon\Ork_Gun</Filter>
     </ClInclude>
     <ClInclude Include="..\Code\Ork_Sword.h">
-      <Filter>02.GameObject\ControlObject\Ork\Ork_Sword</Filter>
+      <Filter>02.GameObject\ControlObject\Ork_Weapon\Ork_Sword</Filter>
     </ClInclude>
     <ClInclude Include="..\Code\EnemyAIController.h">
       <Filter>03.Components\Controller\EnemyAIController</Filter>
@@ -202,6 +214,12 @@
     </ClInclude>
     <ClInclude Include="Frustum.h">
       <Filter>04.CollisionSystem\FrustumCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Ork_HeavyGun.h">
+      <Filter>02.GameObject\ControlObject\Ork_Weapon\Ork_HeavyGun</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Ork_Klaw.h">
+      <Filter>02.GameObject\ControlObject\Ork_Weapon\Ork_Klaw</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -261,10 +279,10 @@
       <Filter>OldClass\Tyranid</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Ork_Gun.cpp">
-      <Filter>02.GameObject\ControlObject\Ork\Ork_Gun</Filter>
+      <Filter>02.GameObject\ControlObject\Ork_Weapon\Ork_Gun</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Ork_Sword.cpp">
-      <Filter>02.GameObject\ControlObject\Ork\Ork_Sword</Filter>
+      <Filter>02.GameObject\ControlObject\Ork_Weapon\Ork_Sword</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\EnemyAIController.cpp">
       <Filter>03.Components\Controller\EnemyAIController</Filter>
@@ -274,6 +292,12 @@
     </ClCompile>
     <ClCompile Include="Frustum.cpp">
       <Filter>04.CollisionSystem\FrustumCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Ork_HeavyGun.cpp">
+      <Filter>02.GameObject\ControlObject\Ork_Weapon\Ork_HeavyGun</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Ork_Klaw.cpp">
+      <Filter>02.GameObject\ControlObject\Ork_Weapon\Ork_Klaw</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

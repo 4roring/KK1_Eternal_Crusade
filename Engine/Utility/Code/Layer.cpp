@@ -20,7 +20,6 @@ Engine::CComponent * Engine::CLayer::GetComponent(int layer_id, const std::wstri
 	if (map_obj_iter == layer_iter->second.end())
 		return nullptr;
 
-	
 	CComponent* ptr_component = map_obj_iter->second->GetComponent(component_key);
 	if (nullptr == ptr_component)
 		return nullptr;
@@ -75,7 +74,8 @@ void Engine::CLayer::Update(float delta_time)
 	{
 		for (auto& pair : layer_pair.second)
 		{
-			pair.second->Update(delta_time);
+			if (true == pair.second->active())
+				pair.second->Update(delta_time);
 		}
 	}
 }
@@ -86,7 +86,8 @@ void Engine::CLayer::LateUpdate()
 	{
 		for (auto& pair : layer_pair.second)
 		{
-			pair.second->LateUpdate();
+			if(true == pair.second->active())
+				pair.second->LateUpdate();
 		}
 	}
 }
@@ -101,9 +102,10 @@ void Engine::CLayer::LastFrame()
 		for (; iter != iter_end; )
 		{
 			if (true == iter->second->destroy())
+			{
+				Safe_Delete(iter->second);
 				iter = layer_pair.second.erase(iter);
-			else if (false == iter->second->active())
-				continue;
+			}
 			else
 				++iter;
 		}

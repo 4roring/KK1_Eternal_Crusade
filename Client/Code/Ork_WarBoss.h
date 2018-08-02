@@ -95,7 +95,7 @@ private:
 	const Matrix* ptr_left_hand_matrix_ = nullptr;
 	COrk_Klaw* ptr_klaw_ = nullptr;
 	const Matrix* ptr_right_hand_matrix_ = nullptr;
-	COrk_Gun* ptr_heavy_gun_ = nullptr;
+	COrk_HeavyGun* ptr_heavy_gun_ = nullptr;
 	const Matrix* ptr_back_matrix_ = nullptr;
 
 private:

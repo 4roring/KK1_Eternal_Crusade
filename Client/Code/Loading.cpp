@@ -133,6 +133,21 @@ HRESULT CLoading::Stage_Loading()
 			, TEXT("Ork_Sword.X"), MAINTAIN_STAGE));
 	assert(hr == S_OK && "Ork_Sword Mesh Add Failed");
 
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("Ork_HeavyGun_Mesh")
+		, Engine::CStaticMesh::Create(ptr_device_
+			, TEXT("..\\bin\\Resources\\Mesh\\Weapon\\Ork_HeavyGun\\")
+			, TEXT("Ork_HeavyGun.X"), MAINTAIN_STAGE));
+	assert(hr == S_OK && "Ork_Sword Mesh Add Failed");
+	
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("Ork_Klaw_Mesh")
+		, Engine::CStaticMesh::Create(ptr_device_
+			, TEXT("..\\bin\\Resources\\Mesh\\Weapon\\Ork_PowerRippa\\")
+			, TEXT("Ork_PowerRippa.X"), MAINTAIN_STAGE));
+	assert(hr == S_OK && "Ork_Sword Mesh Add Failed");
+
+
 	lstrcpy(loading_message_, TEXT("Scene Initializing"));
 	*pp_next_scene_ = CStage::Create(ptr_device_);
 

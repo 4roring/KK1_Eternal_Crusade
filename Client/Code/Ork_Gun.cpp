@@ -103,7 +103,7 @@ COrk_Gun * COrk_Gun::Create(LPDIRECT3DDEVICE9 ptr_device)
 	if (FAILED(ptr_obj->Initialize()))
 	{
 		Safe_Delete(ptr_obj);
-		assert(!"Gun_Phobos Create Failed");
+		assert(!"Ork_Gun Create Failed");
 	}
 	return ptr_obj;
 }
@@ -129,5 +129,7 @@ HRESULT COrk_Gun::AddComponent()
 
 void COrk_Gun::Release()
 {
+#ifdef _DEBUG
 	Safe_Delete(ptr_debug_fire_pos_);
+#endif
 }

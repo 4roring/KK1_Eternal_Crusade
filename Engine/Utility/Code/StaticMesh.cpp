@@ -97,7 +97,7 @@ HRESULT Engine::CStaticMesh::ComputeBoundingSphere()
 void Engine::CStaticMesh::RenderMesh(LPD3DXEFFECT ptr_effect)
 {
 	ptr_effect->Begin(nullptr, 0);
-	int pass_index = 1;
+	int pass_index = 0;
 	for (DWORD i = 0; i < subset_count_; ++i)
 	{
 		if(nullptr != pp_color_texture_[i])
@@ -105,8 +105,8 @@ void Engine::CStaticMesh::RenderMesh(LPD3DXEFFECT ptr_effect)
 
 		if (nullptr != pp_normal_texture_[i])
 			ptr_effect->SetTexture("g_normal_texture", pp_normal_texture_[i]);
-		else
-			pass_index = 0;
+		//else
+		//	pass_index = 2;
 
 		if (nullptr != pp_specular_texture_[i])
 			ptr_effect->SetTexture("g_specular_texture", pp_specular_texture_[i]);

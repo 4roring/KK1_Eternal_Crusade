@@ -247,7 +247,7 @@ void Engine::CDynamicMesh::RenderMeshContainer(BoneMesh * ptr_bone_mesh, LPD3DXE
 		
 		ptr_effect->SetMatrixArray("matrix_palette", ptr_bone_mesh->ptr_result_matrix, num_bones);
 
-		uint32 pass_index = 1;
+		uint32 pass_index = 0;
 		ptr_effect->BeginPass(pass_index);
 		for (DWORD i = 0; i < ptr_bone_mesh->NumMaterials; ++i)
 		{
@@ -264,8 +264,6 @@ void Engine::CDynamicMesh::RenderMeshContainer(BoneMesh * ptr_bone_mesh, LPD3DXE
 			//	pass_index = 0;
 
 			ptr_effect->CommitChanges();
-
-			
 			ptr_bone_mesh->MeshData.pMesh->DrawSubset(i);
 		
 		}

@@ -53,10 +53,10 @@ VS_OUT VS_MAIN(VS_IN In)
 	return Out;
 }
 
-texture g_base_texture;
-sampler base_sampler = sampler_state
+texture g_color_texture;
+sampler color_sampler = sampler_state
 {
-    texture = g_base_texture;
+    texture = g_color_texture;
     MINFILTER = LINEAR;
     MAGFILTER = LINEAR;
 };
@@ -104,7 +104,7 @@ PS_OUT PS_MAIN(PS_IN In)
     float3 light_dir = normalize(In.light_dir);
     float3 diffuse = saturate(dot(world_normal, -light_dir));
 
-    vector albedo = tex2D(base_sampler, In.texture_uv);
+    vector albedo = tex2D(color_sampler, In.texture_uv);
     diffuse = g_light_diffuse.rgb * albedo.rgb * diffuse;
 
     float3 ambient = g_mtrl_ambient * albedo;

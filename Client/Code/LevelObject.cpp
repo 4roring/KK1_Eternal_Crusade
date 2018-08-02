@@ -40,11 +40,13 @@ void CLevelObject::LateInit()
 	radius *= ptr_transform_->scale().x;
 	D3DXVec3TransformCoord(&center, &center, &ptr_transform_->mat_world());
 	ptr_sphere_coll_->SetSphereCollider(radius, center);
+
+	Engine::CGameObject::Update(0.f);
 }
 
 void CLevelObject::Update(float delta_time)
 {
-	Engine::CGameObject::Update(delta_time);
+	//Destroy();
 }
 
 void CLevelObject::LateUpdate()
@@ -69,7 +71,7 @@ void CLevelObject::Render()
 	ptr_mesh_->RenderMesh(ptr_effect);
 
 #ifdef _DEBUG
-	ptr_effect = ptr_debug_shader_->GetEffectHandle();
+	//ptr_effect = ptr_debug_shader_->GetEffectHandle();
 
 	//ptr_effect->SetMatrix("g_mat_world", &ptr_transform_->mat_world());
 
@@ -77,17 +79,17 @@ void CLevelObject::Render()
 	//ptr_box_coll_->DebugRender();
 	//ptr_debug_shader_->EndShader();
 
-	Matrix mat_trans;
-	D3DXMatrixIdentity(&mat_trans);
-	mat_trans._41 = ptr_sphere_coll_->GetSpherePos().x;
-	mat_trans._42 = ptr_sphere_coll_->GetSpherePos().y;
-	mat_trans._43 = ptr_sphere_coll_->GetSpherePos().z;
+	//Matrix mat_trans;
+	//D3DXMatrixIdentity(&mat_trans);
+	//mat_trans._41 = ptr_sphere_coll_->GetSpherePos().x;
+	//mat_trans._42 = ptr_sphere_coll_->GetSpherePos().y;
+	//mat_trans._43 = ptr_sphere_coll_->GetSpherePos().z;
 
-	ptr_effect->SetMatrix("g_mat_world", &mat_trans);
+	//ptr_effect->SetMatrix("g_mat_world", &mat_trans);
 
-	ptr_debug_shader_->BegineShader(1);
-	ptr_sphere_coll_->DebugRender();
-	ptr_debug_shader_->EndShader();
+	//ptr_debug_shader_->BegineShader(1);
+	//ptr_sphere_coll_->DebugRender();
+	//ptr_debug_shader_->EndShader();
 #endif
 }
 

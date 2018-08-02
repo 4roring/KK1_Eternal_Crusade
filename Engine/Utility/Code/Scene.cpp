@@ -50,6 +50,7 @@ void Engine::CScene::Render()
 
 void Engine::CScene::LastFrame()
 {
+	ptr_layer_->LastFrame();
 }
 
 void Engine::CScene::AddObject(int layer_id, const std::wstring & object_key, CGameObject * ptr_object)

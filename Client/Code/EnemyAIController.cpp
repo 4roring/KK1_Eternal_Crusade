@@ -38,7 +38,7 @@ void CEnemyAIController::LateInit()
 	ptr_forward_transform_->AddReferenceCount();
 	current_state_ = State::Idle;
 
-	ptr_target_ = dynamic_cast<CSpaceMarin*>(Engine::GameManager()->FindObject(MAINTAIN_STAGE, TEXT("SpaceMarin")));
+	ptr_target_ = dynamic_cast<CSpaceMarin*>(Engine::GameManager()->FindObject(MAINTAIN_STAGE, TEXT("SpaceMarin_1")));
 	ptr_target_transform_ = ptr_target_->transform();
 }
 

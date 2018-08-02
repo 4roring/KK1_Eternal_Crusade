@@ -123,37 +123,38 @@ struct VS_OUT
     vector proj_pos : TEXCOORD6;
 };
 
-VS_OUT VS_MAIN(VS_IN In)
+VS_OUT VS_MAIN(VS_IN vs_in)
 {
-	VS_OUT Out = (VS_OUT)0;
+	VS_OUT vs_out = (VS_OUT)0;
 	
     vector new_pos = vector(0.f, 0.f, 0.f, 1.f);
     float3 new_normal = float3(0.f, 0.f, 0.f);
     float last_weight = 0.f;
     int num = num_bone_influences - 1;
-    In.normal = normalize(In.normal);
+    vs_in.normal = normalize(vs_in.normal);
     
     for (int i = 0; i < num; ++i)
     {
-        last_weight += In.weights[i];
-        new_pos += In.weights[i] * vector(mul(In.position, matrix_palette[In.bone_indices[i]]), 1.f);
-        new_normal += In.weights[i] * mul(vector(In.normal, 0.f), matrix_palette[In.bone_indices[i]]);
+        last_weight += vs_in.weights[i];
+        new_pos += vs_in.weights[i] * vector(mul(vs_in.position, matrix_palette[vs_in.bone_indices[i]]), 1.f);
+        new_normal += vs_in.weights[i] * mul(vector(vs_in.normal, 0.f), matrix_palette[vs_in.bone_indices[i]]);
     }
 
     last_weight = 1.f - last_weight;
-    new_pos += last_weight * vector(mul(In.position, matrix_palette[In.bone_indices[num]]), 1.f);
+    new_pos += last_weight * vector(mul(vs_in.position, matrix_palette[vs_in.bone_indices[num]]), 1.f);
     new_pos.w = 1.f;
-    new_normal += last_weight * mul(vector(In.normal, 0.f), matrix_palette[In.bone_indices[num]]);
+    new_normal += last_weight * mul(vector(vs_in.normal, 0.f), matrix_palette[vs_in.bone_indices[num]]);
 
-    Out.position = mul(mul(mul(new_pos, g_mat_world), g_mat_view), g_mat_projection);
-	Out.texture_uv = In.texture_uv;
+    vs_out.position = mul(mul(mul(new_pos, g_mat_world), g_mat_view), g_mat_projection);
+    vs_out.texture_uv = vs_in.texture_uv;
 
-    Out.T = mul(In.tangent, (float3x3) g_mat_world);
-    Out.B = mul(In.binormal, (float3x3) g_mat_world);
+    vs_out.T = mul(vs_in.tangent, (float3x3) g_mat_world);
+    vs_out.B = mul(vs_in.binormal, (float3x3) g_mat_world);
     new_normal = normalize(new_normal);
-    Out.N = mul(new_normal, (float3x3) g_mat_world);
+    vs_out.N = normalize(mul(new_normal, (float3x3) g_mat_world));
+    vs_out.proj_pos = vs_out.position;
 
-	return Out;
+    return vs_out;
 }
 
 struct PS_IN
@@ -216,21 +217,21 @@ PS_OUT PS_COLOR_MAIN(PS_IN ps_in)
 
 technique Default_Technique
 {
-	pass Default
-	{
-		VertexShader = compile vs_3_0 VS_DEFAULT();
-        PixelShader = compile ps_3_0 PS_DEFAULT();
-    }
-
-    pass Normal
+    pass SetBumpMap
     {
         VertexShader = compile vs_3_0 VS_MAIN();
         PixelShader = compile ps_3_0 PS_MAIN();
     }
 
-    pass Color
+    pass SetColor
     {
         VertexShader = compile vs_3_0 VS_MAIN();
         PixelShader = compile ps_3_0 PS_COLOR_MAIN();
+    }
+
+	pass Default
+	{
+		VertexShader = compile vs_3_0 VS_DEFAULT();
+        PixelShader = compile ps_3_0 PS_DEFAULT();
     }
 }

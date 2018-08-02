@@ -8,6 +8,7 @@
 #include "Collider.h"
 
 #include "Ork_Gun.h"
+#include "Ork_HeavyGun.h"
 
 COrk_WarBoss::COrk_WarBoss(LPDIRECT3DDEVICE9 ptr_device)
 	: Engine::CGameObject(ptr_device)
@@ -38,7 +39,7 @@ HRESULT COrk_WarBoss::Initialize()
 	assert(!FAILED(hr) && "AddComponent call failed in SpaceMarin");
 
 	ptr_upper_start_frame_ = ptr_mesh_->FindFrame("joint_TorsoA_01");
-	ptr_transform_->scale() = Vector3(1.5f, 1.5f, 1.5f);
+	ptr_transform_->scale() = Vector3(1.2f, 1.2f, 1.2f);
 	ptr_lower_transform_->scale() = ptr_transform_->scale();
 
 	ptr_head_frame_ = ptr_mesh_->FindFrame("joint_Head_01");
@@ -58,6 +59,8 @@ void COrk_WarBoss::LateInit()
 
 	if (current_cell_index_ == -1)
 		current_cell_index_ = Engine::GameManager()->FindCellIndex(ptr_transform_->position());
+
+	ptr_gun_->SetActive(false);
 
 #ifdef _DEBUG
 	D3DXCreateLine(ptr_device_, &ptr_line_);
@@ -96,6 +99,7 @@ void COrk_WarBoss::Render()
 	ptr_mesh_->FrameMove(anim_time_, ptr_upper_anim_ctrl_, ptr_upper_start_frame_);
 
 	ptr_gun_->SetHandMatrix(ptr_left_hand_matrix_);
+	ptr_heavy_gun_->SetBackMatrix(ptr_back_matrix_);
 	ptr_head_collider_->SetSphereCollider(0.4f, *(Vector3*)&ptr_head_frame_->combined_matrix.m[3][0]);
 	ptr_body_collider_->SetSphereCollider(0.7f, *(Vector3*)&ptr_body_frame_->combined_matrix.m[3][0]);
 
@@ -138,8 +142,11 @@ HRESULT COrk_WarBoss::AddComponent()
 
 	hr = Ready_Component(MAINTAIN_STATIC, TEXT("Shader_DynamicMesh"), TEXT("Shader"), ptr_shader_);
 	assert(hr == S_OK && "Ork Shader_DynamicMesh ReadyComponent Failed");
+
+#ifdef _DEBUG
 	hr = Ready_Component(MAINTAIN_STATIC, TEXT("Shader_Default"), TEXT("Debug_Shader"), ptr_debug_shader_);
 	assert(hr == S_OK && "Ork Shader_Default ReadyComponent Failed");
+#endif
 
 	hr = Ready_Component(MAINTAIN_STAGE, TEXT("Ork_WarBoss_Mesh"), TEXT("Mesh"), ptr_mesh_);
 	assert(hr == S_OK && "Mesh ReadyComponent Failed");
@@ -162,6 +169,12 @@ HRESULT COrk_WarBoss::AddWeapon()
 	if (nullptr == ptr_left_hand_matrix_) return E_FAIL;
 	ptr_gun_->SetParentMatrix(&ptr_lower_transform_->mat_world());
 	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, TEXT("WarBoss_Gun"), ptr_gun_);
+
+	ptr_heavy_gun_ = COrk_HeavyGun::Create(ptr_device_);
+	ptr_back_matrix_ = &ptr_body_frame_->combined_matrix;
+	if (nullptr == ptr_back_matrix_) return E_FAIL;
+	ptr_heavy_gun_->SetParentMatrix(&ptr_lower_transform_->mat_world());
+	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, TEXT("WarBoss_HeavyGun"), ptr_heavy_gun_);
 
 	return S_OK;
 }
@@ -212,7 +225,7 @@ void COrk_WarBoss::UpdateAnimState()
 {
 	if (pre_behavior_pattern_ != next_behavior_pattern_)
 	{
-		switch (pre_behavior_pattern_)
+		switch (next_behavior_pattern_)
 		{
 		case BehaviorPattern::Spawn:
 			break;
@@ -223,6 +236,8 @@ void COrk_WarBoss::UpdateAnimState()
 		case BehaviorPattern::Shoot:
 			break;
 		case BehaviorPattern::Attack:
+			ptr_upper_anim_ctrl_->SetAnimationTrack("Heavy_Sprint");
+			ptr_lower_anim_ctrl_->SetAnimationTrack("Heavy_Sprint");
 			break;
 		case BehaviorPattern::Ground_Attack:
 			break;
@@ -237,6 +252,9 @@ void COrk_WarBoss::UpdateAnimState()
 		default:
 			break;
 		}
+		ptr_upper_anim_ctrl_->SetTrackPosition(0.0);
+		ptr_lower_anim_ctrl_->SetTrackPosition(0.0);
+
 		pre_behavior_pattern_ = next_behavior_pattern_;
 	}
 }

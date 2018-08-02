@@ -40,10 +40,8 @@ private:
 private:
 	D3DXCOLOR clear_color_;
 
-#ifdef _DEBUG
 private:
 	CViewTexture* ptr_debug_buffer_ = nullptr;
-#endif
 };
 
 END

@@ -128,7 +128,9 @@ HRESULT CGun_Phobos::AddComponent()
 
 void CGun_Phobos::Release()
 {
+#ifdef _DEBUG
 	Safe_Delete(ptr_debug_fire_pos_);
+#endif
 }
 
 
