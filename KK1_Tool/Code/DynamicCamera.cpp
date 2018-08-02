@@ -27,6 +27,8 @@ void DynamicCamera::Update(float delta_time)
 {
 	CCamera::Update(delta_time);
 	InputCheck(delta_time);
+
+
 }
 
 DynamicCamera * DynamicCamera::Create(LPDIRECT3DDEVICE9 ptr_device, const Vector3 & eye, const Vector3 & at)

@@ -66,7 +66,7 @@ HRESULT CLoading::Stage_Loading()
 	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
 		, TEXT("Shader_DynamicMesh")
 		, Engine::CShader::Create(ptr_device_
-			, TEXT("../../Reference/Shader/DynamicMeshShader.hlsl")));
+			, TEXT("../../Reference/Shader/Deferred/Deferred_DynamicMeshShader.hlsl")));
 	assert(hr == S_OK && "Shader_DynamicMesh Component Add Failed");
 
 	//hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
@@ -78,7 +78,7 @@ HRESULT CLoading::Stage_Loading()
 	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
 		, TEXT("Shader_NormalMap")
 		, Engine::CShader::Create(ptr_device_
-			, TEXT("../../Reference/Shader/NormalMapShader.hlsl")));
+			, TEXT("../../Reference/Shader/Deferred/Deferred_StaticMeshShader.hlsl")));
 	assert(hr == S_OK && "Shader_DynamicMesh Component Add Failed");
 
 	// Mesh
@@ -136,11 +136,14 @@ HRESULT CLoading::Stage_Loading()
 	lstrcpy(loading_message_, TEXT("Scene Initializing"));
 	*pp_next_scene_ = CStage::Create(ptr_device_);
 
-	// NavMesh
-	NavMeshDataLoad(TEXT("../bin/Data/StageData/Test_Nav.dat"));
 
 	lstrcpy(loading_message_, TEXT("Stage Data Loading"));
-	StageDataLoad(MAINTAIN_STAGE, TEXT("../bin/Data/StageData/Test.dat"));
+	//NavMeshDataLoad(TEXT("../bin/Data/StageData/Test_Nav.dat"));
+	//StageDataLoad(MAINTAIN_STAGE, TEXT("../bin/Data/StageData/Test.dat"));
+
+	NavMeshDataLoad(TEXT("../bin/Data/StageData/Stage_1_Nav.dat"));
+	StageDataLoad(MAINTAIN_STAGE, TEXT("../bin/Data/StageData/Stage_1.dat"));
+
 
 	lstrcpy(loading_message_, TEXT("Loading Complete"));
 
@@ -239,16 +242,16 @@ void CLoading::AddPlayerSpaceMarin(HANDLE file, const TCHAR * mesh_key, const TC
 
 void CLoading::AddTeamSpaceMarin(HANDLE file, const TCHAR * mesh_key, const TCHAR * object_key, MAINTAINID stage_id, DWORD & byte)
 {
-	Engine::CGameObject* ptr_obj = CSpaceMarin::Create(ptr_device_, ++space_marin_count_);
-	assert(nullptr != ptr_obj && "SpaceMarin Create Failed");
+	//Engine::CGameObject* ptr_obj = CSpaceMarin::Create(ptr_device_, ++space_marin_count_);
+	//assert(nullptr != ptr_obj && "SpaceMarin Create Failed");
 
-	(*pp_next_scene_)->AddObject(stage_id, object_key, ptr_obj);
+	//(*pp_next_scene_)->AddObject(stage_id, object_key, ptr_obj);
 
-	Vector3 temp;
+	//Vector3 temp;
 
-	ReadFile(file, ptr_obj->transform()->position(), sizeof(Vector3), &byte, nullptr);
-	ReadFile(file, ptr_obj->transform()->rotation(), sizeof(Vector3), &byte, nullptr);
-	ReadFile(file, temp, sizeof(Vector3), &byte, nullptr);
+	//ReadFile(file, ptr_obj->transform()->position(), sizeof(Vector3), &byte, nullptr);
+	//ReadFile(file, ptr_obj->transform()->rotation(), sizeof(Vector3), &byte, nullptr);
+	//ReadFile(file, temp, sizeof(Vector3), &byte, nullptr);
 }
 
 void CLoading::AddEnemyOrk(HANDLE file, const TCHAR * mesh_key, const TCHAR * object_key, MAINTAINID stage_id, DWORD & byte)

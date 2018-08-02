@@ -112,7 +112,7 @@ int Engine::CNavMeshAgent::MoveFromNavMesh(Vector3 & pos, const Vector3 & dir, i
 		if (nullptr == ptr_neighbor)
 		{
 			out_pass_fail_option = vec_nav_cell_[current_index]->option();
-			Vector3 sliding_dir = vec_nav_cell_[current_index]->GetLine((LINEID)neighbor_id)->SlidingDirection(dir);
+			Vector3 sliding_dir = vec_nav_cell_[current_index]->GetLine((LINEID)neighbor_id)->SlidingDirection(dir) * 0.5f;
 			
 			if (true == vec_nav_cell_[current_index]->CheckPass(pos, sliding_dir, neighbor_id))
 			{

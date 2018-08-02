@@ -18,7 +18,9 @@ public:
 public:
 	CGameObject* ptr_object();
 	ColliderType type();
+	void GetAABBMinMax(Vector3& min, Vector3& max);
 	const Vector3& GetSpherePos();
+	float GetSphereRadius();
 
 private:
 	HRESULT InitCollider(CGameObject* ptr_object, ColliderType coll_type);

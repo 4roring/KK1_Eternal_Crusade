@@ -44,6 +44,14 @@ namespace Engine
 
 	const DWORD CubeTex_FVF = D3DFVF_XYZ | D3DFVF_TEX1 | D3DFVF_TEXCOORDSIZE3(0);
 
+	typedef struct tagViewportTexture
+	{
+		Vector4 position;
+		Vector2 texture_uv;
+	} ViewTex;
+
+	const DWORD ViewTex_FVF = D3DFVF_XYZRHW | D3DFVF_TEX1;
+
 	typedef struct tagTrailTexture
 	{
 		Vector3 position;

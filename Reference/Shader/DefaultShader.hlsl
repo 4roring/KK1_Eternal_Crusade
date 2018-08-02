@@ -1,9 +1,7 @@
 #include "BaseShader.hlsl"
 
-float g_alpha = 1.f;
 texture g_color_texture;
-
-sampler base_sampler = sampler_state
+sampler color_sampler = sampler_state
 {
     texture = g_color_texture;
 	MINFILTER = LINEAR;
@@ -49,7 +47,7 @@ struct PS_OUT
 PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
-	Out.color = tex2D(base_sampler, In.texture_uv);
+    Out.color = tex2D(color_sampler, In.texture_uv);
 
 	return Out;
 }

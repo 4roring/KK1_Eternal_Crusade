@@ -2,6 +2,7 @@
 #include "CollisionSystem.h"
 #include "Collider.h"
 #include "GameObject.h"
+#include "Frustum.h"
 
 CCollisionSystem::CCollisionSystem()
 {
@@ -11,16 +12,10 @@ CCollisionSystem::~CCollisionSystem()
 {
 }
 
-void CCollisionSystem::AddColisionList(Engine::CCollider * ptr_coll, OBJECT_TAG tag)
+void CCollisionSystem::AddColliderList(Engine::CCollider * ptr_coll, OBJECT_TAG tag)
 {
 	if (nullptr == ptr_coll) return;
-	collision_list_[tag].emplace_back(ptr_coll);
-}
-
-void CCollisionSystem::AddTriggerList(Engine::CCollider * ptr_coll, OBJECT_TAG tag)
-{
-	if (nullptr == ptr_coll) return;
-	trigger_list_[tag].emplace_back(ptr_coll);
+	collider_list_[tag].emplace_back(ptr_coll);
 }
 
 void CCollisionSystem::AddRaycastList(Engine::CCollider * ptr_coll, OBJECT_TAG tag)
@@ -29,10 +24,29 @@ void CCollisionSystem::AddRaycastList(Engine::CCollider * ptr_coll, OBJECT_TAG t
 	raycast_list_[tag].push_back(ptr_coll);
 }
 
+void CCollisionSystem::SetFrustum(CFrustum * ptr_frustum)
+{
+	ptr_frustum_ = ptr_frustum;
+}
+
 void CCollisionSystem::CollisionCheck(Engine::CCollider * ptr_coll, OBJECT_TAG target_tag)
 {
-	for (auto& coll : collision_list_[target_tag])
+	for (auto& coll : collider_list_[target_tag])
 		ptr_coll->CollisionCheck(coll);
+}
+
+bool CCollisionSystem::CollisionCheckToFrustum(Engine::CCollider * ptr_coll)
+{
+	if (nullptr == ptr_coll) return false;
+
+	switch (ptr_coll->type())
+	{
+	case Collider_AABB:
+		return ptr_frustum_->CheckFrutumToAABB(ptr_coll);
+	case Collider_Sphere:
+		return ptr_frustum_->CheckFrutumToSphere(ptr_coll);
+	}
+	return false;
 }
 
 bool CCollisionSystem::RaycastCheck(const Vector3 & ray_pos, const Vector3 & ray_dir, float * out_dist, Engine::CGameObject*& out_hit_obj, OBJECT_TAG target_tag)
@@ -57,10 +71,7 @@ bool CCollisionSystem::RaycastCheck(const Vector3 & ray_pos, const Vector3 & ray
 
 void CCollisionSystem::LastFrame()
 {
-	for (auto& list : collision_list_)
-		list.clear();
-
-	for (auto& list : trigger_list_)
+	for (auto& list : collider_list_)
 		list.clear();
 
 	for (auto& list : raycast_list_)

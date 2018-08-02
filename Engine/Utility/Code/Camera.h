@@ -20,8 +20,8 @@ public:
 	Matrix& mat_projection();
 
 public:
-	void SetView(const Vector3& eye, const Vector3& at);
-	void SetProjection(float fov_y, float aspect, float z_near, float z_far);
+	virtual void SetView(const Vector3& eye, const Vector3& at);
+	virtual void SetProjection(float fov_y, float aspect, float z_near, float z_far);
 
 protected:
 	HRESULT InitCamera();

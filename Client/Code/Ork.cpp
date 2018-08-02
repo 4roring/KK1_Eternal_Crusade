@@ -103,7 +103,7 @@ void COrk::Update(float delta_time)
 	Engine::CGameObject::Update(delta_time);
 	CollSystem()->AddRaycastList(ptr_head_collider_, TAG_ENEMY);
 	CollSystem()->AddRaycastList(ptr_body_collider_, TAG_ENEMY);
-	CollSystem()->AddColisionList(ptr_body_collider_, TAG_ENEMY);
+	CollSystem()->AddColliderList(ptr_body_collider_, TAG_ENEMY);
 }
 
 void COrk::LateUpdate()
@@ -132,7 +132,8 @@ void COrk::Render()
 	ptr_head_collider_->SetSphereCollider(0.2f, Vector3(*(Vector3*)&ptr_head_frame_->combined_matrix.m[3][0]));
 	ptr_body_collider_->SetSphereCollider(0.5f, Vector3(*(Vector3*)&ptr_body_frame_->combined_matrix.m[3][0]));
 
-	ptr_mesh_->RenderMesh(ptr_effect);
+	if (true == CollSystem()->CollisionCheckToFrustum(ptr_head_collider_))
+		ptr_mesh_->RenderMesh(ptr_effect);
 
 #ifdef _DEBUG
 	DebugRender();
@@ -425,10 +426,6 @@ void COrk::SetConstantTable(LPD3DXEFFECT ptr_effect)
 	ptr_effect->SetMatrix("g_mat_world", &ptr_lower_transform_->mat_world());
 	ptr_effect->SetMatrix("g_mat_view", &mat_view);
 	ptr_effect->SetMatrix("g_mat_projection", &mat_proj);
-
-	ptr_effect->SetVector("g_light_diffuse", &Vector4(1.f, 1.f, 1.f, 1.f));
-	ptr_effect->SetVector("g_light_ambient", &Vector4(1.f, 1.f, 1.f, 1.f));
-	ptr_effect->SetVector("g_light_dir", &Vector4(0.f, -1.f, 1.f, 0.f));
 }
 
 #ifdef _DEBUG

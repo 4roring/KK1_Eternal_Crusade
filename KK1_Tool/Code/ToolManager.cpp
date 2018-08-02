@@ -43,6 +43,7 @@ void CToolManager::Init_ToolManager()
 	Engine::GraphicDevice()->InitGraphicDevice(Engine::GraphicDevice()->MODE_WINDOW, g_hwnd, g_kWinCx, g_kWinCy);
 	ptr_device_ = Engine::GraphicDevice()->GetDevice();
 	ptr_dynamic_camera_ = DynamicCamera::Create(ptr_device_, Vector3(0.f, 5.f, -10.f), Vector3(0.f, 0.f, 0.f));
+	FrustumToView();
 
 	if (FAILED(D3DXCreateLine(ptr_device_, &ptr_line_)))
 		assert(!"Line COM Object Create Failed");
@@ -59,6 +60,8 @@ void CToolManager::Update(float delta_time)
 
 	Engine::Input()->SetInputState();
 	ptr_dynamic_camera_->Update(delta_time);
+	FrustumToWorld();
+	MakeFrustumPlane();
 
 	switch (tab_id_)
 	{
@@ -195,4 +198,40 @@ void CToolManager::DrawBoard()
 	ptr_line_->End();
 }
 
+void CToolManager::FrustumToView()
+{
+	Matrix inv_mat_proj;
+	D3DXMatrixInverse(&inv_mat_proj, nullptr, &ptr_dynamic_camera_->mat_projection());
 
+	frustum_.point[0] = Vector3(-1.f, 1.f, 0.f);
+	frustum_.point[1] = Vector3(1.f, 1.f, 0.f);
+	frustum_.point[2] = Vector3(1.f, -1.f, 0.f);
+	frustum_.point[3] = Vector3(-1.f, -1.f, 0.f);
+		   
+	frustum_.point[4] = Vector3(-1.f, 1.f, 1.f);
+	frustum_.point[5] = Vector3(1.f, 1.f, 1.f);
+	frustum_.point[6] = Vector3(1.f, -1.f, 1.f);
+	frustum_.point[7] = Vector3(-1.f, -1.f, 1.f);
+
+	for (auto& point : frustum_.point)
+		D3DXVec3TransformCoord(&point, &point, &inv_mat_proj);
+}
+
+void CToolManager::FrustumToWorld()
+{
+	Matrix inv_mat_view;
+	D3DXMatrixInverse(&inv_mat_view, nullptr, &ptr_dynamic_camera_->mat_view());
+
+	for (int i = 0; i < 8; ++i)
+		D3DXVec3TransformCoord(&frustum_.world_point[i], &frustum_.point[i], &inv_mat_view);
+}
+
+void CToolManager::MakeFrustumPlane()
+{
+	D3DXPlaneFromPoints(&frustum_.plane[0], &frustum_.world_point[1], &frustum_.world_point[5], &frustum_.world_point[6]); // +x
+	D3DXPlaneFromPoints(&frustum_.plane[1], &frustum_.world_point[4], &frustum_.world_point[0], &frustum_.world_point[3]); // -x
+	D3DXPlaneFromPoints(&frustum_.plane[2], &frustum_.world_point[4], &frustum_.world_point[5], &frustum_.world_point[1]); // +y
+	D3DXPlaneFromPoints(&frustum_.plane[3], &frustum_.world_point[3], &frustum_.world_point[2], &frustum_.world_point[6]); // -y
+	D3DXPlaneFromPoints(&frustum_.plane[4], &frustum_.world_point[7], &frustum_.world_point[6], &frustum_.world_point[5]); // +z
+	D3DXPlaneFromPoints(&frustum_.plane[5], &frustum_.world_point[0], &frustum_.world_point[1], &frustum_.world_point[2]); // -z
+}

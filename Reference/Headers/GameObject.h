@@ -24,6 +24,7 @@ public:
 public:
 	void SetActive(bool active);
 	void Destroy();
+	void set_is_render(bool is_render);
 
 public:
 	void ComputeViewZ(const Matrix& mat_view);
@@ -68,6 +69,7 @@ protected:
 	float view_z_ = 0.f;
 	bool active_ = true;
 	bool destroy_ = false;
+	bool is_render_ = false;
 
 private:
 	CComponentMap* ptr_component_map_ = nullptr;

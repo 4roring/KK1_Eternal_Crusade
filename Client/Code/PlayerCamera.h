@@ -6,6 +6,8 @@ BEGIN(Engine)
 class CTransform;
 END
 
+class CFrustum;
+
 class CPlayerCamera
 	: public Engine::CCamera
 {
@@ -24,6 +26,10 @@ public:
 public:
 	static CPlayerCamera* Create(LPDIRECT3DDEVICE9 ptr_device, MAINTAINID stage_id);
 
+public:
+	virtual void SetView(const Vector3& eye, const Vector3& at) override;
+	virtual void SetProjection(float fov_y, float aspect, float z_near, float z_far) override;
+
 private:
 	void Release();
 
@@ -32,4 +38,5 @@ public:
 
 private:
 	Engine::CTransform* ptr_player_transform_ = nullptr;
+	CFrustum* ptr_frustum_ = nullptr;
 };

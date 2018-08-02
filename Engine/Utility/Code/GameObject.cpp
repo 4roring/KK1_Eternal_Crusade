@@ -32,6 +32,11 @@ void Engine::CGameObject::Destroy()
 	destroy_ = true;
 }
 
+void Engine::CGameObject::set_is_render(bool is_render)
+{
+	is_render_ = is_render;
+}
+
 void Engine::CGameObject::ComputeViewZ(const Matrix & mat_view)
 {
 

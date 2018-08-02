@@ -40,7 +40,14 @@ private:
 	void Release();
 
 private:
+	bool CheckFrustum();
+
+private:
 	Engine::CStaticMesh* ptr_mesh_ = nullptr;
 	std::wstring mesh_key_ = TEXT(" ");
 	std::wstring object_key_ = TEXT(" ");
+
+private:
+	Vector3 sphere_center_;
+	float sphere_radius_ = 0.f;
 };

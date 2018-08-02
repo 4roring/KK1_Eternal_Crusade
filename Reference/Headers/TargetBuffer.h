@@ -4,6 +4,8 @@
 
 BEGIN(Engine)
 
+class CViewTexture;
+
 class CTargetBuffer
 {
 private:
@@ -22,12 +24,11 @@ public:
 	static CTargetBuffer* Create(LPDIRECT3DDEVICE9 ptr_device, uint32 size_x, uint32 size_y, const D3DFORMAT& format, const D3DXCOLOR& clear_color);
 
 public:
-	HRESULT CreateDebugBuffer(float _x, float _y, float size_x, float size_y);
-	HRESULT RenderDebugBuffer();
-
-public:
+	HRESULT Init_DebugTarget(float _x, float _y, float size_x, float size_y);
 	HRESULT ClearBuffer();
+	HRESULT Render_DebugTarget();
 	HRESULT SetBufferOnDevice(const uint32 index);
+	HRESULT SetTargetOnShader(LPD3DXEFFECT ptr_effect, const char* constant_name);
 	HRESULT ReleaseBufferOnDevice(const uint32 index);
 
 private:
@@ -39,9 +40,10 @@ private:
 private:
 	D3DXCOLOR clear_color_;
 
+#ifdef _DEBUG
 private:
-	LPDIRECT3DVERTEXBUFFER9 ptr_vertex_buffer_ = nullptr;
-	LPDIRECT3DINDEXBUFFER9 ptr_index_buffer_ = nullptr;
+	CViewTexture* ptr_debug_buffer_ = nullptr;
+#endif
 };
 
 END

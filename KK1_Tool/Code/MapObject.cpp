@@ -40,16 +40,23 @@ HRESULT MapObject::Initialize(const std::wstring& mesh_key)
 	mesh_key_ = mesh_key;
 	ptr_transform_->scale() = Vector3(0.01f, 0.01f, 0.01f);
 
+	sphere_radius_ *= ptr_transform_->scale().x;
+
 	return S_OK;
 }
 
 void MapObject::Update(float delta_time)
 {
 	Engine::CGameObject::Update(delta_time);
+
+	ptr_mesh_->GetSphere(sphere_radius_, sphere_center_);
+	D3DXVec3TransformCoord(&sphere_center_, &sphere_center_, &ptr_transform_->mat_world());
 }
 
 void MapObject::Render()
 {
+	if (false == CheckFrustum()) return;
+
 	LPD3DXEFFECT ptr_effect = ptr_shader_->GetEffectHandle();
 	if (nullptr == ptr_effect) return;
 
@@ -107,4 +114,14 @@ HRESULT MapObject::AddComponent(const std::wstring& mesh_key)
 
 void MapObject::Release()
 {
+}
+
+bool MapObject::CheckFrustum()
+{
+	for (auto& plane : Tool()->frustum().plane)
+	{
+		if (D3DXPlaneDotCoord(&plane, &sphere_center_) > sphere_radius_)
+			return false;
+	}
+	return true;
 }

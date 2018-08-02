@@ -134,10 +134,6 @@ void CSpaceMarin::Render()
 	ptr_effect->SetMatrix("g_mat_view", &mat_view);
 	ptr_effect->SetMatrix("g_mat_projection", &mat_proj);
 
-	ptr_effect->SetVector("g_light_diffuse", &Vector4(1.f, 1.f, 1.f, 1.f));
-	ptr_effect->SetVector("g_light_ambient", &Vector4(1.f, 1.f, 1.f, 1.f));
-	ptr_effect->SetVector("g_light_dir", &Vector4(0.f, -1.f, 1.f, 0.f));
-
 	Matrix mat_upper_rot_x;
 	D3DXMatrixRotationAxis(&mat_upper_rot_x, &Vector3(-1.f, 0.f, 0.f), ptr_transform_->rotation().x);
 

@@ -18,7 +18,7 @@ class ENGINE_DLL CDynamicMesh
 {
 private:
 	explicit CDynamicMesh(LPDIRECT3DDEVICE9 ptr_device);
-
+	
 public:
 	virtual ~CDynamicMesh();
 

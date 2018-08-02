@@ -4,8 +4,11 @@
 
 BEGIN(Engine)
 
-class G_Buffer;
+class GBuffer;
+class CLightManager;
 class CGameObject;
+class CShader;
+class CViewTexture;
 
 class CRenderer
 {
@@ -14,15 +17,17 @@ private:
 
 public:
 	~CRenderer();
-
-public:
-	static CRenderer* Create(LPDIRECT3DDEVICE9 ptr_device);
-
 private:
 	HRESULT Initialize();
 
 public:
 	void Render();
+
+public:
+	static CRenderer* Create(LPDIRECT3DDEVICE9 ptr_device);
+
+private:
+	void Release();
 
 public:
 	void AddRenderLayer(RENDERLAYER render_id, CGameObject* ptr_object);
@@ -36,9 +41,8 @@ private:
 
 private:
 	void Render_Deferred();
-
-private:
-	void Release();
+	void Render_LightAcc();
+	void Render_Blend();
 
 private:
 	LPDIRECT3DDEVICE9 ptr_device_ = nullptr;
@@ -47,7 +51,11 @@ private:
 	std::vector<CGameObject*> render_layer_[LAYER_END];
 
 private:
-	G_Buffer* ptr_g_buffer = nullptr;
+	GBuffer* ptr_gbuffer = nullptr;
+	CLightManager* ptr_light_manager_ = nullptr;
+	CShader* ptr_shader_shade_ = nullptr;
+	CShader* ptr_shader_blend_ = nullptr;
+	CViewTexture* ptr_blend_buffer_ = nullptr;
 };
 
 END

@@ -33,6 +33,13 @@ void CLevelObject::LateInit()
 	Vector3 min, max;
 	ptr_mesh_->GetMinMax(min, max);
 	ptr_box_coll_->SetAABBCollider(min, max);
+
+	Vector3 center;
+	float radius;
+	ptr_mesh_->GetSphere(radius, center);
+	radius *= ptr_transform_->scale().x;
+	D3DXVec3TransformCoord(&center, &center, &ptr_transform_->mat_world());
+	ptr_sphere_coll_->SetSphereCollider(radius, center);
 }
 
 void CLevelObject::Update(float delta_time)
@@ -42,7 +49,8 @@ void CLevelObject::Update(float delta_time)
 
 void CLevelObject::LateUpdate()
 {
-	Engine::GameManager()->AddRenderLayer(Engine::RENDERLAYER::LAYER_NONEALPHA, this);
+	if(true == CollSystem()->CollisionCheckToFrustum(ptr_sphere_coll_))
+		Engine::GameManager()->AddRenderLayer(Engine::RENDERLAYER::LAYER_NONEALPHA, this);
 }
 
 void CLevelObject::Render()
@@ -58,24 +66,27 @@ void CLevelObject::Render()
 	ptr_effect->SetMatrix("g_mat_view", &mat_view);
 	ptr_effect->SetMatrix("g_mat_projection", &mat_proj);
 
-	ptr_effect->SetVector("g_light_diffuse", &Vector4(1.f, 1.f, 1.f, 1.f));
-	ptr_effect->SetVector("g_light_ambient", &Vector4(1.f, 1.f, 1.f, 1.f));
-	ptr_effect->SetVector("g_light_dir", &Vector4(0.f, -1.f, 1.f, 0.f));
-
 	ptr_mesh_->RenderMesh(ptr_effect);
 
 #ifdef _DEBUG
 	ptr_effect = ptr_debug_shader_->GetEffectHandle();
 
-	Matrix mat_identity;
-	D3DXMatrixIdentity(&mat_identity);
+	//ptr_effect->SetMatrix("g_mat_world", &ptr_transform_->mat_world());
 
-	ptr_effect->SetMatrix("g_mat_world", &ptr_transform_->mat_world());
-	ptr_effect->SetMatrix("g_mat_view", &mat_view);
-	ptr_effect->SetMatrix("g_mat_projection", &mat_proj);
+	//ptr_debug_shader_->BegineShader(1);
+	//ptr_box_coll_->DebugRender();
+	//ptr_debug_shader_->EndShader();
+
+	Matrix mat_trans;
+	D3DXMatrixIdentity(&mat_trans);
+	mat_trans._41 = ptr_sphere_coll_->GetSpherePos().x;
+	mat_trans._42 = ptr_sphere_coll_->GetSpherePos().y;
+	mat_trans._43 = ptr_sphere_coll_->GetSpherePos().z;
+
+	ptr_effect->SetMatrix("g_mat_world", &mat_trans);
 
 	ptr_debug_shader_->BegineShader(1);
-	ptr_box_coll_->DebugRender();
+	ptr_sphere_coll_->DebugRender();
 	ptr_debug_shader_->EndShader();
 #endif
 }
@@ -104,6 +115,7 @@ HRESULT CLevelObject::AddComponent(const std::wstring & mesh_key)
 	assert(!FAILED(hr) && "ReadyComponent Failed of LevelObject Shader Component");
 
 	ptr_box_coll_ = Engine::CCollider::Create(ptr_device_, this, ColliderType::Collider_AABB);
+	ptr_sphere_coll_ = Engine::CCollider::Create(ptr_device_, this, ColliderType::Collider_Sphere);
 
 #ifdef _DEBUG
 	hr = Ready_Component(MAINTAIN_STATIC, TEXT("Shader_Default"), TEXT("Debug_Shader"), ptr_debug_shader_);
@@ -115,4 +127,5 @@ HRESULT CLevelObject::AddComponent(const std::wstring & mesh_key)
 void CLevelObject::Release()
 {
 	Safe_Delete(ptr_box_coll_);
+	Safe_Delete(ptr_sphere_coll_);
 }

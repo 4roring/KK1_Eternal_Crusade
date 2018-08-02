@@ -6,7 +6,7 @@ BEGIN(Engine)
 class CCollider;
 END
 
-class CSphereCollider;
+class CFrustum;
 
 class CCollisionSystem
 	: public Engine::CSingleton<CCollisionSystem>
@@ -17,19 +17,22 @@ private:
 	virtual ~CCollisionSystem();
 
 public:
-	void AddColisionList(Engine::CCollider* ptr_coll, OBJECT_TAG tag);
-	void AddTriggerList(Engine::CCollider * ptr_coll, OBJECT_TAG tag);
+	void AddColliderList(Engine::CCollider* ptr_coll, OBJECT_TAG tag);
 	void AddRaycastList(Engine::CCollider * ptr_coll, OBJECT_TAG tag);
+	void SetFrustum(CFrustum* ptr_frustum);
 
 public:
 	void CollisionCheck(Engine::CCollider* ptr_coll, OBJECT_TAG target_tag);
+	bool CollisionCheckToFrustum(Engine::CCollider* ptr_coll);
 	bool RaycastCheck(const Vector3& ray_pos, const Vector3& ray_dir, float* out_dist, Engine::CGameObject*& out_hit_obj, OBJECT_TAG target_tag);
 	void LastFrame();
 
 private:
-	std::list<Engine::CCollider*> collision_list_[TAG_END];
-	std::list<Engine::CCollider*> trigger_list_[TAG_END];
+	std::list<Engine::CCollider*> collider_list_[TAG_END];
 	std::list<Engine::CCollider*> raycast_list_[TAG_END];
+
+private:
+	CFrustum* ptr_frustum_ = nullptr;
 };
 
 static CCollisionSystem* CollSystem() { return CCollisionSystem::GetInstance(); }

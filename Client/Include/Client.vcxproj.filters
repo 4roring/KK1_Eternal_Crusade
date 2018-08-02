@@ -107,6 +107,9 @@
     <Filter Include="03.Components\Controller\TeamAIController">
       <UniqueIdentifier>{a40e5c4f-6109-426a-8a1e-b0f0605bb702}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04.CollisionSystem\FrustumCollider">
+      <UniqueIdentifier>{2a2c5771-b92a-461b-b3f4-f38abc5d1859}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -197,6 +200,9 @@
     <ClInclude Include="..\Code\Ork_WarBoss.h">
       <Filter>02.GameObject\ControlObject\Ork_WarBoss</Filter>
     </ClInclude>
+    <ClInclude Include="Frustum.h">
+      <Filter>04.CollisionSystem\FrustumCollider</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -265,6 +271,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\Ork_WarBoss.cpp">
       <Filter>02.GameObject\ControlObject\Ork_WarBoss</Filter>
+    </ClCompile>
+    <ClCompile Include="Frustum.cpp">
+      <Filter>04.CollisionSystem\FrustumCollider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

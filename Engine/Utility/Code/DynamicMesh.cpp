@@ -247,19 +247,27 @@ void Engine::CDynamicMesh::RenderMeshContainer(BoneMesh * ptr_bone_mesh, LPD3DXE
 		
 		ptr_effect->SetMatrixArray("matrix_palette", ptr_bone_mesh->ptr_result_matrix, num_bones);
 
-		ptr_effect->BeginPass(0);
+		uint32 pass_index = 1;
+		ptr_effect->BeginPass(pass_index);
 		for (DWORD i = 0; i < ptr_bone_mesh->NumMaterials; ++i)
 		{
 			if(nullptr != ptr_bone_mesh->pp_color_texture[i])
 				ptr_effect->SetTexture("g_color_texture", ptr_bone_mesh->pp_color_texture[i]);
 			if (nullptr != ptr_bone_mesh->pp_color_texture[i])
 				ptr_effect->SetTexture("g_normal_texture", ptr_bone_mesh->pp_normal_texture[i]);
+			//else
+			//	pass_index = 0;
+				
 			if (nullptr != ptr_bone_mesh->pp_color_texture[i])
-				ptr_effect->SetTexture("g_specualr_texture", ptr_bone_mesh->pp_specular_texture[i]);
+				ptr_effect->SetTexture("g_specular_texture", ptr_bone_mesh->pp_specular_texture[i]);
+			//else
+			//	pass_index = 0;
 
 			ptr_effect->CommitChanges();
 
+			
 			ptr_bone_mesh->MeshData.pMesh->DrawSubset(i);
+		
 		}
 		ptr_effect->EndPass();
 	}

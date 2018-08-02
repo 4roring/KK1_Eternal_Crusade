@@ -24,9 +24,20 @@ ColliderType Engine::CCollider::type()
 	return type_;
 }
 
+void Engine::CCollider::GetAABBMinMax(Vector3& min, Vector3& max)
+{
+	min = ptr_aabb_info_->min;
+	max = ptr_aabb_info_->max;
+}
+
 const Vector3 & Engine::CCollider::GetSpherePos()
 {
 	return ptr_sphere_info_->world_position;
+}
+
+float Engine::CCollider::GetSphereRadius()
+{
+	return ptr_sphere_info_->radius;
 }
 
 HRESULT Engine::CCollider::InitCollider(CGameObject * ptr_object, ColliderType coll_type)
@@ -71,8 +82,6 @@ void Engine::CCollider::SetAABBCollider(const Vector3 & _min, const Vector3 & _m
 	ptr_aabb_info_->ptr_mat_world = &ptr_object_->transform()->mat_world();
 	D3DXVec3TransformCoord(&ptr_aabb_info_->min, &_min, ptr_aabb_info_->ptr_mat_world);
 	D3DXVec3TransformCoord(&ptr_aabb_info_->max, &_min, ptr_aabb_info_->ptr_mat_world);
-	//ptr_aabb_info_->min = _min;
-	//ptr_aabb_info_->max = _max;
 	ptr_aabb_info_->ptr_cube = CCubeColor::Create(ptr_device_, _min, _max, D3DXCOLOR(0.f, 1.f, 0.f, 1.f));
 }
 

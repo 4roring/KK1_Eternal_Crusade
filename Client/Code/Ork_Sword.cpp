@@ -73,10 +73,6 @@ void COrk_Sword::Render()
 	ptr_effect->SetMatrix("g_mat_view", &mat_view);
 	ptr_effect->SetMatrix("g_mat_projection", &mat_proj);
 
-	ptr_effect->SetVector("g_light_diffuse", &Vector4(1.f, 1.f, 1.f, 1.f));
-	ptr_effect->SetVector("g_light_ambient", &Vector4(1.f, 1.f, 1.f, 1.f));
-	ptr_effect->SetVector("g_light_dir", &Vector4(0.f, -1.f, 1.f, 0.f));
-
 	ptr_mesh_->RenderMesh(ptr_effect);
 
 #ifdef _DEBUG

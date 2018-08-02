@@ -71,6 +71,10 @@ public:
 	bool PathFinder(int start_cell, int end_cell, std::vector<Vector3>& path);
 	bool PathFinder(int start_cell, const Vector3& end_point, std::vector<Vector3>& path);
 
+public:
+	HRESULT AddLight(const D3DLIGHT9& light_info);
+	void ClearLight();
+
 private:
 	CScene* ptr_scene_ = nullptr;
 	CScene* ptr_next_scene_ = nullptr;
@@ -80,6 +84,9 @@ private:
 
 private:
 	LPDIRECT3DDEVICE9 ptr_device_;
+
+private:
+	class CLightManager* ptr_light_manager_ = nullptr;
 };
 
 template<typename T>

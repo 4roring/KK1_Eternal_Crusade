@@ -7,6 +7,13 @@ class StageEditor;
 class NavMeshEditor;
 class DynamicCamera;
 
+struct Frustum
+{
+	Vector3 point[8];
+	Vector3 world_point[8];
+	D3DXPLANE plane[6];
+};
+
 class CToolManager
 	: public Engine::CSingleton<CToolManager>
 {
@@ -26,6 +33,7 @@ public:
 
 public:
 	StageEditor* ptr_stage_editor() { return ptr_stage_editor_; }
+	Frustum& frustum() { return frustum_; }
 
 public:
 	void Init_ToolManager();
@@ -46,6 +54,11 @@ public:
 
 private:
 	void DrawBoard();
+
+private:
+	void FrustumToView();
+	void FrustumToWorld();
+	void MakeFrustumPlane();
 
 private:
 	LPDIRECT3DDEVICE9 ptr_device_;
@@ -73,6 +86,9 @@ private:
 
 private:
 	bool file_mode_ = false;
+
+private:
+	Frustum frustum_ = {};
 };
 
 static CToolManager* Tool() { return CToolManager::GetInstance(); }

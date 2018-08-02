@@ -44,6 +44,12 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KK1_Tool", "KK1_Tool\Include\MapTool.vcxproj", "{74F841BD-EDA5-47A4-8274-09A355A00F48}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deferred", "Deferred", "{6FA2CB32-8583-4C53-BF74-05D2598AEF05}"
+	ProjectSection(SolutionItems) = preProject
+		Reference\Shader\Deferred\Deferred_Blend.hlsl = Reference\Shader\Deferred\Deferred_Blend.hlsl
+		Reference\Shader\Deferred\Deferred_DynamicMeshShader.hlsl = Reference\Shader\Deferred\Deferred_DynamicMeshShader.hlsl
+		Reference\Shader\Deferred\Deferred_LightAcc.hlsl = Reference\Shader\Deferred\Deferred_LightAcc.hlsl
+		Reference\Shader\Deferred\Deferred_StaticMeshShader.hlsl = Reference\Shader\Deferred\Deferred_StaticMeshShader.hlsl
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -3,6 +3,7 @@
 #include "Renderer.h"
 #include "ComponentManager.h"
 #include "NavMeshAgent.h"
+#include "LightManager.h"
 
 Engine::CGameManager::CGameManager()
 {
@@ -62,11 +63,14 @@ HRESULT Engine::CGameManager::InitManager(LPDIRECT3DDEVICE9 ptr_device)
 {
 	ptr_device_ = ptr_device;
 
-	ptr_renderer_ = CRenderer::Create(ptr_device);
-	assert(nullptr != ptr_renderer_ && "Renderer Create Failed");
-
 	ptr_component_manager_ = CComponentManager::Create();
 	assert(nullptr != ptr_component_manager_ && "Renderer Create Failed");
+
+	ptr_light_manager_ = CLightManager::GetInstance();
+	assert(nullptr != ptr_component_manager_ && "LightManager Instance is nullptr");
+
+	ptr_renderer_ = CRenderer::Create(ptr_device);
+	assert(nullptr != ptr_renderer_ && "Renderer Create Failed");
 
 	return S_OK;
 }
@@ -85,8 +89,8 @@ void Engine::CGameManager::Render()
 #ifdef _DEBUG
 	if(nullptr != ptr_scene_)
 		ptr_scene_->Render();
-	if (nullptr != ptr_nav_mesh_agent_)
-		ptr_nav_mesh_agent_->Debug_Render();
+	//if (nullptr != ptr_nav_mesh_agent_)
+	//	ptr_nav_mesh_agent_->Debug_Render();
 #endif	
 }
 
@@ -158,8 +162,19 @@ bool Engine::CGameManager::PathFinder(int start_cell, const Vector3 & end_point,
 	return ptr_nav_mesh_agent_->PathFinder(start_cell, end_point, path);
 }
 
+HRESULT Engine::CGameManager::AddLight(const D3DLIGHT9 & light_info)
+{
+	return ptr_light_manager_->AddLight(ptr_device_, light_info);
+}
+
+void Engine::CGameManager::ClearLight()
+{
+	ptr_light_manager_->ClearLight();
+}
+
 void Engine::CGameManager::Release()
 {
+	ptr_light_manager_->DestroyInstance();
 	Safe_Delete(ptr_nav_mesh_agent_);
 	Safe_Delete(ptr_renderer_);
 	Safe_Delete(ptr_scene_);

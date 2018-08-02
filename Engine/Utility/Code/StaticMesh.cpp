@@ -62,31 +62,34 @@ HRESULT Engine::CStaticMesh::ComputeBoundingBox()
 
 HRESULT Engine::CStaticMesh::ComputeBoundingSphere()
 {
-	D3DVERTEXELEMENT9 vertex_element[MAX_FVF_DECL_SIZE] = {};
-	ptr_mesh_->GetDeclaration(vertex_element);
+	//D3DVERTEXELEMENT9 vertex_element[MAX_FVF_DECL_SIZE] = {};
+	//ptr_mesh_->GetDeclaration(vertex_element);
 
-	WORD offset = -1;
-	for (size_t i = 0; i < MAX_FVF_DECL_SIZE; ++i)
-	{
-		if (vertex_element[i].Type == D3DDECLTYPE_UNUSED)
-			break;
+	//WORD offset = -1;
+	//for (size_t i = 0; i < MAX_FVF_DECL_SIZE; ++i)
+	//{
+	//	if (vertex_element[i].Type == D3DDECLTYPE_UNUSED)
+	//		break;
 
-		if (vertex_element[i].Usage == D3DDECLUSAGE_POSITION)
-		{
-			offset = vertex_element[i].Offset;
-			break;
-		}
-	}
+	//	if (vertex_element[i].Usage == D3DDECLUSAGE_POSITION)
+	//	{
+	//		offset = vertex_element[i].Offset;
+	//		break;
+	//	}
+	//}
 
-	void* vertex_info = nullptr;
-	ptr_mesh_->LockVertexBuffer(0, &vertex_info);
+	//void* vertex_info = nullptr;
+	//ptr_mesh_->LockVertexBuffer(0, &vertex_info);
 
-	if (FAILED(D3DXComputeBoundingSphere((D3DXVECTOR3*)((BYTE*)vertex_info + offset)
-		, ptr_mesh_->GetNumVertices(), D3DXGetDeclVertexSize(vertex_element, 0)
-		, &bounding_sphere_.center, &bounding_sphere_.radius)))
-		return E_FAIL;
+	//if (FAILED(D3DXComputeBoundingSphere((D3DXVECTOR3*)((BYTE*)vertex_info + offset)
+	//	, ptr_mesh_->GetNumVertices(), D3DXGetDeclVertexSize(vertex_element, 0)
+	//	, &bounding_sphere_.center, &bounding_sphere_.radius)))
+	//	return E_FAIL;
 
-	ptr_mesh_->UnlockVertexBuffer();
+	//ptr_mesh_->UnlockVertexBuffer();
+
+	bounding_sphere_.center = (bounding_box_.max_ - bounding_box_.min_) * 0.5f;
+	bounding_sphere_.radius = (bounding_box_.max_ - bounding_box_.min_).Length();
 
 	return S_OK;
 }
@@ -94,32 +97,23 @@ HRESULT Engine::CStaticMesh::ComputeBoundingSphere()
 void Engine::CStaticMesh::RenderMesh(LPD3DXEFFECT ptr_effect)
 {
 	ptr_effect->Begin(nullptr, 0);
+	int pass_index = 1;
 	for (DWORD i = 0; i < subset_count_; ++i)
 	{
-		bool is_alpha = CheckAlpha(i, "A");
-
-		int pass_index = 0;
-		if (true == is_alpha)
-			pass_index = 1;
-		else
-			pass_index = 0;
-
-		ptr_effect->BeginPass(pass_index);
-	
 		if(nullptr != pp_color_texture_[i])
-			ptr_effect->SetTexture("g_base_texture", pp_color_texture_[i]);
-		else
-			ptr_effect->SetTexture("g_base_texture", NULL);
+			ptr_effect->SetTexture("g_color_texture", pp_color_texture_[i]);
 
 		if (nullptr != pp_normal_texture_[i])
 			ptr_effect->SetTexture("g_normal_texture", pp_normal_texture_[i]);
 		else
-			ptr_effect->SetTexture("g_normal_texture", NULL);
+			pass_index = 0;
 
-		ptr_effect->SetVector("g_material_diffuse", (Vector4*)&ptr_material_[i].Diffuse);
-		ptr_effect->SetVector("g_material_ambient", &Vector4(1.f, 1.f, 1.f, 1.f));
-		ptr_effect->SetVector("g_material_specular", &Vector4(1.f, 1.f, 1.f, 1.f));
-		ptr_effect->SetFloat("g_light_power", ptr_material_[i].Power);
+		if (nullptr != pp_specular_texture_[i])
+			ptr_effect->SetTexture("g_specular_texture", pp_specular_texture_[i]);
+		else
+			ptr_effect->SetTexture("g_specular_texture", NULL);
+
+		ptr_effect->BeginPass(pass_index);
 		ptr_effect->CommitChanges();
 		ptr_mesh_->DrawSubset(i);
 		ptr_effect->EndPass();
@@ -217,6 +211,9 @@ HRESULT Engine::CStaticMesh::LoadMeshFromFile(const TCHAR * path, const TCHAR * 
 
 	hr = ComputeBoundingBox();
 	assert(!FAILED(hr) && "Static Mesh ComputeBoundingBox Failed");
+
+	hr = ComputeBoundingSphere();
+	assert(!FAILED(hr) && "Static Mesh ComputeBoundingSphere Failed");
 
 	return S_OK;
 }

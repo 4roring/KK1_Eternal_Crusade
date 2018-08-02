@@ -169,6 +169,8 @@
     <ClInclude Include="..\Code\GameObject.h" />
     <ClInclude Include="..\Code\G_Buffer.h" />
     <ClInclude Include="..\Code\Layer.h" />
+    <ClInclude Include="..\Code\Light.h" />
+    <ClInclude Include="..\Code\LightManager.h" />
     <ClInclude Include="..\Code\Loader.h" />
     <ClInclude Include="..\Code\Mesh.h" />
     <ClInclude Include="..\Code\NavCell.h" />
@@ -185,6 +187,7 @@
     <ClInclude Include="..\Code\Texture.h" />
     <ClInclude Include="..\Code\Transform.h" />
     <ClInclude Include="..\Code\VIBuffer.h" />
+    <ClInclude Include="..\Code\ViewTexture.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\AnimController.cpp" />
@@ -200,6 +203,8 @@
     <ClCompile Include="..\Code\GameObject.cpp" />
     <ClCompile Include="..\Code\G_Buffer.cpp" />
     <ClCompile Include="..\Code\Layer.cpp" />
+    <ClCompile Include="..\Code\Light.cpp" />
+    <ClCompile Include="..\Code\LightManager.cpp" />
     <ClCompile Include="..\Code\Loader.cpp" />
     <ClCompile Include="..\Code\Mesh.cpp" />
     <ClCompile Include="..\Code\NavCell.cpp" />
@@ -216,6 +221,7 @@
     <ClCompile Include="..\Code\Texture.cpp" />
     <ClCompile Include="..\Code\Transform.cpp" />
     <ClCompile Include="..\Code\VIBuffer.cpp" />
+    <ClCompile Include="..\Code\ViewTexture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Export\Export_Utility.inl" />

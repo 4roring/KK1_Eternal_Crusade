@@ -250,10 +250,6 @@ void COrk_WarBoss::SetConstantTable(LPD3DXEFFECT ptr_effect)
 	ptr_effect->SetMatrix("g_mat_world", &ptr_lower_transform_->mat_world());
 	ptr_effect->SetMatrix("g_mat_view", &mat_view);
 	ptr_effect->SetMatrix("g_mat_projection", &mat_proj);
-
-	ptr_effect->SetVector("g_light_diffuse", &Vector4(1.f, 1.f, 1.f, 1.f));
-	ptr_effect->SetVector("g_light_ambient", &Vector4(1.f, 1.f, 1.f, 1.f));
-	ptr_effect->SetVector("g_light_dir", &Vector4(0.f, -1.f, 1.f, 0.f));
 }
 
 #ifdef _DEBUG
