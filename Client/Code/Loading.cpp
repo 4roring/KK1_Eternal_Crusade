@@ -19,7 +19,7 @@
 #include "Transform.h"
 
 #include <filesystem>
-namespace FILESYSTEM = std::experimental::filesystem::v1;
+namespace FILESYSTEM = std::experimental::filesystem;
 
 CLoading::CLoading(LOADINGID loading_id, Engine::CScene** pp_scene_)
 	: loading_id_(loading_id), pp_next_scene_(pp_scene_)
@@ -81,8 +81,26 @@ HRESULT CLoading::Stage_Loading()
 			, TEXT("../../Reference/Shader/Deferred/Deferred_StaticMeshShader.hlsl")));
 	assert(hr == S_OK && "Shader_DynamicMesh Component Add Failed");
 
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
+		, TEXT("Shader_Sky")
+		, Engine::CShader::Create(ptr_device_
+			, TEXT("../../Reference/Shader/SkyShader.hlsl")));
+	assert(hr == S_OK && "Shader_DynamicMesh Component Add Failed");
+
+	lstrcpy(loading_message_, TEXT("Texture Loading"));
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("Sky_Texture")
+		, Engine::CTexture::Create(ptr_device_, Engine::TEXTURETYPE::CUBE
+			, TEXT("../bin/Resources/Texture/Skybox/Skybox.dds"), 1));
+
 	// Mesh
 	lstrcpy(loading_message_, TEXT("Mesh Loading"));
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
+		, TEXT("Buffer_Cube")
+		, Engine::CCubeTexture::Create(ptr_device_));
+	assert(!FAILED(hr) && "Buffer_CubeTexture Add Failed");
+
 	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
 		, TEXT("SpaceMarin_Mesh")
 		, Engine::CDynamicMesh::Create(ptr_device_
@@ -104,6 +122,7 @@ HRESULT CLoading::Stage_Loading()
 			, TEXT("Ork_WarBoss.X")));
 	assert(hr == S_OK && "Ork Mesh Add Failed");
 
+
 	//hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
 	//	, TEXT("Tyranid_Mesh")
 	//	, Engine::CDynamicMesh::Create(ptr_device_
@@ -112,6 +131,13 @@ HRESULT CLoading::Stage_Loading()
 	//assert(hr == S_OK && "Tyranid Mesh Add Failed");
 
 	// Weapon
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("ChainSword_Mesh")
+		, Engine::CDynamicMesh::Create(ptr_device_
+			, TEXT("../bin/Resources/Mesh/Weapon/SpaceMarin_ChainSword/")
+			, TEXT("ChainSword.X")));
+	assert(hr == S_OK && "ChainSword_Mesh Add Failed");
+
 	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
 		, TEXT("Gun_Phobos_Mesh")
 		, Engine::CStaticMesh::Create(ptr_device_
@@ -147,10 +173,8 @@ HRESULT CLoading::Stage_Loading()
 			, TEXT("Ork_PowerRippa.X"), MAINTAIN_STAGE));
 	assert(hr == S_OK && "Ork_Sword Mesh Add Failed");
 
-
 	lstrcpy(loading_message_, TEXT("Scene Initializing"));
 	*pp_next_scene_ = CStage::Create(ptr_device_);
-
 
 	lstrcpy(loading_message_, TEXT("Stage Data Loading"));
 	//NavMeshDataLoad(TEXT("../bin/Data/StageData/Test_Nav.dat"));

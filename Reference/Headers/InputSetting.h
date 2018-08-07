@@ -20,4 +20,5 @@ namespace KEY
 	constexpr DWORD Z		= 0x00008000;
 	constexpr DWORD B		= 0x00010000;
 	constexpr DWORD Q		= 0x00020000;
+	constexpr DWORD SPACE	= 0x00040000;
 }

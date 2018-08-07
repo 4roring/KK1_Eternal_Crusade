@@ -5,16 +5,19 @@
 BEGIN(Engine)
 class CDynamicMesh;
 class CAnimController;
+class CCollider;
 END
 
 class CController;
 class CGun_Phobos;
+class CChainSword;
 
 class CSpaceMarin
 	: public Engine::CGameObject
 {
 public:
-	enum class LowerState { Idle, Run, Evade, End };
+	enum class Weapon { Gun, ChainSword, End };
+	enum class LowerState { Idle, Run, Attack, Evade, End };
 	enum class UpperState { Idle, Shoot, Run, Run_Aiming, End };
 	enum class MoveDirection { Forward, Backward, Right, Left, End };
 
@@ -28,12 +31,17 @@ public:
 	Engine::CTransform* ptr_lower_transform();
 	Vector3& GetFirePos() const;
 	int current_cell_index() const;
+	Weapon weapon() const;
+	bool evade() const;
 
 public:
 	void set_move_dir(MoveDirection move_dir);
 	void set_zoom(bool is_zoom);
 	void set_fire(bool is_fire);
 	void set_fire_range_pos(const Vector3& fire_range_pos);
+	void set_weapon();
+	void set_evade_dir(const Vector3& evade_dir);
+	void set_evade(bool is_evade);
 	void SetRay(const Vector3& ray_pos, const Vector3& ray_dir);
 
 private:
@@ -62,9 +70,11 @@ private:
 	void UpdateLowerAnimState();
 	void UpdateUpperAnimState();
 	void Run();
+	void Evade(float delta_time);
 
 private:
 	void Fire();
+	void Attack();
 
 private:
 	void SetConstantTable(LPD3DXEFFECT ptr_effect);
@@ -72,6 +82,10 @@ private:
 private:
 	Engine::CDynamicMesh* ptr_mesh_ = nullptr;
 	Engine::CTransform* ptr_lower_transform_ = nullptr;
+	Engine::CCollider* ptr_head_collider_ = nullptr;
+	const Matrix* ptr_head_matrix_ = nullptr;
+	Engine::CCollider* ptr_body_collider_ = nullptr;
+	const Matrix* ptr_body_matrix_ = nullptr;
 
 private:
 	Engine::CAnimController* ptr_upper_anim_ctrl_ = nullptr;
@@ -84,9 +98,17 @@ private:
 	int control_id_ = -1;
 
 private:
-	Vector3 fire_range_pos_ = Vector3();
+	Vector3 fire_range_pos_ = {};
 	bool zoom_ = false;
 	bool fire_ = false;
+	
+private:
+	Vector3 evade_dir_ = {};
+	bool evade_ = false;
+
+private:
+	float damage_time_ = 0.f;
+	float condition_ = 0.f;
 
 private:
 	float delta_time_ = 0.f;
@@ -96,9 +118,11 @@ private:
 	UpperState next_upper_state_ = UpperState::End;
 	MoveDirection pre_move_dir_ = MoveDirection::End;
 	MoveDirection next_move_dir_ = MoveDirection::End;
+	Weapon weapon_ = Weapon::End;
 
 private:
 	CGun_Phobos* ptr_gun_ = nullptr;
+	CChainSword* ptr_sword_ = nullptr;
 	const Matrix* ptr_hand_matrix_ = nullptr;
 
 private:
@@ -106,6 +130,9 @@ private:
 	Vector3 ray_dir_ = Vector3();
 
 #ifdef _DEBUG
+private:
+	void DebugRender();
+
 private:
 	LPD3DXLINE ptr_line_ = nullptr;
 #endif

@@ -126,7 +126,7 @@ void CTyranid::UpdateAnimState()
 
 void CTyranid::Run()
 {
-	current_cell_index_ = Engine::GameManager()->MoveFromNavMesh(ptr_transform_->position(), ptr_transform_->move_dir(), current_cell_index_, 0);
+	//current_cell_index_ = Engine::GameManager()->MoveFromNavMesh(ptr_transform_->position(), ptr_transform_->move_dir(), current_cell_index_, 0);
 }
 
 void CTyranid::Attack()

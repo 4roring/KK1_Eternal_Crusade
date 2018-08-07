@@ -137,7 +137,7 @@ void Engine::CGameManager::LinkCell()
 	ptr_nav_mesh_agent_->LinkCell();
 }
 
-int Engine::CGameManager::MoveFromNavMesh(Vector3 & pos, const Vector3 & dir, int current_index, int out_pass_fail_option)
+int Engine::CGameManager::MoveFromNavMesh(Vector3 & pos, const Vector3 & dir, int current_index, int& out_pass_fail_option)
 {
 	return ptr_nav_mesh_agent_->MoveFromNavMesh(pos, dir, current_index, out_pass_fail_option);
 }

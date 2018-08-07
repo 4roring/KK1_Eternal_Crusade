@@ -40,6 +40,25 @@ float Engine::CCollider::GetSphereRadius()
 	return ptr_sphere_info_->radius;
 }
 
+void Engine::CCollider::SetWorld(Matrix * ptr_world)
+{
+	switch (type_)
+	{
+	case Collider_AABB:
+		ptr_aabb_info_->ptr_mat_world = ptr_world;
+		break;
+	case Collider_StaticOBB:
+		ptr_static_obb_info_->ptr_mat_world = ptr_world;
+		break;
+	case Collider_DynamicOBB:
+		ptr_dynamic_obb_info_->ptr_mat_world = ptr_world;
+		break;
+	case Collider_Sphere:
+		ptr_sphere_info_->ptr_world = ptr_world;
+		break;
+	}
+}
+
 HRESULT Engine::CCollider::InitCollider(CGameObject * ptr_object, ColliderType coll_type)
 {
 	if (nullptr == ptr_object) return E_FAIL;
@@ -81,7 +100,7 @@ void Engine::CCollider::SetAABBCollider(const Vector3 & _min, const Vector3 & _m
 {
 	ptr_aabb_info_->ptr_mat_world = &ptr_object_->transform()->mat_world();
 	D3DXVec3TransformCoord(&ptr_aabb_info_->min, &_min, ptr_aabb_info_->ptr_mat_world);
-	D3DXVec3TransformCoord(&ptr_aabb_info_->max, &_min, ptr_aabb_info_->ptr_mat_world);
+	D3DXVec3TransformCoord(&ptr_aabb_info_->max, &_max, ptr_aabb_info_->ptr_mat_world);
 	ptr_aabb_info_->ptr_cube = CCubeColor::Create(ptr_device_, _min, _max, D3DXCOLOR(0.f, 1.f, 0.f, 1.f));
 }
 
@@ -108,14 +127,14 @@ void Engine::CCollider::DebugRender()
 	}
 }
 
-bool Engine::CCollider::CollisionCheck(CCollider * ptr_coll)
+bool Engine::CCollider::CollisionCheck(CCollider * ptr_coll, Vector3& dist)
 {
 	if (this == ptr_coll) return false;
 
 	switch (type_)
 	{
 	case Collider_AABB:
-		
+
 		break;
 	case Collider_StaticOBB:
 		
@@ -147,6 +166,50 @@ bool Engine::CCollider::CollisionCheck(CCollider * ptr_coll)
 
 bool Engine::CCollider::TriggerCheck(CCollider * ptr_coll)
 {
+	switch (type_)
+	{
+	case Collider_AABB:
+		switch (ptr_coll->type())
+		{
+		case Collider_AABB:
+			if (true == TriggerSphereToAABB(ptr_coll, this))
+				return true;
+			break;
+		case Collider_StaticOBB:
+
+			break;
+		case Collider_DynamicOBB:
+
+			break;
+		case Collider_Sphere:
+			return true;
+			break;
+		}
+		break;
+	case Collider_StaticOBB:
+		break;
+	case Collider_DynamicOBB:
+		break;
+	case Collider_Sphere:
+		switch (ptr_coll->type())
+		{
+		case Collider_AABB:
+			if (true == TriggerSphereToAABB(this, ptr_coll))
+				return true;
+			break;
+		case Collider_StaticOBB:
+
+			break;
+		case Collider_DynamicOBB:
+
+			break;
+		case Collider_Sphere:
+			if (true == TriggerSphereToSphere(this, ptr_coll))
+				return true;
+			break;
+		}
+		break;
+	}
 	return false;
 }
 
@@ -156,9 +219,8 @@ bool Engine::CCollider::RaycastCheck(const Vector3 & ray_pos, const Vector3 & ra
 	switch (type_)
 	{
 	case Collider_AABB:
-		if (true == CheckRayToBox(ray_pos, ray_dir, out_dist))
-			return true;
-		break;
+		CheckRayToBox(ray_pos, ray_dir, out_dist);
+		return true;
 	case Collider_Sphere:
 		if (true == CheckRayToSphere(ray_pos, ray_dir, out_dist))
 			return true;
@@ -183,6 +245,37 @@ bool Engine::CCollider::CollisionSphereToSphere(CCollider * ptr_src, CCollider *
 	return false;
 }
 
+bool Engine::CCollider::TriggerSphereToSphere(CCollider * ptr_src, CCollider * ptr_dst)
+{
+	const float dist = (ptr_src->ptr_sphere_info_->world_position - ptr_dst->ptr_sphere_info_->world_position).Magnitude();
+	const float radius_sum = ptr_src->ptr_sphere_info_->radius + ptr_dst->ptr_sphere_info_->radius;
+
+	if (dist <= radius_sum)
+		return true;
+
+	return false;
+}
+
+bool Engine::CCollider::TriggerSphereToAABB(CCollider * ptr_sphere_coll, CCollider * ptr_aabb_coll)
+{
+	Vector3 dist;
+
+	SphereCollider* sphere = ptr_sphere_coll->ptr_sphere_info_;
+	const AABBCollider* aabb = ptr_aabb_coll->ptr_aabb_info_;
+
+	dist.x = (sphere->center.x < aabb->min.x) ? aabb->min.x - sphere->center.x : sphere->center.x - aabb->max.x;
+	dist.y = (sphere->center.y < aabb->min.y) ? aabb->min.y - sphere->center.y : sphere->center.y - aabb->max.y;
+	dist.z = (sphere->center.z < aabb->min.z) ? aabb->min.z - sphere->center.z : sphere->center.z - aabb->max.z;
+
+	const float square_dist_length = dist.Magnitude();
+	const float square_radius = sphere->radius * sphere->radius;
+
+	if (square_dist_length > square_radius)
+		return false;
+
+	return true;
+}
+
 bool Engine::CCollider::CheckRayToSphere(const Vector3 & ray_pos, const Vector3 & ray_dir, float * out_dist)
 {
 	Vector3 i = ptr_sphere_info_->world_position - ray_pos;
@@ -204,11 +297,53 @@ bool Engine::CCollider::CheckRayToSphere(const Vector3 & ray_pos, const Vector3 
 	return true;
 }
 
-bool Engine::CCollider::CheckRayToBox(const Vector3 & ray_pos, const Vector3 & ray_dir, float * out_dist)
+void Engine::CCollider::CheckRayToBox(const Vector3 & ray_pos, const Vector3 & ray_dir, float * out_dist)
 {
-	// TODO: 다음에 또는 시간없으면 IntersectTri 노가다.
+	float dist = 99999.f;
+	
+	const Vector3& _min = ptr_aabb_info_->min;
+	const Vector3& _max = ptr_aabb_info_->max;
 
-	return false;
+	const Vector3 point[8] =
+	{
+		{ _min.x, _max.y , _min.z } // left up front
+		, { _max.x, _max.y , _min.z } // right up front
+		, { _max.x, _min.y , _min.z } // right down front
+		, { _min.x, _min.y , _min.z } // left down front
+
+		, { _min.x, _max.y , _max.z } // left up rear
+		, { _max.x, _max.y , _max.z } // right up rear
+		, { _max.x, _min.y , _max.z } // right down rear
+		, { _min.x, _min.y , _max.z } // left down rear
+	};
+
+
+	D3DXIntersectTri(&point[4], &point[0], &point[3], &ray_pos, &ray_dir, nullptr, nullptr, &dist); //-x left up
+	if (dist < *out_dist) *out_dist = dist;
+	D3DXIntersectTri(&point[4], &point[3], &point[7], &ray_pos, &ray_dir, nullptr, nullptr, &dist); //-x right down
+	if (dist < *out_dist) *out_dist = dist;
+	D3DXIntersectTri(&point[1], &point[5], &point[6], &ray_pos, &ray_dir, nullptr, nullptr, &dist); //+x left up
+	if (dist < *out_dist) *out_dist = dist;
+	D3DXIntersectTri(&point[1], &point[6], &point[2], &ray_pos, &ray_dir, nullptr, nullptr, &dist); //+x right down
+	if (dist < *out_dist) *out_dist = dist;
+
+	D3DXIntersectTri(&point[4], &point[5], &point[1], &ray_pos, &ray_dir, nullptr, nullptr, &dist); //+y left up
+	if (dist < *out_dist) *out_dist = dist;
+	D3DXIntersectTri(&point[4], &point[1], &point[0], &ray_pos, &ray_dir, nullptr, nullptr, &dist); //+y right down
+	if (dist < *out_dist) *out_dist = dist;
+	D3DXIntersectTri(&point[3], &point[2], &point[6], &ray_pos, &ray_dir, nullptr, nullptr, &dist); //-y left up
+	if (dist < *out_dist) *out_dist = dist;
+	D3DXIntersectTri(&point[3], &point[6], &point[7], &ray_pos, &ray_dir, nullptr, nullptr, &dist); //-y right down
+	if (dist < *out_dist) *out_dist = dist;
+
+	D3DXIntersectTri(&point[0], &point[1], &point[2], &ray_pos, &ray_dir, nullptr, nullptr, &dist); //-z left up
+	if (dist < *out_dist) *out_dist = dist;
+	D3DXIntersectTri(&point[0], &point[2], &point[3], &ray_pos, &ray_dir, nullptr, nullptr, &dist); //-z right down
+	if (dist < *out_dist) *out_dist = dist;
+	D3DXIntersectTri(&point[7], &point[6], &point[5], &ray_pos, &ray_dir, nullptr, nullptr, &dist); //+z left up
+	if (dist < *out_dist) *out_dist = dist;
+	D3DXIntersectTri(&point[7], &point[5], &point[4], &ray_pos, &ray_dir, nullptr, nullptr, &dist); //+z right down
+	if (dist < *out_dist) *out_dist = dist;
 }
 
 int Engine::CCollider::Release()

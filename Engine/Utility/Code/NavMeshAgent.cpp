@@ -101,7 +101,7 @@ void Engine::CNavMeshAgent::LinkCell()
 	}
 }
 
-int Engine::CNavMeshAgent::MoveFromNavMesh(Vector3 & pos, const Vector3 & dir, int current_index, int out_pass_fail_option)
+int Engine::CNavMeshAgent::MoveFromNavMesh(Vector3 & pos, const Vector3 & dir, int current_index, int& out_pass_fail_option)
 {
 	NEIGHBORID neighbor_id = NEIGHBOR_END;
 	int next_index = current_index;
@@ -120,6 +120,7 @@ int Engine::CNavMeshAgent::MoveFromNavMesh(Vector3 & pos, const Vector3 & dir, i
 				{
 					next_index = ptr_neighbor->index();
 					pos += sliding_dir;
+					out_pass_fail_option = vec_nav_cell_[current_index]->option();
 				}
 				else
 					out_pass_fail_option = vec_nav_cell_[current_index]->option();

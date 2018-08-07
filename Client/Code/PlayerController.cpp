@@ -73,10 +73,13 @@ void CPlayerController::CheckInput(float delta_time)
 	ControlAimPoint(delta_time);
 	ControlZoom(delta_time);
 	ControlAttack(delta_time);
+	ControlEvade(delta_time);
+	ChangeWeapon();
 }
 
 void CPlayerController::ControlMove(float delta_time)
 {
+	if (ptr_ctrl_unit_->evade() == true) return;
 	Vector3 _move_dir = Vector3();
 
 	if (Engine::Input()->GetKey(KEY::W))
@@ -125,6 +128,8 @@ void CPlayerController::ControlAimPoint(float delta_time)
 
 void CPlayerController::ControlZoom(float delta_time)
 {
+	if (ptr_ctrl_unit_->weapon() == CSpaceMarin::Weapon::ChainSword) zoom_ = false;
+
 	constexpr float min_fov_y = 35.f;
 	constexpr float max_fov_y = 60.f;
 	constexpr float zoom_speed = (max_fov_y - min_fov_y) * 2.f;
@@ -162,6 +167,31 @@ void CPlayerController::ControlAttack(float delta_time)
 		}
 		else
 			attack_delay_ -= delta_time;
+	}
+}
+
+void CPlayerController::ControlEvade(float delta_time)
+{
+	if (Engine::Input()->GetKeyDown(KEY::SPACE))
+	{
+		ptr_ctrl_unit_->set_evade(true);
+		if (ptr_ctrl_transform_->move_dir().x == 0.f && ptr_ctrl_transform_->move_dir().z == 0.f)
+		{
+			ptr_ctrl_unit_->set_move_dir(CSpaceMarin::MoveDirection::Right);
+			ptr_ctrl_unit_->set_evade_dir(ptr_ctrl_transform_->Right().Normalize());
+		}
+		else
+			ptr_ctrl_unit_->set_evade_dir(ptr_ctrl_transform_->move_dir().Normalize());
+	}
+}
+
+void CPlayerController::ChangeWeapon()
+{
+	if (Engine::Input()->GetKeyDown(KEY::Q))
+	{
+		if (zoom_ == true)
+			zoom_ = false;
+		ptr_ctrl_unit_->set_weapon();
 	}
 }
 

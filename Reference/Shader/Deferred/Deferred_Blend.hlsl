@@ -35,6 +35,7 @@ vector PS_BLEND(PS_IN ps_in) : COLOR
     color[0] = tex2D(color_sampler, ps_in.texture_uv);
     color[1] = tex2D(shade_sampler, ps_in.texture_uv);
     color[2] = tex2D(specular_sampler, ps_in.texture_uv);
+    color[2].a = 0.f;
 
     return color[0] * color[1] + color[2];
 }
@@ -43,6 +44,12 @@ technique Default_Technique
 {
     pass Blend
     {
+        ZWriteEnable = false;
+
+        AlphaTestEnable = true;
+        AlphaFunc = greater;
+        AlphaRef = 0x00;
+
         VertexShader = NULL;
         PixelShader = compile ps_3_0 PS_BLEND();
     }

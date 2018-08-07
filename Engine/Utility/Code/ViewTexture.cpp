@@ -45,16 +45,16 @@ HRESULT Engine::CViewTexture::InitBuffer(float _x, float _y, float size_x, float
 
 	ptr_vertex_buffer_->Lock(0, 0, (void**)&ptr_vertex, 0);
 
-	ptr_vertex[0].position = Vector4(_x, _y, 0.f, 1.f);
+	ptr_vertex[0].position = Vector4(_x + 0.5f, _y + 0.5f, 0.f, 1.f);
 	ptr_vertex[0].texture_uv = Vector2(0.f, 0.f);
 
-	ptr_vertex[1].position = Vector4(_x + size_x, _y, 0.f, 1.f);
+	ptr_vertex[1].position = Vector4(_x + size_x + 0.5f, _y + 0.5f, 0.f, 1.f);
 	ptr_vertex[1].texture_uv = Vector2(1.f, 0.f);
 
-	ptr_vertex[2].position = Vector4(_x + size_x, _y + size_y, 0.f, 1.f);
+	ptr_vertex[2].position = Vector4(_x + size_x + 0.5f, _y + size_y + 0.5f, 0.f, 1.f);
 	ptr_vertex[2].texture_uv = Vector2(1.f, 1.f);
 
-	ptr_vertex[3].position = Vector4(_x, _y + size_y, 0.f, 1.f);
+	ptr_vertex[3].position = Vector4(_x + 0.5f, _y + size_y + 0.5f, 0.f, 1.f);
 	ptr_vertex[3].texture_uv = Vector2(0.f, 1.f);
 
 	ptr_vertex_buffer_->Unlock();

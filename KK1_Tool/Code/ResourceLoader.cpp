@@ -4,7 +4,7 @@
 
 #include "StaticMesh.h"
 
-namespace FILESYSTEM = std::experimental::filesystem::v1;
+namespace FILESYSTEM = std::experimental::filesystem;
 
 ResourceLoader::ResourceLoader()
 {

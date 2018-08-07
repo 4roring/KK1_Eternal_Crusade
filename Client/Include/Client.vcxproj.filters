@@ -122,6 +122,36 @@
     <Filter Include="02.GameObject\ControlObject\SpaceMarin\ChainSword">
       <UniqueIdentifier>{b6d8d243-4a91-4a31-94d1-169721ed6c0b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Environment\Skybox">
+      <UniqueIdentifier>{c1e8cbc2-8c99-4787-8aae-37d06e7d39ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject\Ork_Weapon\Ork_HeavyGun\HeavyGunBullet">
+      <UniqueIdentifier>{34e68a0f-14b7-477a-b119-5b8d51bd38e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05.EventManager">
+      <UniqueIdentifier>{c2a0f832-825a-41c5-b062-c467e8ca11a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.DataManager">
+      <UniqueIdentifier>{3ee96ef8-1266-4bb3-a169-0358352f36e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.DataManager\Observer">
+      <UniqueIdentifier>{c65f9dde-bff9-4f9f-bb13-3e598aed4376}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.DataManager\Subject">
+      <UniqueIdentifier>{7b9c22c6-69ca-4efb-bd92-b217a38b80b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.DataManager\Subject\EnemySubject">
+      <UniqueIdentifier>{6a632586-18b3-4488-996c-b7a0d3d2c259}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.DataManager\Observer\SpaceMarinObserver">
+      <UniqueIdentifier>{ba3390a9-6eb8-4d36-8820-451d7d4e2aa0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.DataManager\Subject\SpaceMarinSubject">
+      <UniqueIdentifier>{18810c9d-1d03-417e-8c9e-70616e0798c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.DataManager\Observer\EnemyObserver">
+      <UniqueIdentifier>{339bcd43-b09e-4e86-ab65-b10b83fe1fc0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -221,6 +251,18 @@
     <ClInclude Include="..\Code\Ork_Klaw.h">
       <Filter>02.GameObject\ControlObject\Ork_Weapon\Ork_Klaw</Filter>
     </ClInclude>
+    <ClInclude Include="..\Code\Skybox.h">
+      <Filter>02.GameObject\Environment\Skybox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\ChainSword.h">
+      <Filter>02.GameObject\ControlObject\SpaceMarin\ChainSword</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\EventManager.h">
+      <Filter>05.EventManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Observer.h">
+      <Filter>06.DataManager\Observer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -298,6 +340,18 @@
     </ClCompile>
     <ClCompile Include="..\Code\Ork_Klaw.cpp">
       <Filter>02.GameObject\ControlObject\Ork_Weapon\Ork_Klaw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Skybox.cpp">
+      <Filter>02.GameObject\Environment\Skybox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\ChainSword.cpp">
+      <Filter>02.GameObject\ControlObject\SpaceMarin\ChainSword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\EventManager.cpp">
+      <Filter>05.EventManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Observer.cpp">
+      <Filter>06.DataManager\Observer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

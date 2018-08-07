@@ -147,6 +147,13 @@ void Engine::CAnimController::FrameMove(float delta_time)
 	acc_time_ += delta_time;
 }
 
+bool Engine::CAnimController::CheckCurrentAnimationEnd(double end_time)
+{
+	if(period_ - end_time <= GetTrackPosition())
+		return true;
+	return false;
+}
+
 void Engine::CAnimController::Release()
 {
 	Safe_Release(ptr_anim_ctrl_);

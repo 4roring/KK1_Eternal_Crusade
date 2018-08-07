@@ -36,6 +36,8 @@ private:
 	void ControlAimPoint(float delta_time);
 	void ControlZoom(float delta_time);
 	void ControlAttack(float delta_time);
+	void ControlEvade(float delta_time);
+	void ChangeWeapon();
 
 private:
 	void ComputeShootRay(Vector3& ray_pos, Vector3& ray_dir);

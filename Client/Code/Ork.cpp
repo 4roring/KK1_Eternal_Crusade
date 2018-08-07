@@ -372,7 +372,8 @@ void COrk::UpdateUpperAnimState()
 void COrk::Run()
 {
 	if (pre_lower_state_ == LowerState::Down_Dead) return;
-	current_cell_index_ = Engine::GameManager()->MoveFromNavMesh(ptr_transform_->position(), ptr_transform_->move_dir(), current_cell_index_, 0);
+	int option = -1;
+	current_cell_index_ = Engine::GameManager()->MoveFromNavMesh(ptr_transform_->position(), ptr_transform_->move_dir(), current_cell_index_, option);
 }
 
 void COrk::Fire()

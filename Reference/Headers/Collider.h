@@ -22,21 +22,26 @@ public:
 	const Vector3& GetSpherePos();
 	float GetSphereRadius();
 
+public:
+	void SetWorld(Matrix* ptr_world);
+
 private:
 	HRESULT InitCollider(CGameObject* ptr_object, ColliderType coll_type);
 
 public:
 	void DebugRender();
-	bool CollisionCheck(CCollider* ptr_coll);
+	bool CollisionCheck(CCollider* ptr_coll, Vector3& dist);
 	bool TriggerCheck(CCollider* ptr_coll);
 	bool RaycastCheck(const Vector3& ray_pos, const Vector3& ray_dir, float* out_dist);
 
 private:
 	bool CollisionSphereToSphere(CCollider* ptr_src, CCollider* ptr_dst);
+	bool TriggerSphereToSphere(CCollider* ptr_src, CCollider* ptr_dst);
+	bool TriggerSphereToAABB(CCollider* ptr_sphere_coll, CCollider* ptr_aabb_coll);
 
 private:
 	bool CheckRayToSphere(const Vector3& ray_pos, const Vector3& ray_dir, float* out_dist);
-	bool CheckRayToBox(const Vector3& ray_pos, const Vector3& ray_dir, float* out_dist);
+	void CheckRayToBox(const Vector3& ray_pos, const Vector3& ray_dir, float* out_dist);
 
 public:
 	int Release() override;

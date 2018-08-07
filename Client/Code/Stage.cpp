@@ -4,6 +4,7 @@
 #include "Transform.h"
 
 // Game Logic
+#include "Skybox.h"
 #include "SpaceMarin.h"
 
 // Test
@@ -63,12 +64,18 @@ CStage * CStage::Create(LPDIRECT3DDEVICE9 ptr_device)
 
 HRESULT CStage::Add_Environmemt_Layer()
 {
+	Engine::CGameObject* ptr_obj = nullptr;
+	
+	ptr_obj = CSkybox::Create(ptr_device_);
+	assert(nullptr != ptr_obj && "Skybox Create Failed");
+	AddObject(LAYER_ENVIRONMEMT, TEXT("Skybox"), ptr_obj);
+
 	return S_OK;
 }
 
 HRESULT CStage::Add_GameLogic_Layer()
 {
-	Engine::CGameObject* ptr_obj = nullptr;
+	//Engine::CGameObject* ptr_obj = nullptr;
 
 	return S_OK;
 }
@@ -98,14 +105,7 @@ HRESULT CStage::Add_UI_Layer()
 
 HRESULT CStage::Add_Light()
 {
-	D3DLIGHT9 light_info = {};
-	light_info.Type = D3DLIGHT_DIRECTIONAL;
-	light_info.Diffuse = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
-	light_info.Ambient = D3DXCOLOR(0.2f, 0.2f, 0.2f, 0.2f);
-	light_info.Specular = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
-	light_info.Direction = D3DXVECTOR3(0.f, -1.f, 1.f);
 
-	ptr_device_->SetLight(0, &light_info);
 
 	return S_OK;
 }
@@ -113,4 +113,5 @@ HRESULT CStage::Add_Light()
 void CStage::Release()
 {
 	Engine::GameManager()->PrototypeClearances(MAINTAIN_STAGE);
+	Engine::GameManager()->ClearLight();
 }

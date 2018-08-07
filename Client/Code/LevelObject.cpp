@@ -40,13 +40,11 @@ void CLevelObject::LateInit()
 	radius *= ptr_transform_->scale().x;
 	D3DXVec3TransformCoord(&center, &center, &ptr_transform_->mat_world());
 	ptr_sphere_coll_->SetSphereCollider(radius, center);
-
-	Engine::CGameObject::Update(0.f);
 }
 
 void CLevelObject::Update(float delta_time)
 {
-	//Destroy();
+	CollSystem()->AddColliderList(ptr_box_coll_, TAG_MAPOBJECT);
 }
 
 void CLevelObject::LateUpdate()

@@ -63,7 +63,7 @@ public:
 	HRESULT AddNavCell(const Vector3& point_a, const Vector3& point_b, const Vector3& point_c
 		, int index, int option, int link_cell_index);
 	void LinkCell();
-	int MoveFromNavMesh(Vector3& pos, const Vector3& dir, int current_index, int out_pass_fail_option = -1);
+	int MoveFromNavMesh(Vector3& pos, const Vector3& dir, int current_index, int& out_pass_fail_option);
 	int FindCellIndex(const Vector3& pos);
 	void ClearNavCell();
 

@@ -12,6 +12,11 @@ CCollisionSystem::~CCollisionSystem()
 {
 }
 
+const CollList & CCollisionSystem::GetColliderList(OBJECT_TAG tag)
+{
+	return collider_list_[tag];
+}
+
 void CCollisionSystem::AddColliderList(Engine::CCollider * ptr_coll, OBJECT_TAG tag)
 {
 	if (nullptr == ptr_coll) return;
@@ -32,7 +37,16 @@ void CCollisionSystem::SetFrustum(CFrustum * ptr_frustum)
 void CCollisionSystem::CollisionCheck(Engine::CCollider * ptr_coll, OBJECT_TAG target_tag)
 {
 	for (auto& coll : collider_list_[target_tag])
-		ptr_coll->CollisionCheck(coll);
+		ptr_coll->CollisionCheck(coll, Vector3());
+}
+
+void CCollisionSystem::TriggerCheck(Engine::CCollider * ptr_coll, OBJECT_TAG target_tag, std::list<Engine::CCollider*>& obj_list)
+{
+	for (auto& coll : collider_list_[target_tag])
+	{
+		if (true == ptr_coll->TriggerCheck(coll))
+			obj_list.emplace_back(coll);
+	}
 }
 
 bool CCollisionSystem::CollisionCheckToFrustum(Engine::CCollider * ptr_coll)

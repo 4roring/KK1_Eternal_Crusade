@@ -105,6 +105,8 @@ technique Default_Technique
 {
     pass Directional
     {
+        ZWriteEnable = false;
+
         AlphaBlendEnable = true;
         SrcBlend = one;
         DestBlend = one;
@@ -114,6 +116,8 @@ technique Default_Technique
     }
     pass Point
     {
+        ZWriteEnable = false;
+
         AlphaBlendEnable = true;
         SrcBlend = one;
         DestBlend = one;

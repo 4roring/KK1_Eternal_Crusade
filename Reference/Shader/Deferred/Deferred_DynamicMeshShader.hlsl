@@ -117,10 +117,10 @@ struct VS_OUT
 {
 	vector position : POSITION;
 	float2 texture_uv : TEXCOORD0;
-    float3 T : TEXCOORD3;
-    float3 B : TEXCOORD4;
-    float3 N : TEXCOORD5;
-    vector proj_pos : TEXCOORD6;
+    float3 T : TEXCOORD1;
+    float3 B : TEXCOORD2;
+    float3 N : TEXCOORD3;
+    vector proj_pos : TEXCOORD4;
 };
 
 VS_OUT VS_MAIN(VS_IN vs_in)
@@ -160,10 +160,10 @@ VS_OUT VS_MAIN(VS_IN vs_in)
 struct PS_IN
 {
     float2 texture_uv : TEXCOORD0;
-    float3 T : TEXCOORD3;
-    float3 B : TEXCOORD4;
-    float3 N : TEXCOORD5;
-    vector proj_pos : TEXCOORD6;
+    float3 T : TEXCOORD1;
+    float3 B : TEXCOORD2;
+    float3 N : TEXCOORD3;
+    vector proj_pos : TEXCOORD4;
 };
 
 struct PS_OUT
@@ -186,6 +186,7 @@ PS_OUT PS_MAIN(PS_IN ps_in)
     float3 world_normal = mul(TBN, tangent_normal);
  
     ps_out.albedo = tex2D(color_sampler, ps_in.texture_uv);
+    ps_out.albedo.a = 1.f;
     ps_out.normal = vector(world_normal * 0.5f + 0.5f, 0.f);
     ps_out.depth = vector(ps_in.proj_pos.z / ps_in.proj_pos.w, ps_in.proj_pos.w * 0.001f, 0.f, 0.f);
     ps_out.specular = tex2D(specular_sampler, ps_in.texture_uv);
@@ -208,6 +209,7 @@ PS_OUT PS_COLOR_MAIN(PS_IN ps_in)
     albedo = albedo.r * set_color_r + albedo.g + set_color_g + albedo.b + set_color_b;
 
     ps_out.albedo = albedo;
+    ps_out.albedo.a = 1.f;
     ps_out.normal = vector(world_normal * 0.5f + 0.5f, 0.f);
     ps_out.depth = vector(ps_in.proj_pos.z / ps_in.proj_pos.w, ps_in.proj_pos.w * 0.001f, 0.f, 0.f);
     ps_out.specular = tex2D(specular_sampler, ps_in.texture_uv);

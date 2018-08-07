@@ -9,6 +9,11 @@
 
 #include "Ork_Gun.h"
 #include "Ork_HeavyGun.h"
+#include "Ork_Klaw.h"
+
+#include "SpaceMarin.h"
+
+#include "Font.h"
 
 COrk_WarBoss::COrk_WarBoss(LPDIRECT3DDEVICE9 ptr_device)
 	: Engine::CGameObject(ptr_device)
@@ -46,9 +51,15 @@ HRESULT COrk_WarBoss::Initialize()
 	ptr_body_frame_ = ptr_mesh_->FindFrame("joint_TorsoC_01");
 
 	current_cell_index_ = -1;
-	hp_ = 10000;
-	next_behavior_pattern_ = BehaviorPattern::Idle;
+	max_hp_ = 1000;
+	hp_ = max_hp_;
+	next_behavior_pattern_ = BehaviorPattern::Spawn;
+	weapon_ = Weapon::HeavyGun;
+	speed_ = 3.f;
 
+#ifdef _DEBUG
+	ptr_font_ = Engine::GraphicDevice()->GetFont(TEXT("바탕"));
+#endif // _DEBUG
 	return S_OK;
 }
 
@@ -60,7 +71,14 @@ void COrk_WarBoss::LateInit()
 	if (current_cell_index_ == -1)
 		current_cell_index_ = Engine::GameManager()->FindCellIndex(ptr_transform_->position());
 
+	//ptr_heavy_gun_->SetActive(false);
+
 	ptr_gun_->SetActive(false);
+	ptr_klaw_->SetActive(false);
+	ptr_skill_collider_->SetSphereCollider(5.f, Vector3());
+
+	ptr_target_ = dynamic_cast<CSpaceMarin*>(Engine::GameManager()->FindObject(MAINTAIN_STAGE, TEXT("SpaceMarin_1")));
+
 
 #ifdef _DEBUG
 	D3DXCreateLine(ptr_device_, &ptr_line_);
@@ -78,12 +96,20 @@ void COrk_WarBoss::Update(float delta_time)
 
 	UpdateState(delta_time);
 	Engine::CGameObject::Update(delta_time);
+
+	CollSystem()->AddRaycastList(ptr_body_collider_, TAG_ENEMY);
+	CollSystem()->AddRaycastList(ptr_head_collider_, TAG_ENEMY);
+	CollSystem()->AddColliderList(ptr_body_collider_, TAG_ENEMY);
+
+	if (damage_delay_ > 0.f) damage_delay_ -= delta_time;
 }
 
 void COrk_WarBoss::LateUpdate()
 {
 	Engine::GameManager()->AddRenderLayer(Engine::RENDERLAYER::LAYER_NONEALPHA, this);
 
+	// Heavy에 Attack 상태라면 몸에 구와 플레이어의 충돌 체크 후 데미지 주기.
+	DamageChangeState();
 	UpdateAnimState();
 }
 
@@ -92,14 +118,15 @@ void COrk_WarBoss::Render()
 	LPD3DXEFFECT ptr_effect = ptr_shader_->GetEffectHandle();
 	SetConstantTable(ptr_effect);
 
-	Matrix mat_upper_rot_x;
-	D3DXMatrixRotationAxis(&mat_upper_rot_x, &Vector3(-1.f, 0.f, 0.f), ptr_transform_->rotation().x);
+	Matrix mat_upper_rot_y;
+	D3DXMatrixRotationAxis(&mat_upper_rot_y, &Vector3(0.f, 0.f, -1.f), upper_shoot_rot_y_);
 
-	ptr_mesh_->FrameMove(anim_time_, ptr_lower_anim_ctrl_, ptr_upper_start_frame_, &mat_upper_rot_x);
+	ptr_mesh_->FrameMove(anim_time_, ptr_lower_anim_ctrl_, ptr_upper_start_frame_, &mat_upper_rot_y);
 	ptr_mesh_->FrameMove(anim_time_, ptr_upper_anim_ctrl_, ptr_upper_start_frame_);
 
 	ptr_gun_->SetHandMatrix(ptr_left_hand_matrix_);
 	ptr_heavy_gun_->SetBackMatrix(ptr_back_matrix_);
+	ptr_klaw_->SetHandMatrix(ptr_right_hand_matrix_);
 	ptr_head_collider_->SetSphereCollider(0.4f, *(Vector3*)&ptr_head_frame_->combined_matrix.m[3][0]);
 	ptr_body_collider_->SetSphereCollider(0.7f, *(Vector3*)&ptr_body_frame_->combined_matrix.m[3][0]);
 
@@ -108,15 +135,16 @@ void COrk_WarBoss::Render()
 #ifdef _DEBUG
 	DebugRender();
 #endif // _DEBUG
-
 }
 
 void COrk_WarBoss::ApplyDamage(int damage)
 {
-	hp_ -= damage;
+	if (next_behavior_pattern_ == BehaviorPattern::Down) return;
+	
+	if (damage_delay_ <= 0.f)
+		hp_ -= damage;	
 
-	if (hp_ <= 50)
-		next_behavior_pattern_ = BehaviorPattern::Down;
+	if (damage_delay_ <= 0.f && damage == 100) damage_delay_ = 0.6f;
 }
 
 COrk_WarBoss * COrk_WarBoss::Create(LPDIRECT3DDEVICE9 ptr_device)
@@ -139,7 +167,6 @@ HRESULT COrk_WarBoss::AddComponent()
 	assert(hr == S_OK && "Tranform Component ReadyComponent Failed");
 	hr = Ready_Component(MAINTAIN_STATIC, TEXT("Component_Transform"), TEXT("Lower_Transform"), ptr_lower_transform_);
 	assert(hr == S_OK && "Tranform Component ReadyComponent Failed");
-
 	hr = Ready_Component(MAINTAIN_STATIC, TEXT("Shader_DynamicMesh"), TEXT("Shader"), ptr_shader_);
 	assert(hr == S_OK && "Ork Shader_DynamicMesh ReadyComponent Failed");
 
@@ -156,9 +183,9 @@ HRESULT COrk_WarBoss::AddComponent()
 	// Collider
 	ptr_head_collider_ = Engine::CCollider::Create(ptr_device_, this, Collider_Sphere);
 	ptr_body_collider_ = Engine::CCollider::Create(ptr_device_, this, Collider_Sphere);
+	ptr_skill_collider_ = Engine::CCollider::Create(ptr_device_, this, Collider_Sphere);
 
 	return S_OK;
-
 }
 
 HRESULT COrk_WarBoss::AddWeapon()
@@ -176,6 +203,12 @@ HRESULT COrk_WarBoss::AddWeapon()
 	ptr_heavy_gun_->SetParentMatrix(&ptr_lower_transform_->mat_world());
 	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, TEXT("WarBoss_HeavyGun"), ptr_heavy_gun_);
 
+	ptr_klaw_ = COrk_Klaw::Create(ptr_device_);
+	ptr_right_hand_matrix_ = ptr_mesh_->FindFrameMatrix("joint_WeaponRT_01");
+	if (nullptr == ptr_right_hand_matrix_) return E_FAIL;
+	ptr_klaw_->SetParentMatrix(&ptr_lower_transform_->mat_world());
+	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, TEXT("WarBoss_Klaw"), ptr_klaw_);
+
 	return S_OK;
 }
 
@@ -186,38 +219,109 @@ void COrk_WarBoss::Release()
 
 	Engine::Safe_Release_Delete(ptr_head_collider_);
 	Engine::Safe_Release_Delete(ptr_body_collider_);
+	Engine::Safe_Release_Delete(ptr_skill_collider_);
 
 #ifdef _DEBUG
 	Engine::Safe_Release(ptr_line_);
 #endif
-
 }
 
 void COrk_WarBoss::UpdateState(float delta_time)
 {
+	const float mind_time = (hp_ > (max_hp_ >> 2)) ? 2.f : 1.f;
+
 	switch (pre_behavior_pattern_)
 	{
 	case BehaviorPattern::Spawn:
+		if (condition_ == 0.f && ptr_upper_anim_ctrl_->CheckCurrentAnimationEnd(0.1))
+		{
+			++condition_;
+			ptr_upper_anim_ctrl_->SetAnimationTrack("Spawn_2");
+			ptr_lower_anim_ctrl_->SetAnimationTrack("Spawn_2");
+		}
+		
+		if (condition_ == 1.f && ptr_upper_anim_ctrl_->CheckCurrentAnimationEnd(0.1))
+		{
+			condition_ = 0.f;
+			next_behavior_pattern_ = BehaviorPattern::Idle;
+		}
 		break;
 	case BehaviorPattern::Idle:
-
+		// 다음 패턴 고민
+		condition_ += delta_time;
+		if (condition_ > mind_time)
+		{
+			condition_ = 0.f;
+			if (weapon_ == Weapon::HeavyGun)
+				HeavyIdle();
+			else if (weapon_ == Weapon::Klaw)
+				KlawIdle();
+		}
 		break;
 	case BehaviorPattern::Shoot:
+		// Heavy - 플레이어에게 접근하면서 사격
+		// Klaw - 사격하면서 플레이어 주변을 맴돌기
+		if (weapon_ == Weapon::HeavyGun)
+			HeavyShoot(delta_time);
+		else if (weapon_ == Weapon::Klaw)
+			KlawShoot(delta_time);
 		break;
 	case BehaviorPattern::Attack:
+		// Heavy - 돌진
+		// Klaw - 사격하면서 접근 후 2회 근접 공격
+		if (weapon_ == Weapon::HeavyGun)
+			HeavyAttack(delta_time);
+		else if (weapon_ == Weapon::Klaw)
+			MoveForKlawAttack(delta_time);
 		break;
-	case BehaviorPattern::Ground_Attack:
-		break;
-	case BehaviorPattern::Skill:
+	case BehaviorPattern::BastionOfDestruction:
+		// Klaw만, 파멸의 일격
+		BastionOfDestruction(delta_time);
 		break;
 	case BehaviorPattern::Down:
+		// 다운 상태. 플레이어에게 Execution 당하기 전. 루프
+		Down();
 		break;
 	case BehaviorPattern::Victim:
+		// 다운 상태. 플레이어에게 Execution 당하고 사망
+		if (ptr_upper_anim_ctrl_->CheckCurrentAnimationEnd(0.1))
+			anim_time_ = 0.f;
 		break;
 	case BehaviorPattern::End:
 		break;
 	default:
 		break;
+	}
+}
+
+void COrk_WarBoss::DamageChangeState()
+{
+	if (hp_ <= (max_hp_ >> 1) && weapon_ == Weapon::HeavyGun)
+	{
+		weapon_ = Weapon::Klaw;
+		ptr_heavy_gun_->SetActive(false);
+		ptr_gun_->SetActive(true);
+		ptr_klaw_->SetActive(true);
+
+		next_behavior_pattern_ = BehaviorPattern::Spawn;
+		condition_ = 0.f;
+
+		upper_shoot_rot_y_ = 0.f;
+		speed_ = 5.f;
+	}
+	else if (false == first_skill_ && hp_ < (max_hp_ >> 3))
+	{
+		next_behavior_pattern_ = BehaviorPattern::BastionOfDestruction;
+		first_skill_ = true;
+		condition_ = 0.f;
+	}
+	else if (hp_ <= 0)
+	{
+		ptr_gun_->SetActive(false);
+		ptr_klaw_->SetActive(false);
+
+		next_behavior_pattern_ = BehaviorPattern::Down;
+		condition_ = 0.f;
 	}
 }
 
@@ -228,24 +332,56 @@ void COrk_WarBoss::UpdateAnimState()
 		switch (next_behavior_pattern_)
 		{
 		case BehaviorPattern::Spawn:
+			ptr_upper_anim_ctrl_->SetAnimationTrack("Spawn_1");
+			ptr_lower_anim_ctrl_->SetAnimationTrack("Spawn_1");
 			break;
 		case BehaviorPattern::Idle:
-			ptr_upper_anim_ctrl_->SetAnimationTrack("Heavy_Idle");
-			ptr_lower_anim_ctrl_->SetAnimationTrack("Heavy_Idle");
+			if (weapon_ == Weapon::HeavyGun)
+			{
+				ptr_upper_anim_ctrl_->SetAnimationTrack("Heavy_Idle");
+				ptr_lower_anim_ctrl_->SetAnimationTrack("Heavy_Idle");
+			}
+			else if (weapon_ == Weapon::Klaw)
+			{
+				ptr_upper_anim_ctrl_->SetAnimationTrack("Klaw_Idle");
+				ptr_lower_anim_ctrl_->SetAnimationTrack("Klaw_Idle");
+			} 
 			break;
 		case BehaviorPattern::Shoot:
+			if (weapon_ == Weapon::HeavyGun)
+			{
+				ptr_upper_anim_ctrl_->SetAnimationTrack("Heavy_Walk_Forward");
+				ptr_lower_anim_ctrl_->SetAnimationTrack("Heavy_Walk_Forward");
+			}
+			else if (weapon_ == Weapon::Klaw)
+			{
+				ptr_upper_anim_ctrl_->SetAnimationTrack("Klaw_Run_Aim");
+				ptr_lower_anim_ctrl_->SetAnimationTrack("Klaw_Run");
+			}
 			break;
 		case BehaviorPattern::Attack:
-			ptr_upper_anim_ctrl_->SetAnimationTrack("Heavy_Sprint");
-			ptr_lower_anim_ctrl_->SetAnimationTrack("Heavy_Sprint");
+			if (weapon_ == Weapon::HeavyGun)
+			{
+				ptr_upper_anim_ctrl_->SetAnimationTrack("Heavy_Sprint");
+				ptr_lower_anim_ctrl_->SetAnimationTrack("Heavy_Sprint");
+			}
+			else if (weapon_ == Weapon::Klaw)
+			{
+				ptr_upper_anim_ctrl_->SetAnimationTrack("Klaw_Run_Aim");
+				ptr_lower_anim_ctrl_->SetAnimationTrack("Klaw_Run");
+			}
 			break;
-		case BehaviorPattern::Ground_Attack:
-			break;
-		case BehaviorPattern::Skill:
+		case BehaviorPattern::BastionOfDestruction:
+			ptr_upper_anim_ctrl_->SetAnimationTrack("Klaw_Ground_Attack_Start");
+			ptr_lower_anim_ctrl_->SetAnimationTrack("Klaw_Ground_Attack_Start");
 			break;
 		case BehaviorPattern::Down:
+			ptr_upper_anim_ctrl_->SetAnimationTrack("Down_In");
+			ptr_lower_anim_ctrl_->SetAnimationTrack("Down_In");
 			break;
 		case BehaviorPattern::Victim:
+			ptr_upper_anim_ctrl_->SetAnimationTrack("Down_Victim");
+			ptr_lower_anim_ctrl_->SetAnimationTrack("Down_Victim");
 			break;
 		case BehaviorPattern::End:
 			break;
@@ -268,6 +404,275 @@ void COrk_WarBoss::SetConstantTable(LPD3DXEFFECT ptr_effect)
 	ptr_effect->SetMatrix("g_mat_world", &ptr_lower_transform_->mat_world());
 	ptr_effect->SetMatrix("g_mat_view", &mat_view);
 	ptr_effect->SetMatrix("g_mat_projection", &mat_proj);
+}
+
+void COrk_WarBoss::HeavyIdle()
+{
+	constexpr float square_dist_ = 10.f * 10.f;
+	const float square_target_dist = (ptr_target_->transform()->position() - ptr_transform_->position()).Magnitude();
+
+	condition_ = (float)random_range(0, 5);
+
+	if (square_target_dist > square_dist_)
+		next_behavior_pattern_ = (condition_ <= 3.f) ? BehaviorPattern::Shoot : BehaviorPattern::Attack;
+	else
+		next_behavior_pattern_ = (condition_ <= 3.f) ? BehaviorPattern::Attack : BehaviorPattern::Shoot;
+
+	condition_ = 0.f;
+}
+void COrk_WarBoss::KlawIdle()
+{
+	condition_ = (float)random_range(0, 7);
+
+	if (condition_ <= 3.f)
+		next_behavior_pattern_ = BehaviorPattern::Shoot;
+	else if (condition_ <= 5.f)
+		next_behavior_pattern_ = BehaviorPattern::Attack;
+	else if (hp_ < (max_hp_ >> 3) && condition_ <= 7.f)
+		next_behavior_pattern_ = BehaviorPattern::BastionOfDestruction;
+
+	condition_ = 0.f;
+}
+
+void COrk_WarBoss::HeavyShoot(float delta_time)
+{
+	if (condition_ == 0.f)
+	{
+		ptr_transform_->LookAt(ptr_target_->transform()->position());
+		lower_shoot_rot_y_ = ptr_transform_->rotation().y;
+		upper_shoot_rot_y_ = D3DXToRadian(60.f);
+	}
+
+	upper_shoot_rot_y_ += ((int)condition_ & 1) ? D3DXToRadian(120.f) * delta_time : D3DXToRadian(-120.f) * delta_time;
+	ptr_lower_transform_->rotation() = Vector3(0.f, lower_shoot_rot_y_, 0.f);
+	
+	anim_time_ *= 0.5f;
+	Vector3 move_dir = ptr_lower_transform_->Forward().Normalize();
+	int option = -1;
+	ptr_transform_->move_dir() = move_dir * speed_ * 0.5f * delta_time;
+	current_cell_index_ = Engine::GameManager()->MoveFromNavMesh(ptr_transform_->position(), ptr_transform_->move_dir(), current_cell_index_, option);
+
+	condition_ += delta_time;
+	if (condition_ >= 5.f)
+	{
+		upper_shoot_rot_y_ = 0.f;
+		condition_ = 0.f;
+		ptr_transform_->LookAt(ptr_target_->transform()->position());
+		next_behavior_pattern_ = BehaviorPattern::Idle;
+	}
+}
+
+void COrk_WarBoss::KlawShoot(float delta_time)
+{
+	constexpr float square_dist = 10.f * 10.f;
+	const float square_target_dist = (ptr_target_->transform()->position() - ptr_transform_->position()).Magnitude();
+
+	ptr_transform_->LookAt(ptr_target_->transform()->position());
+
+	Vector3 right_vector = ((int)condition_ & 1) ? ptr_lower_transform_->Right().Normalize() : (ptr_lower_transform_->Right() * -1.f).Normalize();
+	ptr_transform_->move_dir() = right_vector * speed_ * delta_time;
+	
+	if (square_target_dist > square_dist)
+	{
+		Vector3 forward_vector = ptr_lower_transform_->Forward().Normalize();
+		ptr_transform_->move_dir() += forward_vector * speed_ * 0.5f * delta_time;
+	}
+
+	int option = -1;
+	current_cell_index_ = Engine::GameManager()->MoveFromNavMesh(ptr_transform_->position(), ptr_transform_->move_dir(), current_cell_index_, option);
+
+	condition_ += delta_time * 0.5f;
+
+	if (condition_ >= 3.f)
+	{
+		upper_shoot_rot_y_ = 0.f;
+		condition_ = 0.f;
+		ptr_transform_->LookAt(ptr_target_->transform()->position());
+		next_behavior_pattern_ = BehaviorPattern::Idle;
+	}
+}
+
+void COrk_WarBoss::HeavyAttack(float delta_time)
+{
+	if (condition_ == 0.f)
+	{
+		++condition_;
+		ptr_transform_->LookAt(ptr_target_->transform()->position());
+	}
+
+	Vector3 move_dir = ptr_transform_->Forward().Normalize();
+	int option = -1;
+	ptr_transform_->move_dir() = move_dir * speed_ * speed_ * delta_time;
+	current_cell_index_ = Engine::GameManager()->MoveFromNavMesh(ptr_transform_->position(), ptr_transform_->move_dir(), current_cell_index_, option);
+	
+	if(current_cell_index_ == 223)
+		next_behavior_pattern_ = BehaviorPattern::Shoot;
+
+	if (option != -1 && ++condition_ > 3.f)
+	{
+		next_behavior_pattern_ = BehaviorPattern::Idle;
+		condition_ = 0.f;
+	}
+}
+
+void COrk_WarBoss::MoveForKlawAttack(float delta_time)
+{
+	constexpr float square_dist = 7.f * 7.f;
+	const float square_target_dist = (ptr_target_->transform()->position() - ptr_transform_->position()).Magnitude();
+
+	if (condition_ <= 1.f && true == path_.empty())
+	{
+		if (condition_ == 0.f)
+		{
+			ptr_upper_anim_ctrl_->SetAnimationTrack("Klaw_Run_Aim");
+			++condition_;
+		}
+
+		ptr_transform_->LookAt(ptr_target_->transform()->position());
+
+		Vector3 move_dir = ptr_transform_->Forward().Normalize();
+		int option = -1;
+		ptr_transform_->move_dir() = move_dir * speed_ * delta_time;
+		current_cell_index_ = Engine::GameManager()->MoveFromNavMesh(ptr_transform_->position(), ptr_transform_->move_dir(), current_cell_index_, option);
+	
+		if (option != -1)
+		{
+			Engine::GameManager()->PathFinder(current_cell_index_, ptr_target_->current_cell_index(), path_);
+			condition_ = 0.f;
+		}
+	}
+	else if(condition_ <= 1.f)
+	{
+		if (condition_ == 0.f)
+		{
+			ptr_upper_anim_ctrl_->SetAnimationTrack("Klaw_Run");
+			++condition_;
+		}
+
+		constexpr float square_path_end_dist = 3.f * 3.f;
+		const float next_path_dist = (path_.back() - ptr_transform_->position()).Magnitude();
+
+		ptr_transform_->LookAt(path_.back());
+
+		Vector3 move_dir = ptr_transform_->Forward().Normalize();
+		int option = -1;
+		ptr_transform_->move_dir() = move_dir * speed_ * delta_time;
+		current_cell_index_ = Engine::GameManager()->MoveFromNavMesh(ptr_transform_->position(), ptr_transform_->move_dir(), current_cell_index_, option);
+
+		if (next_path_dist < square_path_end_dist)
+		{
+			if (false == path_.empty())
+				path_.pop_back();
+			else
+				condition_ = 0.f;
+		}
+	}
+	
+	if (square_target_dist < square_dist)
+	{
+		if (condition_ <= 1.f)
+			condition_ = 2.f;
+		
+		KlawAttack(delta_time);
+	}
+}
+void COrk_WarBoss::KlawAttack(float delta_time)
+{
+	anim_time_ *= 0.7f;
+
+	if (condition_ == 2.f)
+	{
+		++condition_;
+		ptr_transform_->LookAt(ptr_target_->transform()->position());
+		ptr_upper_anim_ctrl_->SetAnimationTrack("Klaw_Attack1");
+		ptr_lower_anim_ctrl_->SetAnimationTrack("Klaw_Attack1");
+	}
+	else if (condition_ == 3.f && true == ptr_upper_anim_ctrl_->CheckCurrentAnimationEnd(0.1))
+	{
+		++condition_;
+		ptr_transform_->LookAt(ptr_target_->transform()->position());
+		ptr_upper_anim_ctrl_->SetAnimationTrack("Klaw_Attack2");
+		ptr_lower_anim_ctrl_->SetAnimationTrack("Klaw_Attack2");
+	}
+	else if (condition_ == 4.f && true == ptr_upper_anim_ctrl_->CheckCurrentAnimationEnd(0.1))
+	{
+		next_behavior_pattern_ = BehaviorPattern::Idle;
+		condition_ = 0.f;
+	}
+
+	if (false == ptr_upper_anim_ctrl_->CheckCurrentAnimationEnd(0.4))
+	{
+		Vector3 move_dir = ptr_transform_->Forward().Normalize();
+		int option = -1;
+		ptr_transform_->move_dir() = move_dir * (speed_ * 2.f) * delta_time;
+		current_cell_index_ = Engine::GameManager()->MoveFromNavMesh(ptr_transform_->position(), ptr_transform_->move_dir(), current_cell_index_, option);
+	}
+}
+
+void COrk_WarBoss::BastionOfDestruction(float delta_time)
+{
+	if (condition_ == 0.f)
+	{
+		anim_time_ *= 0.5f;
+		if (true == ptr_upper_anim_ctrl_->CheckCurrentAnimationEnd(0.1))
+		{
+			ptr_upper_anim_ctrl_->SetAnimationTrack("Klaw_Ground_Attack_Loop");
+			ptr_lower_anim_ctrl_->SetAnimationTrack("Klaw_Ground_Attack_Loop");
+			++condition_;
+		}
+	}
+	else if (condition_ == 1.f)
+	{
+		skill_pos_y_ += 50.f * delta_time;
+		ptr_transform_->LookAt(ptr_target_->transform()->position());
+		Vector3 move_dir = ptr_transform_->Forward().Normalize();
+		int option = -1;
+		ptr_transform_->move_dir() = move_dir * (speed_ * 0.5f) * delta_time;
+		current_cell_index_ = Engine::GameManager()->MoveFromNavMesh(ptr_transform_->position(), ptr_transform_->move_dir(), current_cell_index_, option);
+		if (skill_pos_y_ > 500.f)
+		{
+			skill_pos_y_ = 500.f;
+			++condition_;
+		}
+	}
+	else if (condition_ == 2.f)
+	{
+		skill_pos_y_ -= 500.f * delta_time;
+		if (skill_pos_y_ < 0.f)
+		{
+			skill_pos_y_ = 0.f;
+			++condition_;
+			ptr_upper_anim_ctrl_->SetAnimationTrack("Klaw_Ground_Attack_End");
+			ptr_lower_anim_ctrl_->SetAnimationTrack("Klaw_Ground_Attack_End");
+		}
+	}
+	else if (condition_ == 3.f)
+	{
+		if (true == ptr_upper_anim_ctrl_->CheckCurrentAnimationEnd(0.1))
+		{
+			next_behavior_pattern_ = BehaviorPattern::Idle;
+			condition_ = 0.f;
+		}
+	}
+	ptr_transform_->position().y = skill_pos_y_;
+	ptr_skill_collider_->SetSphereCollider(5.f, Vector3());
+}
+
+void COrk_WarBoss::Down()
+{
+	if (condition_ == 0.f && true == ptr_upper_anim_ctrl_->CheckCurrentAnimationEnd(0.1))
+	{
+		++condition_;
+		ptr_upper_anim_ctrl_->SetAnimationTrack("Down_Loop");
+		ptr_lower_anim_ctrl_->SetAnimationTrack("Down_Loop");
+	}
+
+}
+void COrk_WarBoss::Victim()
+{
+}
+void COrk_WarBoss::Fire()
+{
 }
 
 #ifdef _DEBUG
@@ -294,6 +699,15 @@ void COrk_WarBoss::DebugRender()
 	ptr_body_collider_->DebugRender();
 	ptr_debug_shader_->EndShader();
 
+	mat_coll._41 = ptr_skill_collider_->GetSpherePos().x;
+	mat_coll._42 = ptr_skill_collider_->GetSpherePos().y;
+	mat_coll._43 = ptr_skill_collider_->GetSpherePos().z;
+	ptr_effect->SetMatrix("g_mat_world", &mat_coll);
+
+	ptr_debug_shader_->BegineShader(1);
+	ptr_skill_collider_->DebugRender();
+	ptr_debug_shader_->EndShader();
+
 	//Matrix mat_view, mat_proj;
 	//ptr_device_->GetTransform(D3DTS_VIEW, &mat_view);
 	//ptr_device_->GetTransform(D3DTS_PROJECTION, &mat_proj);
@@ -315,6 +729,8 @@ void COrk_WarBoss::DebugRender()
 
 	//ptr_line_->End();
 
+	TCHAR hp[128] = {};
+	wsprintf(hp, TEXT("OrkWarBoss HP: %d"), hp_);
+	ptr_font_->Render(hp, D3DXCOLOR(1.f, 1.f, 1.f, 1.f), Vector3(float(kWinCx >> 1), 10.f, 0.f));
 }
-#endif // _DEBUG
-
+#endif

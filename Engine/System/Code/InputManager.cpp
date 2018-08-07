@@ -144,6 +144,9 @@ void Engine::CInputManager::SetInputState()
 
 	if (GetDIKeyState(DIK_Z) & 0x80)
 		input_state_ |= KEY::Z;
+
+	if (GetDIKeyState(DIK_SPACE) & 0x80)
+		input_state_ |= KEY::SPACE;
 }
 
 HRESULT Engine::CInputManager::InitKeyBoard(HWND hwnd)

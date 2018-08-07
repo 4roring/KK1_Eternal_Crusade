@@ -28,6 +28,9 @@ public:
 	void SetMaxAnimSet();
 	void FrameMove(float delta_time);
 
+public:
+	bool CheckCurrentAnimationEnd(double end_time);
+
 private:
 	void Release();
 
