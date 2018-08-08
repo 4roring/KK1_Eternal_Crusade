@@ -47,6 +47,11 @@ bool CSpaceMarin::evade() const
 	return evade_;
 }
 
+bool CSpaceMarin::execution() const
+{
+	return execution_;
+}
+
 void CSpaceMarin::set_move_dir(MoveDirection move_dir)
 {
 	next_move_dir_ = move_dir;
@@ -96,6 +101,16 @@ void CSpaceMarin::set_evade_dir(const Vector3 & evade_dir)
 void CSpaceMarin::set_evade(bool is_evade)
 {
 	evade_ = is_evade;
+}
+
+void CSpaceMarin::set_execution()
+{
+	execution_ = true;
+}
+
+void CSpaceMarin::set_execution_target(const Vector3 & target_pos)
+{
+	execution_target_ = target_pos;
 }
 
 void CSpaceMarin::SetRay(const Vector3 & ray_pos, const Vector3 & ray_dir)
@@ -183,6 +198,12 @@ void CSpaceMarin::LateUpdate()
 		next_lower_state_ = LowerState::Evade;
 		next_upper_state_ = UpperState::End;
 	}
+
+	if (true == execution_)
+	{
+		next_lower_state_ = LowerState::Execution;
+		next_upper_state_ = UpperState::End;
+	}
 }
 
 void CSpaceMarin::Render()
@@ -256,6 +277,8 @@ HRESULT CSpaceMarin::AddComponent()
 
 	ptr_head_collider_ = Engine::CCollider::Create(ptr_device_, this, Collider_Sphere);
 	ptr_body_collider_ = Engine::CCollider::Create(ptr_device_, this, Collider_Sphere);
+
+	Subject()->SetSpaceMarinData(&shield_, &hp_, &current_cell_index_, control_id_);
 
 #ifdef _DEBUG
 	hr = Ready_Component(MAINTAIN_STATIC, TEXT("Shader_Default"), TEXT("Debug_Shader"), ptr_debug_shader_);
@@ -334,6 +357,29 @@ void CSpaceMarin::UpdateState(float delta_time)
 			ptr_sword_->ptr_sphere_coll()->enable_ = false;
 		}
 		break;
+	case LowerState::Execution:
+		ptr_gun_->SetActive(false);
+		ptr_sword_->SetActive(true);
+		weapon_ = Weapon::ChainSword;
+		fire_ = false;
+		evade_ = false;
+		ptr_transform_->LookAt(execution_target_);
+
+		if (true == ptr_lower_anim_ctrl_->CheckCurrentAnimationEnd(1.9))
+			ptr_sword_->transform()->rotation().z = D3DXToRadian(100.f);
+		else if (true == ptr_lower_anim_ctrl_->CheckCurrentAnimationEnd(2.7))
+			ptr_sword_->transform()->rotation().z = D3DXToRadian(280.f);
+
+		if (true == ptr_lower_anim_ctrl_->CheckCurrentAnimationEnd(0.1))
+		{
+			next_lower_state_ = LowerState::Idle;
+			next_upper_state_ = UpperState::Idle;
+			condition_ = 0.f;
+			ptr_sword_->ptr_sphere_coll()->enable_ = false;
+			execution_ = false;
+			//ptr_sword_->transform()->rotation().z = D3DXToRadian(100.f);
+		}
+		break;
 	}
 }
 
@@ -370,6 +416,10 @@ void CSpaceMarin::UpdateLowerAnimState()
 				ptr_lower_anim_ctrl_->SetAnimationTrack("Evade_Left");
 				break;
 			}
+			break;
+		case LowerState::Execution:
+			ptr_upper_anim_ctrl_->SetAnimationTrack("Execution");
+			ptr_lower_anim_ctrl_->SetAnimationTrack("Execution");
 			break;
 		}
 		ptr_lower_anim_ctrl_->SetTrackPosition(0.0);
@@ -447,6 +497,12 @@ void CSpaceMarin::Evade(float delta_time)
 {
 	int option = -1;
 	current_cell_index_ = Engine::GameManager()->MoveFromNavMesh(ptr_transform_->position(), evade_dir_ * 7.f * delta_time, current_cell_index_, option);
+}
+
+void CSpaceMarin::Execution()
+{
+	fire_ = false;
+	evade_ = false;
 }
 
 void CSpaceMarin::Fire()

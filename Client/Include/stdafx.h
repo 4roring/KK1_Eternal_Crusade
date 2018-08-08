@@ -22,5 +22,6 @@
 #include "Export_Function.h"
 #include "Include.h"
 #include "CollisionSystem.h"
+#include "Subject.h"
 
 

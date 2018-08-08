@@ -57,6 +57,9 @@ HRESULT COrk_WarBoss::Initialize()
 	weapon_ = Weapon::HeavyGun;
 	speed_ = 3.f;
 
+	Subject()->SetBossHp(&hp_);
+	Subject()->SetBossPosition(&ptr_transform_->position());
+
 #ifdef _DEBUG
 	ptr_font_ = Engine::GraphicDevice()->GetFont(TEXT("바탕"));
 #endif // _DEBUG
@@ -71,20 +74,16 @@ void COrk_WarBoss::LateInit()
 	if (current_cell_index_ == -1)
 		current_cell_index_ = Engine::GameManager()->FindCellIndex(ptr_transform_->position());
 
-	//ptr_heavy_gun_->SetActive(false);
-
 	ptr_gun_->SetActive(false);
 	ptr_klaw_->SetActive(false);
 	ptr_skill_collider_->SetSphereCollider(5.f, Vector3());
 
 	ptr_target_ = dynamic_cast<CSpaceMarin*>(Engine::GameManager()->FindObject(MAINTAIN_STAGE, TEXT("SpaceMarin_1")));
 
-
 #ifdef _DEBUG
 	D3DXCreateLine(ptr_device_, &ptr_line_);
 	ptr_line_->SetAntialias(TRUE);
 #endif
-
 }
 
 void COrk_WarBoss::Update(float delta_time)
@@ -142,7 +141,11 @@ void COrk_WarBoss::ApplyDamage(int damage)
 	if (next_behavior_pattern_ == BehaviorPattern::Down) return;
 	
 	if (damage_delay_ <= 0.f)
-		hp_ -= damage;	
+	{
+		hp_ -= damage;
+		if (hp_ < 0) hp_ = 0;
+	}
+		
 
 	if (damage_delay_ <= 0.f && damage == 100) damage_delay_ = 0.6f;
 }
@@ -279,13 +282,14 @@ void COrk_WarBoss::UpdateState(float delta_time)
 		BastionOfDestruction(delta_time);
 		break;
 	case BehaviorPattern::Down:
-		// 다운 상태. 플레이어에게 Execution 당하기 전. 루프
 		Down();
 		break;
 	case BehaviorPattern::Victim:
 		// 다운 상태. 플레이어에게 Execution 당하고 사망
 		if (ptr_upper_anim_ctrl_->CheckCurrentAnimationEnd(0.1))
 			anim_time_ = 0.f;
+		else
+			Victim();
 		break;
 	case BehaviorPattern::End:
 		break;
@@ -315,7 +319,7 @@ void COrk_WarBoss::DamageChangeState()
 		first_skill_ = true;
 		condition_ = 0.f;
 	}
-	else if (hp_ <= 0)
+	else if (hp_ == 0)
 	{
 		ptr_gun_->SetActive(false);
 		ptr_klaw_->SetActive(false);
@@ -667,9 +671,15 @@ void COrk_WarBoss::Down()
 		ptr_lower_anim_ctrl_->SetAnimationTrack("Down_Loop");
 	}
 
+	if (true == ptr_target_->execution())
+	{
+		hp_ = -10;
+		next_behavior_pattern_ = BehaviorPattern::Victim;
+	}
 }
 void COrk_WarBoss::Victim()
 {
+	ptr_transform_->LookAt(ptr_target_->transform()->position());
 }
 void COrk_WarBoss::Fire()
 {

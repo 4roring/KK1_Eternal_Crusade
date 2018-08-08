@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <algorithm>
 #include "Enum.h"
 #include "Value.h"
 #include "Function.h"

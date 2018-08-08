@@ -37,6 +37,7 @@ private:
 	void ControlZoom(float delta_time);
 	void ControlAttack(float delta_time);
 	void ControlEvade(float delta_time);
+	void ControlExecution();
 	void ChangeWeapon();
 
 private:
@@ -54,4 +55,7 @@ private:
 	float speed_ = 0.f;
 	float sensitivity_ = 0.f;
 	float attack_delay_ = 0.f;
+
+private:
+	CEnemyObserver* ptr_enemy_observer_ = nullptr;
 };

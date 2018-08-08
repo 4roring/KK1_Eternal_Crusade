@@ -3,6 +3,7 @@
 #include "SpaceMarin.h"
 #include "Transform.h"
 #include "PlayerCamera.h"
+#include "EnemyObserver.h"
 
 CPlayerController::CPlayerController()
 {
@@ -26,6 +27,8 @@ HRESULT CPlayerController::Initialize(CSpaceMarin * ptr_target, float speed, flo
 	sensitivity_ = sensitivity;
 	fov_y = 60.f;
 	++reference_count_;
+	Subject()->RegisterObserver(ptr_enemy_observer_);
+
 	return S_OK;
 }
 
@@ -51,6 +54,7 @@ int CPlayerController::Release()
 	{
 		Engine::Safe_Release_Delete(ptr_ctrl_transform_);
 		Engine::Safe_Release_Delete(ptr_forward_transform_);
+		Subject()->RemoveObserver(ptr_enemy_observer_);
 		return 0;
 	}
 	return reference_count_;
@@ -74,6 +78,7 @@ void CPlayerController::CheckInput(float delta_time)
 	ControlZoom(delta_time);
 	ControlAttack(delta_time);
 	ControlEvade(delta_time);
+	ControlExecution();
 	ChangeWeapon();
 }
 
@@ -182,6 +187,22 @@ void CPlayerController::ControlEvade(float delta_time)
 		}
 		else
 			ptr_ctrl_unit_->set_evade_dir(ptr_ctrl_transform_->move_dir().Normalize());
+	}
+}
+
+void CPlayerController::ControlExecution()
+{
+	if (ptr_enemy_observer_->boss_hp() == 0)
+	{
+		Vector3 target_pos = ptr_enemy_observer_->boss_pos();
+		const float square_target_dist = (target_pos - ptr_ctrl_transform_->position()).Magnitude();
+		const float square_dist = 3.f * 3.f;
+
+		if (square_target_dist < square_dist && Engine::Input()->GetKeyDown(KEY::E))
+		{
+			ptr_ctrl_unit_->set_execution();
+			ptr_ctrl_unit_->set_execution_target(target_pos);
+		}
 	}
 }
 

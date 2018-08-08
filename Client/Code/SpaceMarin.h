@@ -11,13 +11,14 @@ END
 class CController;
 class CGun_Phobos;
 class CChainSword;
+class CEnemyObserver;
 
 class CSpaceMarin
 	: public Engine::CGameObject
 {
 public:
 	enum class Weapon { Gun, ChainSword, End };
-	enum class LowerState { Idle, Run, Attack, Evade, End };
+	enum class LowerState { Idle, Run, Attack, Reload, Evade, Execution, End };
 	enum class UpperState { Idle, Shoot, Run, Run_Aiming, End };
 	enum class MoveDirection { Forward, Backward, Right, Left, End };
 
@@ -33,6 +34,7 @@ public:
 	int current_cell_index() const;
 	Weapon weapon() const;
 	bool evade() const;
+	bool execution() const;
 
 public:
 	void set_move_dir(MoveDirection move_dir);
@@ -42,6 +44,8 @@ public:
 	void set_weapon();
 	void set_evade_dir(const Vector3& evade_dir);
 	void set_evade(bool is_evade);
+	void set_execution();
+	void set_execution_target(const Vector3& target_pos);
 	void SetRay(const Vector3& ray_pos, const Vector3& ray_dir);
 
 private:
@@ -71,6 +75,7 @@ private:
 	void UpdateUpperAnimState();
 	void Run();
 	void Evade(float delta_time);
+	void Execution();
 
 private:
 	void Fire();
@@ -101,12 +106,20 @@ private:
 	Vector3 fire_range_pos_ = {};
 	bool zoom_ = false;
 	bool fire_ = false;
-	
+
 private:
 	Vector3 evade_dir_ = {};
 	bool evade_ = false;
 
 private:
+	Vector3 execution_target_ = {};
+	bool execution_ = false;
+
+private:
+	int max_shield_ = 0;
+	int shield_ = 0;
+	int max_hp_ = 0;
+	int hp_ = 0;
 	float damage_time_ = 0.f;
 	float condition_ = 0.f;
 

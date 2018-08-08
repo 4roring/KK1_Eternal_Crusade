@@ -75,6 +75,7 @@ void CMainGame::Update()
 	ptr_input_->SetInputState();
 	ptr_time_->SetTime();
 	ptr_game_manager_->Update(Engine::Time()->GetDeltaTime());
+	Subject()->Notify();
 }
 
 void CMainGame::Render()
@@ -129,6 +130,7 @@ void CMainGame::Render_FPS()
 
 void CMainGame::Release()
 {
+	Subject()->DestroyInstance();
 	CollSystem()->DestroyInstance();
 	ptr_input_->DestroyInstance();
 	ptr_input_ = nullptr;

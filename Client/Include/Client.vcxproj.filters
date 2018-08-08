@@ -140,14 +140,8 @@
     <Filter Include="06.DataManager\Subject">
       <UniqueIdentifier>{7b9c22c6-69ca-4efb-bd92-b217a38b80b6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="06.DataManager\Subject\EnemySubject">
-      <UniqueIdentifier>{6a632586-18b3-4488-996c-b7a0d3d2c259}</UniqueIdentifier>
-    </Filter>
     <Filter Include="06.DataManager\Observer\SpaceMarinObserver">
       <UniqueIdentifier>{ba3390a9-6eb8-4d36-8820-451d7d4e2aa0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="06.DataManager\Subject\SpaceMarinSubject">
-      <UniqueIdentifier>{18810c9d-1d03-417e-8c9e-70616e0798c0}</UniqueIdentifier>
     </Filter>
     <Filter Include="06.DataManager\Observer\EnemyObserver">
       <UniqueIdentifier>{339bcd43-b09e-4e86-ab65-b10b83fe1fc0}</UniqueIdentifier>
@@ -260,8 +254,14 @@
     <ClInclude Include="..\Code\EventManager.h">
       <Filter>05.EventManager</Filter>
     </ClInclude>
-    <ClInclude Include="..\Code\Observer.h">
-      <Filter>06.DataManager\Observer</Filter>
+    <ClInclude Include="..\Code\Subject.h">
+      <Filter>06.DataManager\Subject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\EnemyObserver.h">
+      <Filter>06.DataManager\Observer\EnemyObserver</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\SpaceMarinObserver.h">
+      <Filter>06.DataManager\Observer\SpaceMarinObserver</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -350,8 +350,14 @@
     <ClCompile Include="..\Code\EventManager.cpp">
       <Filter>05.EventManager</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\Observer.cpp">
-      <Filter>06.DataManager\Observer</Filter>
+    <ClCompile Include="..\Code\Subject.cpp">
+      <Filter>06.DataManager\Subject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\EnemyObserver.cpp">
+      <Filter>06.DataManager\Observer\EnemyObserver</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\SpaceMarinObserver.cpp">
+      <Filter>06.DataManager\Observer\SpaceMarinObserver</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
