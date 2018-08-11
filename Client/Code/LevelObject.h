@@ -41,5 +41,4 @@ private:
 private:
 	Engine::CShader* ptr_debug_shader_ = nullptr;
 #endif
-
 };

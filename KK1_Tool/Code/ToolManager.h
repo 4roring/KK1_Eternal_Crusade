@@ -5,6 +5,7 @@
 class CMainFrame;
 class StageEditor;
 class NavMeshEditor;
+class ParticleEditor;
 class DynamicCamera;
 
 struct Frustum
@@ -29,6 +30,7 @@ public:
 	void SetTab(TabID tab_id);
 	void SetStageEditor(StageEditor* ptr_stage_editor);
 	void SetNavAndLightEditor(NavMeshEditor* ptr_navmesh_editor);
+	void SetParticleEditor(ParticleEditor* ptr_particle_editor);
 	void SetViewText(const TCHAR* text);
 
 public:
@@ -67,6 +69,7 @@ private:
 	CMainFrame* ptr_main_frame_ = nullptr;
 	StageEditor* ptr_stage_editor_ = nullptr;
 	NavMeshEditor* ptr_nav_n_light_editor_ = nullptr;
+	ParticleEditor* ptr_particle_editor_ = nullptr;
 
 private:
 	DynamicCamera* ptr_dynamic_camera_ = nullptr;

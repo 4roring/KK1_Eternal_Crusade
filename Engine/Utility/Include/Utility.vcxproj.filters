@@ -115,6 +115,12 @@
     <Filter Include="00.Managers\LightManager\Light">
       <UniqueIdentifier>{38c34bcf-46dd-43ce-a4dc-631ca375ee25}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05.Resources\VIBuffer\LineTexture">
+      <UniqueIdentifier>{4c2d409e-279c-4181-8102-3b07a17eba6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05.Resources\VIBuffer\ParticleSystem">
+      <UniqueIdentifier>{ba267a13-287e-4394-850d-36b6f15f3c48}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Code\GameManager.h">
@@ -219,6 +225,12 @@
     <ClInclude Include="..\Code\Light.h">
       <Filter>00.Managers\LightManager\Light</Filter>
     </ClInclude>
+    <ClInclude Include="..\Code\LineTexture.h">
+      <Filter>05.Resources\VIBuffer\LineTexture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\ParticleSystem.h">
+      <Filter>05.Resources\VIBuffer\ParticleSystem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\GameManager.cpp">
@@ -316,6 +328,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\Light.cpp">
       <Filter>00.Managers\LightManager\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\LineTexture.cpp">
+      <Filter>05.Resources\VIBuffer\LineTexture</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\ParticleSystem.cpp">
+      <Filter>05.Resources\VIBuffer\ParticleSystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

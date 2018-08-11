@@ -132,6 +132,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <LargeAddressAware>true</LargeAddressAware>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -156,6 +157,8 @@
     <ClInclude Include="..\Code\EnemyAIController.h" />
     <ClInclude Include="..\Code\EnemyObserver.h" />
     <ClInclude Include="..\Code\EventManager.h" />
+    <ClInclude Include="..\Code\FireEffect.h" />
+    <ClInclude Include="..\Code\FireLineSmoke.h" />
     <ClInclude Include="..\Code\Function.h" />
     <ClInclude Include="..\Code\Gun_Phobos.h" />
     <ClInclude Include="..\Code\Controller.h" />
@@ -199,6 +202,8 @@
     <ClCompile Include="..\Code\EnemyAIController.cpp" />
     <ClCompile Include="..\Code\EnemyObserver.cpp" />
     <ClCompile Include="..\Code\EventManager.cpp" />
+    <ClCompile Include="..\Code\FireEffect.cpp" />
+    <ClCompile Include="..\Code\FireLineSmoke.cpp" />
     <ClCompile Include="..\Code\Gun_Phobos.cpp" />
     <ClCompile Include="..\Code\LevelObject.cpp" />
     <ClCompile Include="..\Code\Loading.cpp" />

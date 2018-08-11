@@ -45,14 +45,22 @@ private:
 	Engine::CCollider* ptr_sphere_coll_ = nullptr;
 
 private:
+	Vector3 next_eye_ = {};
+	Vector3 next_at_ = {};
+
+private:
 	std::list<Engine::CCollider*> check_list_;
 	Vector3 ray_pos_;
 	Vector3 ray_dir_;
+	int current_cell_index_ = 0;
 
 private:
 	Engine::CTransform* ptr_player_transform_ = nullptr;
 	CFrustum* ptr_frustum_ = nullptr;
 
+private:
+	Matrix inv_mat_proj_;
+	Matrix inv_mat_view_;
 
 #ifdef _DEBUG
 private:

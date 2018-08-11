@@ -135,7 +135,7 @@ void COrk::Render()
 	ptr_body_collider_->SetSphereCollider(0.5f, Vector3(*(Vector3*)&ptr_body_frame_->combined_matrix.m[3][0]));
 
 	if (true == CollSystem()->CollisionCheckToFrustum(ptr_head_collider_))
-		ptr_mesh_->RenderMesh(ptr_effect);
+		ptr_mesh_->RenderMesh(ptr_effect, 0);
 
 #ifdef _DEBUG
 	DebugRender();

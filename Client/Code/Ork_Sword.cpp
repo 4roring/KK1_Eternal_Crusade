@@ -43,6 +43,10 @@ HRESULT COrk_Sword::Initialize()
 	ptr_transform_->rotation().x = D3DXToRadian(90.f);
 	ptr_sphere_coll_->enable_ = false;
 
+	color_[0] = Vector4(0.7f, 0.52f, 0.42f, 1.f);
+	color_[1] = Vector4(0.65f, 0.65f, 0.65f, 1.f);
+	color_[2] = Vector4(0.52f, 0.34f, 0.25f, 1.f);
+
 	return hr;
 }
 
@@ -73,7 +77,11 @@ void COrk_Sword::Render()
 	ptr_effect->SetMatrix("g_mat_view", &mat_view);
 	ptr_effect->SetMatrix("g_mat_projection", &mat_proj);
 
-	ptr_mesh_->RenderMesh(ptr_effect);
+	ptr_effect->SetVector("set_color_r", &color_[0]);
+	ptr_effect->SetVector("set_color_g", &color_[1]);
+	ptr_effect->SetVector("set_color_b", &color_[2]);
+
+	ptr_mesh_->RenderMesh(ptr_effect, 1);
 
 #ifdef _DEBUG
 	if (true == ptr_sphere_coll_->enable_)

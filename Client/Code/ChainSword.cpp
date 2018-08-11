@@ -100,7 +100,7 @@ void CChainSword::Render()
 	ptr_effect->SetMatrix("g_mat_projection", &mat_proj);
 
 	ptr_mesh_->FrameMove(anim_time_, ptr_anim_ctrl_);
-	ptr_mesh_->RenderMesh(ptr_effect);
+	ptr_mesh_->RenderMesh(ptr_effect, 0);
 
 #ifdef _DEBUG
 	if (true == ptr_sphere_coll_->enable_)

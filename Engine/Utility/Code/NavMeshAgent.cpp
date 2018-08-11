@@ -141,6 +141,45 @@ int Engine::CNavMeshAgent::MoveFromNavMesh(Vector3 & pos, const Vector3 & dir, i
 	return next_index;
 }
 
+int Engine::CNavMeshAgent::MoveFromNavMesh(Vector3& pre_pos, const Vector3& next_pos, int current_index)
+{
+	NEIGHBORID neighbor_id = NEIGHBOR_END;
+	int next_index = current_index;
+
+
+	const Vector3 move_dir = Vector3(next_pos) - pre_pos;
+
+	if (true == vec_nav_cell_[current_index]->CheckPass(pre_pos, move_dir, neighbor_id))
+	{
+		const CNavCell* ptr_neighbor = vec_nav_cell_[current_index]->GetNeighbor(neighbor_id);
+		
+		if (nullptr == ptr_neighbor)
+		{
+			Vector3 sliding_dir = vec_nav_cell_[current_index]->GetLine((LINEID)neighbor_id)->SlidingDirection(move_dir) * 0.5f;
+
+			if (true == vec_nav_cell_[current_index]->CheckPass(pre_pos, sliding_dir, neighbor_id))
+			{
+				if (nullptr != ptr_neighbor)
+				{
+					next_index = ptr_neighbor->index();
+					pre_pos += sliding_dir;
+				}
+			}
+			else
+				pre_pos += sliding_dir;
+		}
+		else
+		{
+			next_index = ptr_neighbor->index();
+			pre_pos += move_dir;
+		}
+	}
+	else
+		pre_pos += move_dir;
+
+	return next_index;
+}
+
 int Engine::CNavMeshAgent::FindCellIndex(const Vector3 & pos)
 {
 	for (auto& nav_cell : vec_nav_cell_)

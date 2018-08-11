@@ -11,6 +11,8 @@
 #include "PlayerController.h"
 #include "Gun_Phobos.h"
 #include "ChainSword.h"
+#include "FireEffect.h"
+#include "FireLineSmoke.h"
 
 CSpaceMarin::CSpaceMarin(LPDIRECT3DDEVICE9 ptr_device)
 	: Engine::CGameObject(ptr_device)
@@ -113,6 +115,11 @@ void CSpaceMarin::set_execution_target(const Vector3 & target_pos)
 	execution_target_ = target_pos;
 }
 
+void CSpaceMarin::set_next_rot_y(float next_rot_y)
+{
+	next_rot_y_ = next_rot_y;
+}
+
 void CSpaceMarin::SetRay(const Vector3 & ray_pos, const Vector3 & ray_dir)
 {
 	ray_pos_ = ray_pos;
@@ -142,6 +149,11 @@ HRESULT CSpaceMarin::Initialize(int ctrl_id)
 	current_cell_index_ = -1;
 
 	next_lower_state_ = LowerState::Idle;
+
+	color_[0] = Vector4(0.19f, 0.24f, 0.35f, 1.f);
+	//color_[1] = Vector4(0.26f, 0.28f, 0.34f, 1.f);
+	color_[1] = Vector4(0.7f, 0.7f, 0.7f, 1.f);
+	color_[2] = Vector4(0.9f, 0.79f, 0.46f, 1.f);
 
 	return S_OK;
 }
@@ -174,7 +186,16 @@ void CSpaceMarin::Update(float delta_time)
 	//	ptr_lower_anim_ctrl_->SetTrackPosition(0.0);
 
 	ptr_lower_transform_->position() = ptr_transform_->position();
-	ptr_lower_transform_->rotation() = Vector3(0.f, ptr_transform_->rotation().y, 0.f);
+	if (pre_lower_state_ == LowerState::Idle)
+	{
+		if (fabs(ptr_transform_->rotation().y - ptr_lower_transform_->rotation().y) > 0.78f)
+		{
+			next_rot_y_ = ptr_transform_->rotation().y - ptr_lower_transform_->rotation().y;
+			next_lower_state_ = LowerState::Turn;
+		}
+	}
+	else if (pre_lower_state_ != LowerState::Turn)
+		ptr_lower_transform_->rotation() = Vector3(0.f, ptr_transform_->rotation().y, 0.f);
 
 	UpdateState(delta_time);
 	Engine::CGameObject::Update(delta_time);
@@ -223,7 +244,7 @@ void CSpaceMarin::Render()
 	ptr_gun_->SetHandMatrix(ptr_hand_matrix_);
 	ptr_sword_->SetHandMatrix(ptr_hand_matrix_);
 
-	ptr_mesh_->RenderMesh(ptr_effect);
+	ptr_mesh_->RenderMesh(ptr_effect, 1);
 
 	ptr_head_collider_->SetSphereCollider(0.2f, *(Vector3*)(&ptr_head_matrix_->m[3][0]));
 	ptr_body_collider_->SetSphereCollider(0.4f, *(Vector3*)(&ptr_body_matrix_->m[3][0]));
@@ -329,6 +350,14 @@ void CSpaceMarin::UpdateState(float delta_time)
 		if (ptr_transform_->move_dir().x != 0.f || ptr_transform_->move_dir().z != 0.f)
 			next_lower_state_ = LowerState::Run;
 		break;
+	case LowerState::Turn:
+		ptr_lower_transform_->rotation().y += next_rot_y_* delta_time * 4.f;
+		if (fabs(ptr_transform_->rotation().y - ptr_lower_transform_->rotation().y) <= 0.1f)
+		{
+			next_rot_y_ = 0.f;
+			next_lower_state_ = LowerState::Idle;
+		}
+		break;
 	case LowerState::Run:
 		Run();
 		if (ptr_transform_->move_dir().x == 0.f && ptr_transform_->move_dir().z == 0.f)
@@ -349,6 +378,14 @@ void CSpaceMarin::UpdateState(float delta_time)
 		}
 		break;
 	case LowerState::Attack:
+		if (false == ptr_lower_anim_ctrl_->CheckCurrentAnimationEnd(1.1)
+			&& true == ptr_lower_anim_ctrl_->CheckCurrentAnimationEnd(1.5))
+		{
+			Vector3 move_dir = ptr_lower_transform_->Forward().Normalize();
+			int option = -1;
+			current_cell_index_ = Engine::GameManager()->MoveFromNavMesh(ptr_transform_->position(), move_dir * 5.f * delta_time_, current_cell_index_, option);
+		}
+
 		if (true == ptr_lower_anim_ctrl_->CheckCurrentAnimationEnd(0.1))
 		{
 			next_lower_state_ = LowerState::Idle;
@@ -392,6 +429,9 @@ void CSpaceMarin::UpdateLowerAnimState()
 		case LowerState::Idle:
 			ptr_lower_anim_ctrl_->SetAnimationTrack("Idle");
 			break;
+		case LowerState::Turn:
+			ptr_lower_anim_ctrl_->SetAnimationTrack("Turn");
+			break;
 		case LowerState::Attack:
 			ptr_upper_anim_ctrl_->SetAnimationTrack("Sword_Attack1");
 			ptr_lower_anim_ctrl_->SetAnimationTrack("Sword_Attack1");
@@ -407,13 +447,14 @@ void CSpaceMarin::UpdateLowerAnimState()
 				ptr_upper_anim_ctrl_->SetAnimationTrack("Evade_Backward");
 				ptr_lower_anim_ctrl_->SetAnimationTrack("Evade_Backward");
 				break;
-			case MoveDirection::Right:
-				ptr_upper_anim_ctrl_->SetAnimationTrack("Evade_Right");
-				ptr_lower_anim_ctrl_->SetAnimationTrack("Evade_Right");
-				break;
 			case MoveDirection::Left:
 				ptr_upper_anim_ctrl_->SetAnimationTrack("Evade_Left");
 				ptr_lower_anim_ctrl_->SetAnimationTrack("Evade_Left");
+				break;
+			case MoveDirection::Right:
+			default:
+				ptr_upper_anim_ctrl_->SetAnimationTrack("Evade_Right");
+				ptr_lower_anim_ctrl_->SetAnimationTrack("Evade_Right");
 				break;
 			}
 			break;
@@ -528,6 +569,8 @@ void CSpaceMarin::Fire()
 			else
 				fire_range_pos_ = ray_pos_ + ray_dir_ * 30.f;
 			fire_ = false;
+			CreateFireEffect();
+			--bullet_count_;
 			break;
 		}
 	}
@@ -556,9 +599,18 @@ void CSpaceMarin::Attack()
 				condition_ = 0.f;
 			}
 		}
-
 		fire_ = false;
 	}
+}
+
+void CSpaceMarin::CreateFireEffect()
+{
+	TCHAR effect_key[64] = TEXT("");
+	wsprintf(effect_key, TEXT("Space_Marin_%d_Fire_Effect_%d"), control_id_, bullet_count_);
+	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, effect_key, CFireEffect::Create(ptr_device_, &ptr_gun_->GetFirePos()));
+
+	wsprintf(effect_key, TEXT("Space_Marin_%d_Fire_Line_%d"), control_id_, bullet_count_);
+	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, effect_key, CFireLineSmoke::Create(ptr_device_, ptr_gun_->GetFirePos(), fire_range_pos_));
 }
 
 void CSpaceMarin::SetConstantTable(LPD3DXEFFECT ptr_effect)
@@ -570,6 +622,10 @@ void CSpaceMarin::SetConstantTable(LPD3DXEFFECT ptr_effect)
 	ptr_effect->SetMatrix("g_mat_world", &ptr_lower_transform_->mat_world());
 	ptr_effect->SetMatrix("g_mat_view", &mat_view);
 	ptr_effect->SetMatrix("g_mat_projection", &mat_proj);
+
+	ptr_effect->SetVector("set_color_r", &color_[0]);
+	ptr_effect->SetVector("set_color_g", &color_[1]);
+	ptr_effect->SetVector("set_color_b", &color_[2]);
 }
 
 #ifdef _DEBUG
@@ -579,22 +635,22 @@ void CSpaceMarin::DebugRender()
 	ptr_device_->GetTransform(D3DTS_VIEW, &mat_view);
 	ptr_device_->GetTransform(D3DTS_PROJECTION, &mat_proj);
 
-	Vector3 line_[2] = { ptr_gun_->GetFirePos(), fire_range_pos_ };
+	//Vector3 line_[2] = { ptr_gun_->GetFirePos(), fire_range_pos_ };
 
-	for (auto& point : line_)
-	{
-		D3DXVec3TransformCoord(&point, &point, &mat_view);
-		if (point.z < 0.f)
-			point.z = 0.f;
-		D3DXVec3TransformCoord(&point, &point, &mat_proj);
-	}
+	//for (auto& point : line_)
+	//{
+	//	D3DXVec3TransformCoord(&point, &point, &mat_view);
+	//	if (point.z < 0.f)
+	//		point.z = 0.f;
+	//	D3DXVec3TransformCoord(&point, &point, &mat_proj);
+	//}
 
-	ptr_line_->SetWidth(2.f);
-	ptr_line_->Begin();
+	//ptr_line_->SetWidth(2.f);
+	//ptr_line_->Begin();
 
-	ptr_line_->DrawTransform(line_, 2, nullptr, D3DXCOLOR(1.f, 0.f, 0.f, 1.f));
+	//ptr_line_->DrawTransform(line_, 2, nullptr, D3DXCOLOR(1.f, 0.f, 0.f, 1.f));
 
-	ptr_line_->End();
+	//ptr_line_->End();
 
 	LPD3DXEFFECT ptr_effect = ptr_debug_shader_->GetEffectHandle();
 	Matrix mat_coll;

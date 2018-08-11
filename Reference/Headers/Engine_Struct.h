@@ -2,6 +2,19 @@
 
 namespace Engine
 {
+	typedef struct tagAttribute
+	{
+		Vector3 position;
+		Vector3 velocity;
+		Vector3 acceleration;
+		float life_time;
+		float acc_time;
+		D3DXCOLOR color;
+		D3DXCOLOR fade_color;
+		bool gravity;
+		bool is_alive;
+	} Attribute;
+
 	typedef struct tagFrame_Derived : public D3DXFRAME
 	{
 		Matrix combined_matrix;

@@ -81,7 +81,7 @@ void CGun_Phobos::Render()
 	ptr_effect->SetMatrix("g_mat_view", &mat_view);
 	ptr_effect->SetMatrix("g_mat_projection", &mat_proj);
 
-	ptr_mesh_->RenderMesh(ptr_effect);
+	ptr_mesh_->RenderMesh(ptr_effect, 0);
 
 #ifdef _DEBUG
 	LPD3DXEFFECT ptr_debug_effect = ptr_debug_shader_->GetEffectHandle();

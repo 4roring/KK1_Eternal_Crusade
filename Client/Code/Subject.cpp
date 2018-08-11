@@ -13,6 +13,21 @@ CSubject::~CSubject()
 	Release();
 }
 
+const Matrix & CSubject::inv_mat_proj()
+{
+	return *inv_mat_proj_;
+}
+
+const Matrix & CSubject::inv_mat_view()
+{
+	return *inv_mat_view_;
+}
+
+Vector3 CSubject::camera_pos()
+{
+	return *camera_pos_;
+}
+
 void CSubject::SetSpaceMarinData(int* ptr_shield, int* ptr_hp, int* ptr_current_cell, int ctrl_id)
 {
 	space_marin_shield_[ctrl_id] = ptr_shield;
@@ -40,6 +55,13 @@ void CSubject::SetBossHp(int * ptr_hp)
 void CSubject::SetBossPosition(Vector3 * ptr_boss_pos)
 {
 	ptr_boss_pos_ = ptr_boss_pos;
+}
+
+void CSubject::SetInverseCameraInfo(Matrix * inv_mat_proj, Matrix * inv_mat_view, Vector3 * camera_pos)
+{
+	inv_mat_proj_ = inv_mat_proj;
+	inv_mat_view_ = inv_mat_view;
+	camera_pos_ = camera_pos;
 }
 
 void CSubject::RegisterObserver(CSpaceMarinObserver *& ptr_observer)

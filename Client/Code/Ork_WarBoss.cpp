@@ -129,7 +129,7 @@ void COrk_WarBoss::Render()
 	ptr_head_collider_->SetSphereCollider(0.4f, *(Vector3*)&ptr_head_frame_->combined_matrix.m[3][0]);
 	ptr_body_collider_->SetSphereCollider(0.7f, *(Vector3*)&ptr_body_frame_->combined_matrix.m[3][0]);
 
-	ptr_mesh_->RenderMesh(ptr_effect);
+	ptr_mesh_->RenderMesh(ptr_effect, 0);
 
 #ifdef _DEBUG
 	DebugRender();
@@ -326,6 +326,7 @@ void COrk_WarBoss::DamageChangeState()
 
 		next_behavior_pattern_ = BehaviorPattern::Down;
 		condition_ = 0.f;
+		skill_pos_y_ = 0.f;
 	}
 }
 

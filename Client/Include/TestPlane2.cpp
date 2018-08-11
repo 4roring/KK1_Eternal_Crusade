@@ -51,7 +51,7 @@ void CTestPlane2::Render()
 	ptr_effect->SetVector("g_light_ambient", &Vector4(1.f, 1.f, 1.f, 1.f));
 	ptr_effect->SetVector("g_light_dir", &Vector4(0.f, -1.f, 1.f, 0.f));
 
-	ptr_mesh_->RenderMesh(ptr_effect);
+	ptr_mesh_->RenderMesh(ptr_effect, 0);
 }
 
 CTestPlane2 * CTestPlane2::Create(LPDIRECT3DDEVICE9 ptr_device)

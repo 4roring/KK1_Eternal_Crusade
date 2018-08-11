@@ -35,8 +35,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "98.Shader", "98.Shader", "{
 		Reference\Shader\DefaultShader.hlsl = Reference\Shader\DefaultShader.hlsl
 		Reference\Shader\DynamicMeshShader.hlsl = Reference\Shader\DynamicMeshShader.hlsl
 		Reference\Shader\DynamicMeshShaderColor.hlsl = Reference\Shader\DynamicMeshShaderColor.hlsl
+		Reference\Shader\MeshEffectShader.hlsl = Reference\Shader\MeshEffectShader.hlsl
 		Reference\Shader\MeshShader.hlsl = Reference\Shader\MeshShader.hlsl
 		Reference\Shader\NormalMapShader.hlsl = Reference\Shader\NormalMapShader.hlsl
+		Reference\Shader\ParticleEffectShader.hlsl = Reference\Shader\ParticleEffectShader.hlsl
 		Reference\Shader\SkyShader.hlsl = Reference\Shader\SkyShader.hlsl
 	EndProjectSection
 EndProject

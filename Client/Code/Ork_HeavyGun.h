@@ -48,6 +48,9 @@ private:
 private:
 	Matrix mat_muzzle_of_gun_[2];
 
+private:
+	Vector4 color_[3] = {};
+
 #ifdef _DEBUG
 private:
 	Engine::CSphere* ptr_debug_fire_pos_ = nullptr;

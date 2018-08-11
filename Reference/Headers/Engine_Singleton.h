@@ -6,8 +6,8 @@ namespace Engine
 	class CSingleton
 	{
 	protected:
-		CSingleton() {}
-		virtual ~CSingleton() {}
+		CSingleton() = default;
+		virtual ~CSingleton() = default;
 		CSingleton(const CSingleton&) = delete;
 		CSingleton& operator=(CSingleton&) = delete;
 

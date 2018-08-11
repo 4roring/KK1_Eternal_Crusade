@@ -5,8 +5,9 @@
 // KK1Sheet
 
 #include "StageEditor.h"
-#include "TerrainEditor.h"
 #include "NavMeshEditor.h"
+#include "ParticleEditor.h"
+
 
 class KK1Sheet : public CPropertySheet
 {
@@ -23,8 +24,8 @@ protected:
 
 public:
 	StageEditor stage_editor_;
-	TerrainEditor Terrain_editor_;
 	NavMeshEditor nav_n_light_editor_;
+	ParticleEditor particle_editor_;
 	virtual void PostNcDestroy();
 };
 

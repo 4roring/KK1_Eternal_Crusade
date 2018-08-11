@@ -11,14 +11,14 @@ CEnemyObserver::~CEnemyObserver()
 
 int CEnemyObserver::GetHp(int ctrl_id)
 {
-	if (vec_enemy_hp_.size() <= ctrl_id) return -1;
+	if (vec_enemy_hp_.size() <= (size_t)ctrl_id) return -1;
 
 	return vec_enemy_hp_[ctrl_id];
 }
 
 int CEnemyObserver::GetCurrentCell(int ctrl_id)
 {
-	if (vec_enemy_current_cell_.size() <= ctrl_id) return -1;
+	if (vec_enemy_current_cell_.size() <= (size_t)ctrl_id) return -1;
 
 	return vec_enemy_current_cell_[ctrl_id];
 }

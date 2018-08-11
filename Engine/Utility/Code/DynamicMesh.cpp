@@ -55,12 +55,12 @@ void Engine::CDynamicMesh::FrameMove(float delta_time, CAnimController * ptr_ani
 	UpdateFrameMatrix((BoneFrame*)ptr_root_bone_, ptr_find_frame, &mesh_info_.init_matrix, ptr_matrix);
 }
 
-void Engine::CDynamicMesh::RenderMesh(LPD3DXEFFECT ptr_effect)
+void Engine::CDynamicMesh::RenderMesh(LPD3DXEFFECT ptr_effect, uint32 pass_index)
 {
 	ptr_effect->Begin(nullptr, 0);
 	//FindMeshContainer((BoneFrame*)ptr_root_bone_, ptr_effect);
 	for (auto& bone_mesh : mesh_info_.data)
-		RenderMeshContainer(bone_mesh, ptr_effect);
+		RenderMeshContainer(bone_mesh, ptr_effect, pass_index);
 	ptr_effect->End();
 }
 
@@ -173,20 +173,20 @@ void Engine::CDynamicMesh::SetUpBoneMatrixPointer(BoneFrame * ptr_frame)
 
 void Engine::CDynamicMesh::FindMeshContainer(BoneFrame * ptr_frame, LPD3DXEFFECT ptr_effect)
 {
-	if (nullptr == ptr_frame)
-		return;
+	//if (nullptr == ptr_frame)
+	//	return;
 
-	if (nullptr != ptr_frame->pMeshContainer)
-		RenderMeshContainer((BoneMesh*)ptr_frame->pMeshContainer, ptr_effect);
+	//if (nullptr != ptr_frame->pMeshContainer)
+	//	RenderMeshContainer((BoneMesh*)ptr_frame->pMeshContainer, ptr_effect);
 
-	if (nullptr != ptr_frame->pFrameFirstChild)
-		FindMeshContainer((BoneFrame*)ptr_frame->pFrameFirstChild, ptr_effect);
+	//if (nullptr != ptr_frame->pFrameFirstChild)
+	//	FindMeshContainer((BoneFrame*)ptr_frame->pFrameFirstChild, ptr_effect);
 
-	if (nullptr != ptr_frame->pFrameSibling)
-		FindMeshContainer((BoneFrame*)ptr_frame->pFrameSibling, ptr_effect);
+	//if (nullptr != ptr_frame->pFrameSibling)
+	//	FindMeshContainer((BoneFrame*)ptr_frame->pFrameSibling, ptr_effect);
 }
 
-void Engine::CDynamicMesh::RenderMeshContainer(BoneMesh * ptr_bone_mesh, LPD3DXEFFECT ptr_effect)
+void Engine::CDynamicMesh::RenderMeshContainer(BoneMesh * ptr_bone_mesh, LPD3DXEFFECT ptr_effect, uint32 pass_index)
 {
 	// Software Skinning
 	//if (nullptr != ptr_mesh_container->pSkinInfo)
@@ -247,7 +247,6 @@ void Engine::CDynamicMesh::RenderMeshContainer(BoneMesh * ptr_bone_mesh, LPD3DXE
 		
 		ptr_effect->SetMatrixArray("matrix_palette", ptr_bone_mesh->ptr_result_matrix, num_bones);
 
-		uint32 pass_index = 0;
 		ptr_effect->BeginPass(pass_index);
 		for (DWORD i = 0; i < ptr_bone_mesh->NumMaterials; ++i)
 		{

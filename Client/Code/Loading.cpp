@@ -3,6 +3,7 @@
 #include <process.h>
 
 #include "Texture.h"
+#include "LineTexture.h"
 #include "CubeTexture.h"
 #include "StaticMesh.h"
 #include "DynamicMesh.h"
@@ -69,6 +70,12 @@ HRESULT CLoading::Stage_Loading()
 			, TEXT("../../Reference/Shader/Deferred/Deferred_DynamicMeshShader.hlsl")));
 	assert(hr == S_OK && "Shader_DynamicMesh Component Add Failed");
 
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
+		, TEXT("Shader_Mesh_Effect")
+		, Engine::CShader::Create(ptr_device_
+			, TEXT("../../Reference/Shader/MeshEffectShader.hlsl")));
+	assert(hr == S_OK && "Shader_DynamicMesh Component Add Failed");
+
 	//hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
 	//	, TEXT("Shader_DynamicMesh_Color")
 	//	, Engine::CShader::Create(ptr_device_
@@ -93,8 +100,26 @@ HRESULT CLoading::Stage_Loading()
 		, Engine::CTexture::Create(ptr_device_, Engine::TEXTURETYPE::CUBE
 			, TEXT("../bin/Resources/Texture/Skybox/Skybox.dds"), 1));
 
+	lstrcpy(loading_message_, TEXT("Texture Loading"));
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("Explosion_Texture")
+		, Engine::CTexture::Create(ptr_device_, Engine::TEXTURETYPE::NORMAL
+			, TEXT("../bin/Resources/Texture/Effect/T_ExplosionSeq4x4_001.tga"), 1));
+
+	lstrcpy(loading_message_, TEXT("Texture Loading"));
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("LineSmoke_Texture")
+		, Engine::CTexture::Create(ptr_device_, Engine::TEXTURETYPE::NORMAL
+			, TEXT("../bin/Resources/Texture/Effect/T_RibbonSmoky.tga"), 1));
+
+
 	// Mesh
 	lstrcpy(loading_message_, TEXT("Mesh Loading"));
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
+		, TEXT("Buffer_Line")
+		, Engine::CLineTexture::Create(ptr_device_));
+	assert(!FAILED(hr) && "Buffer_Line Add Failed");
 
 	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
 		, TEXT("Buffer_Cube")

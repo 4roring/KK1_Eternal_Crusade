@@ -36,7 +36,7 @@ public:
 	void FrameMove(float delta_time, CAnimController* ptr_anim_ctrl, BoneFrame* ptr_find_frame, const Matrix* ptr_matrix);
 
 public:
-	virtual void RenderMesh(LPD3DXEFFECT ptr_effect);
+	virtual void RenderMesh(LPD3DXEFFECT ptr_effect, uint32 pass_index);
 
 public:
 	virtual int Release();
@@ -49,7 +49,7 @@ private:
 	void UpdateFrameMatrix(BoneFrame* ptr_frame, BoneFrame* ptr_find_frame, const Matrix* ptr_parent_matrix, const Matrix* mat_rot);
 	void SetUpBoneMatrixPointer(BoneFrame* ptr_frame);
 	void FindMeshContainer(BoneFrame* ptr_frame, LPD3DXEFFECT ptr_effect);
-	void RenderMeshContainer(BoneMesh* ptr_mesh_container, LPD3DXEFFECT ptr_effect);
+	void RenderMeshContainer(BoneMesh* ptr_mesh_container, LPD3DXEFFECT ptr_effect, uint32 pass_index);
 
 public:
 	static CDynamicMesh* Create(LPDIRECT3DDEVICE9 ptr_device

@@ -45,4 +45,7 @@ private:
 private:
 	const Matrix* ptr_parent_matrix_ = nullptr;
 	Matrix hand_matrix_;
+
+private:
+	Vector4 color_[3] = {};
 };

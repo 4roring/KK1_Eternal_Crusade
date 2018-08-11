@@ -7,10 +7,10 @@
 #define IDR_MAINFRAME                   128
 #define IDR_MapToolTYPE                 130
 #define IDD_STAGEEDITOR                 314
-#define IDD_TERRAINEDITOR               315
 #define IDD_NAVMESHEDITOR               316
 #define IDD_NAVIEDITOR                  316
 #define IDD_EDITORTAB                   317
+#define IDD_PARTICLEEDITOR              320
 #define IDC_LIST1                       1000
 #define IDC_LIST2                       1001
 #define IDC_EDIT1                       1002
@@ -41,9 +41,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        316
+#define _APS_NEXT_RESOURCE_VALUE        320
 #define _APS_NEXT_COMMAND_VALUE         32771
 #define _APS_NEXT_CONTROL_VALUE         1011
-#define _APS_NEXT_SYMED_VALUE           318
+#define _APS_NEXT_SYMED_VALUE           321
 #endif
 #endif

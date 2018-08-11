@@ -18,7 +18,7 @@ class CSpaceMarin
 {
 public:
 	enum class Weapon { Gun, ChainSword, End };
-	enum class LowerState { Idle, Run, Attack, Reload, Evade, Execution, End };
+	enum class LowerState { Idle, Turn, Run, Attack, Reload, Evade, Execution, End };
 	enum class UpperState { Idle, Shoot, Run, Run_Aiming, End };
 	enum class MoveDirection { Forward, Backward, Right, Left, End };
 
@@ -46,6 +46,7 @@ public:
 	void set_evade(bool is_evade);
 	void set_execution();
 	void set_execution_target(const Vector3& target_pos);
+	void set_next_rot_y(float next_rot_y);
 	void SetRay(const Vector3& ray_pos, const Vector3& ray_dir);
 
 private:
@@ -82,6 +83,9 @@ private:
 	void Attack();
 
 private:
+	void CreateFireEffect();
+
+private:
 	void SetConstantTable(LPD3DXEFFECT ptr_effect);
 
 private:
@@ -96,6 +100,7 @@ private:
 	Engine::CAnimController* ptr_upper_anim_ctrl_ = nullptr;
 	Engine::CAnimController* ptr_lower_anim_ctrl_ = nullptr;
 	Engine::BoneFrame* ptr_upper_start_frame_ = nullptr;
+	float next_rot_y_ = 0.f;
 
 private:
 	CController* ptr_ctrl_ = nullptr;
@@ -120,6 +125,7 @@ private:
 	int shield_ = 0;
 	int max_hp_ = 0;
 	int hp_ = 0;
+	int bullet_count_ = 0;
 	float damage_time_ = 0.f;
 	float condition_ = 0.f;
 
@@ -141,6 +147,9 @@ private:
 private:
 	Vector3 ray_pos_ = Vector3();
 	Vector3 ray_dir_ = Vector3();
+
+private:
+	Vector4 color_[3] = {};
 
 #ifdef _DEBUG
 private:

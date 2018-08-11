@@ -130,7 +130,6 @@ void CMainGame::Render_FPS()
 
 void CMainGame::Release()
 {
-	Subject()->DestroyInstance();
 	CollSystem()->DestroyInstance();
 	ptr_input_->DestroyInstance();
 	ptr_input_ = nullptr;
@@ -140,6 +139,7 @@ void CMainGame::Release()
 	ptr_time_ = nullptr;
 	Engine::GraphicDevice()->DestroyInstance();
 	ptr_device_ = nullptr;
+	Subject()->DestroyInstance();
 }
 
 bool CMainGame::NullCheckOfManager()

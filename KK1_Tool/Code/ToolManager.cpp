@@ -5,6 +5,7 @@
 #include "EditorTab.h"
 #include "StageEditor.h"
 #include "NavMeshEditor.h"
+#include "ParticleEditor.h"
 #include "DynamicCamera.h"
 #include "Font.h"
 
@@ -31,6 +32,11 @@ void CToolManager::SetStageEditor(StageEditor * ptr_stage_editor)
 void CToolManager::SetNavAndLightEditor(NavMeshEditor * ptr_navmesh_editor)
 {
 	ptr_nav_n_light_editor_ = ptr_navmesh_editor;
+}
+
+void CToolManager::SetParticleEditor(ParticleEditor * ptr_particle_editor)
+{
+	ptr_particle_editor_ = ptr_particle_editor;
 }
 
 void CToolManager::SetViewText(const TCHAR * text)
@@ -76,6 +82,8 @@ void CToolManager::Update(float delta_time)
 	case TabID::Animation:
 		break;
 	case TabID::Particle:
+		if (nullptr != ptr_particle_editor_)
+			ptr_particle_editor_->Update(delta_time);
 		break;
 	}
 }
@@ -98,6 +106,8 @@ void CToolManager::Render()
 	case TabID::Animation:
 		break;
 	case TabID::Particle:
+		if (nullptr != ptr_particle_editor_)
+			ptr_particle_editor_->Render();
 		break;
 	}
 

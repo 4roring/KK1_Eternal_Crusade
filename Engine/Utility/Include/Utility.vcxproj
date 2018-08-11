@@ -171,11 +171,13 @@
     <ClInclude Include="..\Code\Layer.h" />
     <ClInclude Include="..\Code\Light.h" />
     <ClInclude Include="..\Code\LightManager.h" />
+    <ClInclude Include="..\Code\LineTexture.h" />
     <ClInclude Include="..\Code\Loader.h" />
     <ClInclude Include="..\Code\Mesh.h" />
     <ClInclude Include="..\Code\NavCell.h" />
     <ClInclude Include="..\Code\NavLine.h" />
     <ClInclude Include="..\Code\NavMeshAgent.h" />
+    <ClInclude Include="..\Code\ParticleSystem.h" />
     <ClInclude Include="..\Code\RectTexture.h" />
     <ClInclude Include="..\Code\Renderer.h" />
     <ClInclude Include="..\Code\Resources.h" />
@@ -205,11 +207,13 @@
     <ClCompile Include="..\Code\Layer.cpp" />
     <ClCompile Include="..\Code\Light.cpp" />
     <ClCompile Include="..\Code\LightManager.cpp" />
+    <ClCompile Include="..\Code\LineTexture.cpp" />
     <ClCompile Include="..\Code\Loader.cpp" />
     <ClCompile Include="..\Code\Mesh.cpp" />
     <ClCompile Include="..\Code\NavCell.cpp" />
     <ClCompile Include="..\Code\NavLine.cpp" />
     <ClCompile Include="..\Code\NavMeshAgent.cpp" />
+    <ClCompile Include="..\Code\ParticleSystem.cpp" />
     <ClCompile Include="..\Code\RectTexture.cpp" />
     <ClCompile Include="..\Code\Renderer.cpp" />
     <ClCompile Include="..\Code\Resources.cpp" />

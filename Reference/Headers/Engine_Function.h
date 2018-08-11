@@ -1,5 +1,7 @@
 #pragma once
 
+#include <random>
+
 namespace Engine
 {
 	template <typename T> 
@@ -50,4 +52,27 @@ namespace Engine
 		}
 		return reference_count;
 	}
+
+	static float RandomFloat(float _min, float _max)
+	{
+		if (_min >= _max)
+			return _min;
+
+		float rand_num = (rand() % 10000) * 0.0001f;
+		return (rand_num * (_max - _min)) + _min;
+	}
+
+	static Vector3 GetRandomVector(const Vector3& _min, const Vector3& _max)
+	{
+		return{ RandomFloat(_min.x, _max.x), RandomFloat(_min.y, _max.y), RandomFloat(_min.z, _max.z) };
+	}
+
+	/* RandomFloat 업그레이드 방안.
+	int interger_min =
+
+	std::random_device _random_device;
+	std::mt19937 mt(_random_device());
+	std::uniform_int_distribution<int> range(_min, _max);
+
+	return range(mt);*/
 }

@@ -142,6 +142,11 @@ int Engine::CGameManager::MoveFromNavMesh(Vector3 & pos, const Vector3 & dir, in
 	return ptr_nav_mesh_agent_->MoveFromNavMesh(pos, dir, current_index, out_pass_fail_option);
 }
 
+int Engine::CGameManager::MoveFromNavMesh(Vector3 & pre_pos, const Vector3 & next_pos, int current_index)
+{
+	return ptr_nav_mesh_agent_->MoveFromNavMesh(pre_pos, next_pos, current_index);
+}
+
 int Engine::CGameManager::FindCellIndex(const Vector3 & pos)
 {
 	return ptr_nav_mesh_agent_->FindCellIndex(pos);

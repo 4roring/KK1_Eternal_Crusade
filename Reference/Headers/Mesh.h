@@ -14,7 +14,7 @@ public:
 	virtual ~CMesh();
 
 public:
-	virtual void RenderMesh(LPD3DXEFFECT ptr_effect) PURE;
+	virtual void RenderMesh(LPD3DXEFFECT ptr_effect, uint32 pass_index) PURE;
 
 public:
 	virtual int Release() PURE;

@@ -72,7 +72,7 @@ void MapObject::Render()
 	ptr_effect->SetVector("g_light_ambient", &Vector4(1.f, 1.f, 1.f, 1.f));
 	ptr_effect->SetVector("g_light_dir", &Vector4(0.f, -1.f, 1.f, 0.f));
 
-	ptr_mesh_->RenderMesh(ptr_effect);
+	ptr_mesh_->RenderMesh(ptr_effect, 0);
 }
 
 bool MapObject::RaycastToMesh(Vector3 & ray_pos, Vector3 & ray_dir, float * hit_dist)

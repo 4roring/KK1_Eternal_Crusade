@@ -9,6 +9,8 @@
 CPlayerCamera::CPlayerCamera(LPDIRECT3DDEVICE9 ptr_device)
 	: Engine::CCamera(ptr_device)
 {
+	D3DXMatrixIdentity(&inv_mat_proj_);
+	D3DXMatrixIdentity(&inv_mat_view_);
 }
 
 CPlayerCamera::~CPlayerCamera()
@@ -36,6 +38,10 @@ HRESULT CPlayerCamera::InitCamera(MAINTAINID stage_id)
 	ptr_line_->SetAntialias(TRUE);
 #endif
 
+	current_cell_index_ = -1;
+
+	Subject()->SetInverseCameraInfo(&inv_mat_proj_, &inv_mat_view_, &eye());
+
 	return hr;
 }
 
@@ -47,15 +53,34 @@ void CPlayerCamera::Update(float delta_time)
 	ray_pos_ = ptr_player_transform_->position() + player_up * 2.f + player_right * 1.5f;
 	ray_dir_ = player_forward * -1.f;
 
-	Vector3 eye = ray_pos_ + ray_dir_ * 3.5f;
-	const Vector3 at = eye + player_forward * 100.f;
-	if (eye.y < 0.f)
-		eye.y = 0.f;
-	SetView(eye, at);
-	ptr_transform_->position() = ray_pos_;
+	Vector3 pre_eye = eye();
+	next_eye_ = ray_pos_ + ray_dir_ * 3.5f;
 
-	CGameObject::Update(0.f);
-	ptr_sphere_coll_->SetSphereCollider(2.f, Vector3());
+	if (next_eye_.y < 0.f)
+		next_eye_.y = 0.f;
+
+	if (current_cell_index_ == -1)
+	{
+		next_at_ = next_eye_ + player_forward * 100.f;
+		current_cell_index_ = Engine::GameManager()->FindCellIndex(next_eye_);
+		SetView(next_eye_, next_at_);
+	}
+	else
+	{
+		Vector3 eye_dir = (next_eye_ - pre_eye);
+		next_eye_ = pre_eye + (eye_dir * delta_time * 5.f);
+		next_at_ = next_eye_ + player_forward * 100.f;
+
+		Vector3 at_dir = (next_at_ - at());
+		at() += at_dir * delta_time * 5.f;
+
+		current_cell_index_ = Engine::GameManager()->MoveFromNavMesh(pre_eye, next_eye_, current_cell_index_);
+		SetView(pre_eye, at());
+	}
+
+	//ptr_transform_->position() = CCamera::eye();
+	//CGameObject::Update(0.f);
+	//ptr_sphere_coll_->SetSphereCollider(2.f, Vector3());
 }
 
 void CPlayerCamera::LateUpdate()
@@ -113,7 +138,6 @@ void CPlayerCamera::Render()
 
 	//ptr_line_->End();
 #endif
-
 }
 
 CPlayerCamera * CPlayerCamera::Create(LPDIRECT3DDEVICE9 ptr_device, MAINTAINID stage_id)
@@ -131,18 +155,16 @@ void CPlayerCamera::SetView(const Vector3 & eye, const Vector3 & at)
 {
 	CCamera::SetView(eye, at);
 
-	Matrix inv_mat_view;
-	D3DXMatrixInverse(&inv_mat_view, nullptr, &mat_view());
-	ptr_frustum_->FrustumToWorld(inv_mat_view);
+	D3DXMatrixInverse(&inv_mat_view_, nullptr, &mat_view());
+	ptr_frustum_->FrustumToWorld(inv_mat_view_);
 }
 
 void CPlayerCamera::SetProjection(float fov_y, float aspect, float z_near, float z_far)
 {
 	CCamera::SetProjection(fov_y, aspect, z_near, z_far);
 
-	Matrix inv_mat_proj;
-	D3DXMatrixInverse(&inv_mat_proj, nullptr, &mat_projection());
-	ptr_frustum_->FrustumToView(inv_mat_proj);
+	D3DXMatrixInverse(&inv_mat_proj_, nullptr, &mat_projection());
+	ptr_frustum_->FrustumToView(inv_mat_proj_);
 }
 
 HRESULT CPlayerCamera::AddComponent()

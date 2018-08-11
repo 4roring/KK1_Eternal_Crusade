@@ -14,11 +14,17 @@ private:
 	virtual ~CSubject();
 
 public:
+	const Matrix& inv_mat_proj();
+	const Matrix& inv_mat_view();
+	Vector3 camera_pos();
+
+public:
 	void SetSpaceMarinData(int* ptr_shield, int* ptr_hp, int* ptr_current_cell, int ctrl_id);
 	void ReserveEnemyData(int size);
 	void SetEnemyData(int* ptr_hp, int* ptr_current_cell, int ctrl_id);
 	void SetBossHp(int* ptr_hp);
 	void SetBossPosition(Vector3* ptr_boss_pos);
+	void SetInverseCameraInfo(Matrix* inv_mat_proj, Matrix* inv_mat_view, Vector3* camera_pos);
 
 public:
 	void RegisterObserver(CSpaceMarinObserver*& ptr_observer);
@@ -38,6 +44,12 @@ private: // Data
 	std::vector<int*> vec_enemy_current_cell_;
 	int* ptr_boss_hp_ = nullptr;
 	Vector3* ptr_boss_pos_ = nullptr;
+
+private: // Camera Data
+	Matrix* inv_mat_proj_ = nullptr;
+	Matrix* inv_mat_view_ = nullptr;
+	Vector3* camera_pos_ = nullptr;
+
 
 private: // Observer
 	std::list<CSpaceMarinObserver*> space_marin_observer_list_;

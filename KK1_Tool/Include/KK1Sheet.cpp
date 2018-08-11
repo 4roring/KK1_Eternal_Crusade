@@ -14,7 +14,7 @@ KK1Sheet::KK1Sheet()
 {
 	AddPage(&stage_editor_);
 	AddPage(&nav_n_light_editor_);
-	AddPage(&Terrain_editor_);
+	AddPage(&particle_editor_);
 }
 
 KK1Sheet::KK1Sheet(uint32 nIDCaption, CWnd* pParentWnd, uint32 iSelectPage)
@@ -45,8 +45,8 @@ void KK1Sheet::PostNcDestroy()
 {
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
 	RemovePage(&stage_editor_);
-	RemovePage(&Terrain_editor_);
 	RemovePage(&nav_n_light_editor_);
+	RemovePage(&particle_editor_);
 
 	CPropertySheet::PostNcDestroy();
 }

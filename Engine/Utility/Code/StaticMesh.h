@@ -37,7 +37,7 @@ public:
 	HRESULT ComputeBoundingSphere();
 
 public:
-	virtual void RenderMesh(LPD3DXEFFECT ptr_effect) override;
+	virtual void RenderMesh(LPD3DXEFFECT ptr_effect, uint32 pass_index) override;
 
 public:
 	virtual int Release() override;

@@ -51,6 +51,11 @@ HRESULT COrk_Gun::Initialize()
 	//ptr_transform_->rotation().y = D3DXToRadian(5.f);
 	//ptr_transform_->rotation().z = D3DXToRadian(90.f);
 
+	color_[0] = Vector4(0.2f, 0.2f, 0.2f, 1.f);
+	color_[1] = Vector4(0.45f, 0.45f, 0.45f, 1.f);
+	color_[2] = Vector4(0.1f, 0.1f, 0.1f, 1.f);
+
+
 	return hr;
 }
 
@@ -81,7 +86,11 @@ void COrk_Gun::Render()
 	ptr_effect->SetMatrix("g_mat_view", &mat_view);
 	ptr_effect->SetMatrix("g_mat_projection", &mat_proj);
 
-	ptr_mesh_->RenderMesh(ptr_effect);
+	ptr_effect->SetVector("set_color_r", &color_[0]);
+	ptr_effect->SetVector("set_color_g", &color_[1]);
+	ptr_effect->SetVector("set_color_b", &color_[2]);
+
+	ptr_mesh_->RenderMesh(ptr_effect, 1);
 
 #ifdef _DEBUG
 	LPD3DXEFFECT ptr_debug_effect = ptr_debug_shader_->GetEffectHandle();

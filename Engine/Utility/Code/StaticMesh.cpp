@@ -94,10 +94,9 @@ HRESULT Engine::CStaticMesh::ComputeBoundingSphere()
 	return S_OK;
 }
 
-void Engine::CStaticMesh::RenderMesh(LPD3DXEFFECT ptr_effect)
+void Engine::CStaticMesh::RenderMesh(LPD3DXEFFECT ptr_effect, uint32 pass_index)
 {
 	ptr_effect->Begin(nullptr, 0);
-	int pass_index = 0;
 	for (DWORD i = 0; i < subset_count_; ++i)
 	{
 		if(nullptr != pp_color_texture_[i])

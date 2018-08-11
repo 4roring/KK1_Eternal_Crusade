@@ -206,7 +206,7 @@ PS_OUT PS_COLOR_MAIN(PS_IN ps_in)
     float3 world_normal = mul(TBN, tangent_normal);
  
     vector albedo = tex2D(color_sampler, ps_in.texture_uv);
-    albedo = albedo.r * set_color_r + albedo.g + set_color_g + albedo.b + set_color_b;
+    albedo = albedo.r * set_color_r + albedo.g * set_color_g + albedo.b * set_color_b;
 
     ps_out.albedo = albedo;
     ps_out.albedo.a = 1.f;

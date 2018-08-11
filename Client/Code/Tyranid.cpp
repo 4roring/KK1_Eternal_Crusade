@@ -77,7 +77,7 @@ void CTyranid::Render()
 	ptr_effect->SetVector("g_light_dir", &Vector4(0.f, -1.f, 1.f, 0.f));
 
 	ptr_mesh_->FrameMove(delta_time_, ptr_anim_ctrl_);
-	ptr_mesh_->RenderMesh(ptr_effect);
+	ptr_mesh_->RenderMesh(ptr_effect, 0);
 }
 
 CTyranid * CTyranid::Create(LPDIRECT3DDEVICE9 ptr_device)

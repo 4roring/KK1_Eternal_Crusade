@@ -1,6 +1,7 @@
 #include "GameObject.h"
 #include "Component.h"
 #include "ComponentMap.h"
+#include "Transform.h"
 
 Engine::CGameObject::CGameObject(LPDIRECT3DDEVICE9 ptr_device)
 	: ptr_device_(ptr_device)
@@ -37,9 +38,9 @@ void Engine::CGameObject::set_is_render(bool is_render)
 	is_render_ = is_render;
 }
 
-void Engine::CGameObject::ComputeViewZ(const Matrix & mat_view)
+void Engine::CGameObject::ComputeViewZ(const Vector3 & camera_pos)
 {
-
+	view_z_ = (ptr_transform_->position() - camera_pos).Magnitude();
 }
 
 float Engine::CGameObject::view_z() const

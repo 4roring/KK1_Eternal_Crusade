@@ -34,9 +34,6 @@
     <Filter Include="02.EditorTab\00.StageEditor\MapData\MapObject">
       <UniqueIdentifier>{a629711a-993b-47ff-a512-29f68d1ae01b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.EditorTab\02.__Editor">
-      <UniqueIdentifier>{00c6d88b-67b6-4303-90c6-50af4687cae4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.EditorTab\01.NavMeshEditor">
       <UniqueIdentifier>{c05a51ea-c357-4d48-b940-d781eb5e7ca0}</UniqueIdentifier>
     </Filter>
@@ -45,6 +42,9 @@
     </Filter>
     <Filter Include="02.EditorTab\01.NavMeshEditor\NavTri">
       <UniqueIdentifier>{f7f6a3ee-59ed-41ea-bc97-035a929a1020}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.EditorTab\02.EffectEditor">
+      <UniqueIdentifier>{00c6d88b-67b6-4303-90c6-50af4687cae4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -76,9 +76,6 @@
     <ClInclude Include="StageEditor.h">
       <Filter>02.EditorTab\00.StageEditor</Filter>
     </ClInclude>
-    <ClInclude Include="TerrainEditor.h">
-      <Filter>02.EditorTab\02.__Editor</Filter>
-    </ClInclude>
     <ClInclude Include="EditorTab.h">
       <Filter>02.EditorTab</Filter>
     </ClInclude>
@@ -99,6 +96,9 @@
     </ClInclude>
     <ClInclude Include="NavMeshEditor.h">
       <Filter>02.EditorTab\01.NavMeshEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleEditor.h">
+      <Filter>02.EditorTab\02.EffectEditor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -126,9 +126,6 @@
     <ClCompile Include="StageEditor.cpp">
       <Filter>02.EditorTab\00.StageEditor</Filter>
     </ClCompile>
-    <ClCompile Include="TerrainEditor.cpp">
-      <Filter>02.EditorTab\02.__Editor</Filter>
-    </ClCompile>
     <ClCompile Include="EditorTab.cpp">
       <Filter>02.EditorTab</Filter>
     </ClCompile>
@@ -149,6 +146,9 @@
     </ClCompile>
     <ClCompile Include="NavMeshEditor.cpp">
       <Filter>02.EditorTab\01.NavMeshEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleEditor.cpp">
+      <Filter>02.EditorTab\02.EffectEditor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

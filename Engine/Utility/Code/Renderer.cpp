@@ -136,6 +136,14 @@ void Engine::CRenderer::Render_NoneAlpha()
 
 void Engine::CRenderer::Render_Alpha()
 {
+	std::sort(render_layer_[LAYER_ALPHA].begin(), render_layer_[LAYER_ALPHA].end(),
+		[](Engine::CGameObject* ptr_src, Engine::CGameObject* ptr_dst)->bool
+	{
+		return ptr_src->view_z() > ptr_dst->view_z();
+	});
+
+	for (auto& object : render_layer_[LAYER_ALPHA])
+		object->Render();
 }
 
 void Engine::CRenderer::Render_UI()

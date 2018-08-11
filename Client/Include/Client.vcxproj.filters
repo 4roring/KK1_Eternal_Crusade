@@ -146,6 +146,15 @@
     <Filter Include="06.DataManager\Observer\EnemyObserver">
       <UniqueIdentifier>{339bcd43-b09e-4e86-ab65-b10b83fe1fc0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Effect">
+      <UniqueIdentifier>{e20bb2b2-dfef-4dfa-89ef-bb814cfea6f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Effect\FireEffect">
+      <UniqueIdentifier>{123115b8-f17f-4543-8586-90c1fdcd0ec5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Effect\FireLineSmoke">
+      <UniqueIdentifier>{cee55c25-e852-44a4-b894-619289a442a1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -263,6 +272,12 @@
     <ClInclude Include="..\Code\SpaceMarinObserver.h">
       <Filter>06.DataManager\Observer\SpaceMarinObserver</Filter>
     </ClInclude>
+    <ClInclude Include="..\Code\FireEffect.h">
+      <Filter>02.GameObject\Effect\FireEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\FireLineSmoke.h">
+      <Filter>02.GameObject\Effect\FireLineSmoke</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -358,6 +373,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\SpaceMarinObserver.cpp">
       <Filter>06.DataManager\Observer\SpaceMarinObserver</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\FireEffect.cpp">
+      <Filter>02.GameObject\Effect\FireEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\FireLineSmoke.cpp">
+      <Filter>02.GameObject\Effect\FireLineSmoke</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

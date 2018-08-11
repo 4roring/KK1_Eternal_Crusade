@@ -27,7 +27,7 @@ public:
 	void set_is_render(bool is_render);
 
 public:
-	void ComputeViewZ(const Matrix& mat_view);
+	void ComputeViewZ(const Vector3& camera_pos);
 	float view_z() const;
 	bool active() const;
 	bool destroy() const;

@@ -39,6 +39,8 @@ public:
 
 public:
 	void LookAt(Vector3& look_target);
+	// ¹Ì¿Ï¼º...
+	void LookAt_XY(Vector3& look_target);
 
 public:
 	virtual void Update(float delta_time) override;
