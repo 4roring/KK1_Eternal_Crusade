@@ -8,6 +8,8 @@ class CCollider;
 class CAnimController;
 END
 
+class CSwordEletro;
+
 class CChainSword
 	: public Engine::CGameObject
 {
@@ -33,6 +35,10 @@ public:
 	virtual void LateUpdate() override;
 	virtual void Render() override;
 
+private:
+	virtual void OnEnable() override;
+	virtual void OnDisable() override;
+
 public:
 	static CChainSword* Create(LPDIRECT3DDEVICE9 ptr_device);
 
@@ -41,9 +47,15 @@ private:
 	void Release();
 
 private:
+	void CreateHitEffect();
+
+private:
 	Engine::CDynamicMesh* ptr_mesh_ = nullptr;
 	Engine::CAnimController* ptr_anim_ctrl_ = nullptr;
 	Engine::CCollider* ptr_sphere_coll_ = nullptr;
+
+private:
+	CSwordEletro* ptr_eletro_effect_ = nullptr;
 
 private:
 	const Matrix* ptr_parent_matrix_ = nullptr;
@@ -52,4 +64,5 @@ private:
 private:
 	float anim_time_ = 0.f;
 	float anim_speed_ = 0.f;
+	float effect_time_ = 0.f;
 };

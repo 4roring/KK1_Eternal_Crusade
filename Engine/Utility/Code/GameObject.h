@@ -49,6 +49,10 @@ public:
 	virtual void ApplyDamage(int damage);
 	virtual bool CheckRaycast(const Vector3& ray_pos, const Vector3& ray_dir, float* hit_dist);
 
+public:
+	virtual void OnEnable();
+	virtual void OnDisable();
+
 protected:
 	template<typename T>
 	HRESULT Ready_Component(const int container_index

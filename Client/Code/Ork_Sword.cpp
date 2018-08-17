@@ -5,6 +5,7 @@
 #include "Shader.h"
 #include "StaticMesh.h"
 #include "Collider.h"
+#include "HitEffect.h"
 
 COrk_Sword::COrk_Sword(LPDIRECT3DDEVICE9 ptr_device)
 	: Engine::CGameObject(ptr_device)
@@ -62,6 +63,19 @@ void COrk_Sword::Update(float delta_time)
 void COrk_Sword::LateUpdate()
 {
 	Engine::GameManager()->AddRenderLayer(Engine::RENDERLAYER::LAYER_NONEALPHA, this);
+
+	if (true == ptr_sphere_coll_->enable_)
+	{
+		const CollList& space_marin_coll_list = CollSystem()->GetColliderList(TAG_PLAYER);
+		for (auto& space_marin_coll : space_marin_coll_list)
+		{
+			if (true == ptr_sphere_coll_->TriggerCheck(space_marin_coll))
+			{
+				space_marin_coll->ptr_object()->ApplyDamage(30);
+				CreateHitEffect();
+			}
+		}
+	}
 }
 
 void COrk_Sword::Render()
@@ -135,4 +149,11 @@ HRESULT COrk_Sword::AddComponent()
 void COrk_Sword::Release()
 {
 	Safe_Release_Delete(ptr_sphere_coll_);
+}
+
+void COrk_Sword::CreateHitEffect()
+{
+	TCHAR effect_key[64] = TEXT("");
+	wsprintf(effect_key, TEXT("Ork_HitEffect"));
+	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, effect_key, CHitEffect::Create(ptr_device_, ptr_sphere_coll_->GetSpherePos(), TEXT("HitBlood")));
 }

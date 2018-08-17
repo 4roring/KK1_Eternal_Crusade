@@ -118,8 +118,14 @@
     <Filter Include="05.Resources\VIBuffer\LineTexture">
       <UniqueIdentifier>{4c2d409e-279c-4181-8102-3b07a17eba6b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05.Resources\VIBuffer\ParticleSystem">
+    <Filter Include="04.Component\ParticleSystem">
       <UniqueIdentifier>{ba267a13-287e-4394-850d-36b6f15f3c48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Component\ParticleSystem\Particle">
+      <UniqueIdentifier>{25b06d8b-942b-42bd-883d-32ecb0d823bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.Component\ParticleSystem\Particle\BillboardParticle">
+      <UniqueIdentifier>{1bce088a-e4ee-43e5-afe9-fbdda5d253ba}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -229,7 +235,13 @@
       <Filter>05.Resources\VIBuffer\LineTexture</Filter>
     </ClInclude>
     <ClInclude Include="..\Code\ParticleSystem.h">
-      <Filter>05.Resources\VIBuffer\ParticleSystem</Filter>
+      <Filter>04.Component\ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\BillboardParticle.h">
+      <Filter>04.Component\ParticleSystem\Particle\BillboardParticle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Particle.h">
+      <Filter>04.Component\ParticleSystem\Particle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -333,7 +345,13 @@
       <Filter>05.Resources\VIBuffer\LineTexture</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\ParticleSystem.cpp">
-      <Filter>05.Resources\VIBuffer\ParticleSystem</Filter>
+      <Filter>04.Component\ParticleSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\BillboardParticle.cpp">
+      <Filter>04.Component\ParticleSystem\Particle\BillboardParticle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Particle.cpp">
+      <Filter>04.Component\ParticleSystem\Particle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

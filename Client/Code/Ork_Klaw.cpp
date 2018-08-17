@@ -6,6 +6,8 @@
 #include "StaticMesh.h"
 #include "Collider.h"
 
+#include "HitEffect.h"
+
 COrk_Klaw::COrk_Klaw(LPDIRECT3DDEVICE9 ptr_device)
 	: Engine::CGameObject(ptr_device)
 {
@@ -48,7 +50,7 @@ HRESULT COrk_Klaw::Initialize()
 	ptr_transform_->rotation().y = D3DXToRadian(90.f);
 	ptr_transform_->rotation().z = D3DXToRadian(20.f);
 
-	ptr_sphere_coll_->enable_ = false;
+	ptr_sphere_coll_->enable_ = true;
 
 	color_[0] = Vector4(0.9f, 0.79f, 0.46f, 1.f);
 	color_[1] = Vector4(0.45f, 0.45f, 0.45f, 1.f);
@@ -63,12 +65,25 @@ void COrk_Klaw::Update(float delta_time)
 	ptr_transform_->mat_world() *= hand_matrix_ * (*ptr_parent_matrix_);
 
 	if (true == ptr_sphere_coll_->enable_)
-		ptr_sphere_coll_->SetSphereCollider(0.3f, Vector3(0.f, 80.f, -40.f));
+		ptr_sphere_coll_->SetSphereCollider(0.5f, Vector3(0.f, -80.f, 0.f));
 }
 
 void COrk_Klaw::LateUpdate()
 {
 	Engine::GameManager()->AddRenderLayer(Engine::RENDERLAYER::LAYER_NONEALPHA, this);
+
+	if (true == ptr_sphere_coll_->enable_)
+	{
+		const CollList& space_marin_coll_list = CollSystem()->GetColliderList(TAG_PLAYER);
+		for (auto& space_marin_coll : space_marin_coll_list)
+		{
+			if (true == ptr_sphere_coll_->TriggerCheck(space_marin_coll))
+			{
+				space_marin_coll->ptr_object()->ApplyDamage(30);
+				CreateHitEffect();
+			}
+		}
+	}
 }
 
 void COrk_Klaw::Render()
@@ -142,4 +157,11 @@ HRESULT COrk_Klaw::AddComponent()
 void COrk_Klaw::Release()
 {
 	Safe_Release_Delete(ptr_sphere_coll_);
+}
+
+void COrk_Klaw::CreateHitEffect()
+{
+	TCHAR effect_key[64] = TEXT("");
+	wsprintf(effect_key, TEXT("WarBoss_HitEffect"));
+	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, effect_key, CHitEffect::Create(ptr_device_, ptr_sphere_coll_->GetSpherePos(), TEXT("HitBlood")));
 }

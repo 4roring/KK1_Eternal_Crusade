@@ -44,6 +44,7 @@ public:
 
 public:
 	virtual void ApplyDamage(int damage) override;
+	virtual void OnEnable() override;
 
 public:
 	static COrk_WarBoss* Create(LPDIRECT3DDEVICE9 ptr_device);
@@ -76,7 +77,15 @@ private:
 	void Victim();
 
 private:
+	void CheckCollision();
 	void Fire();
+
+private:
+	void CreateExplosionEffect();
+	void CreateSkillEffect();
+	void CreateVictimBlood();
+	void CreateFireEffect();
+	void CreateBulletHitEffect(const Vector3& hit_position);
 
 private:
 	Engine::CDynamicMesh* ptr_mesh_ = nullptr;
@@ -120,6 +129,7 @@ private:
 private:
 	Vector3 fire_pos_ = {};
 	Vector3 fire_dir_ = {};
+	Vector3 skill_pos_ = {};
 	float lower_shoot_rot_y_ = 0.f;
 	float upper_shoot_rot_y_ = 0.f;
 
@@ -130,9 +140,12 @@ private:
 	float skill_pos_y_ = 0.f;
 	float speed_ = 0.f;
 	bool first_skill_ = false;
+	bool victim_blood_ = false;
 
 private:
 	CSpaceMarin* ptr_target_ = nullptr;
+	Engine::CGameObject* ptr_skill_range_ = nullptr;
+	Engine::CGameObject* ptr_jump_effect_ = nullptr;
 
 private:
 	std::vector<Vector3> path_;

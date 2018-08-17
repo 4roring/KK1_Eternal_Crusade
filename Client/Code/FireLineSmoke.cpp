@@ -34,14 +34,9 @@ HRESULT CFireLineSmoke::Initialize(const Vector3 & start_pos, const Vector3 & en
 	return hr;
 }
 
-
-void CFireLineSmoke::LateInit()
-{
-}
-
 void CFireLineSmoke::Update(float delta_time)
 {
-	ComputeViewZ(Subject()->camera_pos());
+	ComputeViewZ(*Subject()->camera_pos());
 	CGameObject::Update(delta_time);
 	ptr_transform_->LookAt_XY(start_pos_);
 

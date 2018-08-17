@@ -23,8 +23,11 @@ public:
 private:
 	void InputCheck(float delta_time);
 	void MouseMove();
+	void CameraShaking(float delta_time);
 
 private:
 	float speed_ = 0.f;
 	bool mouse_fix_ = true;
+	float shaking_time_ = 0.f;
+	float shaking_value_ = 0.f;
 };

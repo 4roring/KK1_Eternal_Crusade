@@ -51,8 +51,6 @@
 #endif
 #endif
 
-#define _TOOL
-
 
 #include "Engine_Include.h"
 #include "Export_Function.h"

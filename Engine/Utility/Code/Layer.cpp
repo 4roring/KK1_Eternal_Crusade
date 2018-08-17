@@ -53,6 +53,11 @@ HRESULT Engine::CLayer::AddObject(int layer_id, const std::wstring & object_key,
 		auto map_obj_iter = object_layer_[layer_id].find(object_key);
 		if (map_obj_iter == object_layer_[layer_id].end())
 			object_layer_[layer_id].emplace(object_key, ptr_object);
+		else
+		{
+			std::wstring obj_key = object_key + TEXT("_1");
+			AddObject(layer_id, obj_key, ptr_object);
+		}
 	}
 	return S_OK;
 }

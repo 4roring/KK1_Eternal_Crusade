@@ -58,22 +58,24 @@ Vector3 & Engine::CTransform::Forward() const
 	return *(Vector3*)&transform_.mat_world.m[2][0];
 }
 
-void Engine::CTransform::LookAt(Vector3& look_target)
+void Engine::CTransform::LookAt(const Vector3& look_target)
 {
+	Vector3 _look_target = look_target;
 	const Vector3 dir = Vector3(0.f, 0.f, 1.f);
-	const Vector3 target_dir = (look_target - transform_.position).Normalize();
+	const Vector3 target_dir = (_look_target - transform_.position).Normalize();
 
 	float cos = Vector3::Dot(dir, target_dir);
 	transform_.rotation.y = acosf(cos);
-	if (look_target.x < transform_.position.x)
+	if (_look_target.x < transform_.position.x)
 		transform_.rotation.y *= -1.f;
 
 	this->Update(0.f);
 }
 
-void Engine::CTransform::LookAt_XY(Vector3 & look_target)
+void Engine::CTransform::LookAt_XY(const Vector3 & look_target)
 {
-	Vector3 forward_vector = (look_target - transform_.position).Normalize();
+	Vector3 _look_target = look_target;
+	Vector3 forward_vector = (_look_target - transform_.position).Normalize();
 	Vector3 right_vector = Vector3::Cross(Vector3(0.f, 1.f), forward_vector).Normalize();
 	Vector3 up_vector = Vector3::Cross(forward_vector, right_vector).Normalize();
 
@@ -86,6 +88,7 @@ void Engine::CTransform::Update(float delta_time)
 {
 	Matrix mat_scale, mat_rot, mat_trans;
 	D3DXMatrixScaling(&mat_scale, transform_.scale.x, transform_.scale.y, transform_.scale.z);
+	
 	D3DXMatrixRotationYawPitchRoll(&mat_rot, transform_.rotation.y, transform_.rotation.x, transform_.rotation.z);
 	transform_.mat_world = mat_scale * mat_rot;
 	

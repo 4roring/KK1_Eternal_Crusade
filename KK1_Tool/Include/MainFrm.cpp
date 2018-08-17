@@ -85,7 +85,7 @@ void CMainFrame::Dump(CDumpContext& dc) const
 BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 {
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
-	constexpr int edit_tap_size_x = 300;
+	constexpr int edit_tap_size_x = 400;
 	
 	main_splitter_.CreateStatic(this, 1, 2);
 	main_splitter_.CreateView(0, 0, RUNTIME_CLASS(CMapToolView), CSize(g_kWinCx, g_kWinCy), pContext);

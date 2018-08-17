@@ -156,6 +156,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\Export\Export_Utility.h" />
     <ClInclude Include="..\Code\AnimController.h" />
+    <ClInclude Include="..\Code\BillboardParticle.h" />
     <ClInclude Include="..\Code\Camera.h" />
     <ClInclude Include="..\Code\Collider.h" />
     <ClInclude Include="..\Code\ColliderInfo.h" />
@@ -177,6 +178,7 @@
     <ClInclude Include="..\Code\NavCell.h" />
     <ClInclude Include="..\Code\NavLine.h" />
     <ClInclude Include="..\Code\NavMeshAgent.h" />
+    <ClInclude Include="..\Code\Particle.h" />
     <ClInclude Include="..\Code\ParticleSystem.h" />
     <ClInclude Include="..\Code\RectTexture.h" />
     <ClInclude Include="..\Code\Renderer.h" />
@@ -193,6 +195,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\AnimController.cpp" />
+    <ClCompile Include="..\Code\BillboardParticle.cpp" />
     <ClCompile Include="..\Code\Camera.cpp" />
     <ClCompile Include="..\Code\Collider.cpp" />
     <ClCompile Include="..\Code\Component.cpp" />
@@ -213,6 +216,7 @@
     <ClCompile Include="..\Code\NavCell.cpp" />
     <ClCompile Include="..\Code\NavLine.cpp" />
     <ClCompile Include="..\Code\NavMeshAgent.cpp" />
+    <ClCompile Include="..\Code\Particle.cpp" />
     <ClCompile Include="..\Code\ParticleSystem.cpp" />
     <ClCompile Include="..\Code\RectTexture.cpp" />
     <ClCompile Include="..\Code\Renderer.cpp" />

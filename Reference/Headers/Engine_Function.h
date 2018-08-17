@@ -58,6 +58,11 @@ namespace Engine
 		if (_min >= _max)
 			return _min;
 
+		//std::default_random_engine _random_engine;
+		//std::uniform_real_distribution<float> range(_min, _max);
+
+		//return range(_random_engine);
+
 		float rand_num = (rand() % 10000) * 0.0001f;
 		return (rand_num * (_max - _min)) + _min;
 	}

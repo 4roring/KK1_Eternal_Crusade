@@ -39,6 +39,9 @@ private:
 	void Release();
 
 private:
+	void CreateHitEffect();
+
+private:
 	Engine::CStaticMesh* ptr_mesh_ = nullptr;
 	Engine::CCollider* ptr_sphere_coll_ = nullptr;
 

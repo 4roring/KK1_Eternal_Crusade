@@ -15,6 +15,16 @@
 
 #include "Font.h"
 
+#include "Explosion.h"
+#include "WarBossSkill.h"
+#include "WarBossSkillRange.h"
+#include "ExecutionBlood.h"
+#include "WarBossJump.h"
+
+#include "FireEffect.h"
+#include "FireLineSmoke.h"
+#include "HitEffect.h"
+
 COrk_WarBoss::COrk_WarBoss(LPDIRECT3DDEVICE9 ptr_device)
 	: Engine::CGameObject(ptr_device)
 {
@@ -51,11 +61,13 @@ HRESULT COrk_WarBoss::Initialize()
 	ptr_body_frame_ = ptr_mesh_->FindFrame("joint_TorsoC_01");
 
 	current_cell_index_ = -1;
-	max_hp_ = 1000;
+	max_hp_ = 2000;
 	hp_ = max_hp_;
 	next_behavior_pattern_ = BehaviorPattern::Spawn;
 	weapon_ = Weapon::HeavyGun;
-	speed_ = 3.f;
+	speed_ = 4.f;
+
+	SetActive(false);
 
 	Subject()->SetBossHp(&hp_);
 	Subject()->SetBossPosition(&ptr_transform_->position());
@@ -74,11 +86,16 @@ void COrk_WarBoss::LateInit()
 	if (current_cell_index_ == -1)
 		current_cell_index_ = Engine::GameManager()->FindCellIndex(ptr_transform_->position());
 
+	ptr_heavy_gun_->SetActive(false);
 	ptr_gun_->SetActive(false);
 	ptr_klaw_->SetActive(false);
 	ptr_skill_collider_->SetSphereCollider(5.f, Vector3());
 
-	ptr_target_ = dynamic_cast<CSpaceMarin*>(Engine::GameManager()->FindObject(MAINTAIN_STAGE, TEXT("SpaceMarin_1")));
+	ptr_target_ = dynamic_cast<CSpaceMarin*>(Engine::GameManager()->FindObject(MAINTAIN_STAGE, TEXT("SpaceMarin")));
+
+	ptr_jump_effect_ = CWarBossJump::Create(ptr_device_, &ptr_transform_->position());
+	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, TEXT("WarBoss Jump Effect"), ptr_jump_effect_);
+	ptr_jump_effect_->SetActive(false);
 
 #ifdef _DEBUG
 	D3DXCreateLine(ptr_device_, &ptr_line_);
@@ -88,6 +105,9 @@ void COrk_WarBoss::LateInit()
 
 void COrk_WarBoss::Update(float delta_time)
 {
+	if (current_cell_index_ == -1)
+		current_cell_index_ = Engine::GameManager()->FindCellIndex(ptr_transform_->position());
+
 	anim_time_ = delta_time;
 
 	ptr_lower_transform_->position() = ptr_transform_->position();
@@ -106,6 +126,10 @@ void COrk_WarBoss::Update(float delta_time)
 void COrk_WarBoss::LateUpdate()
 {
 	Engine::GameManager()->AddRenderLayer(Engine::RENDERLAYER::LAYER_NONEALPHA, this);
+	CollSystem()->CollisionCheck(ptr_body_collider_, TAG_ENEMY);
+	CollSystem()->CollisionCheck(ptr_body_collider_, TAG_PLAYER);
+
+	CheckCollision();
 
 	// Heavy에 Attack 상태라면 몸에 구와 플레이어의 충돌 체크 후 데미지 주기.
 	DamageChangeState();
@@ -146,8 +170,16 @@ void COrk_WarBoss::ApplyDamage(int damage)
 		if (hp_ < 0) hp_ = 0;
 	}
 		
-
 	if (damage_delay_ <= 0.f && damage == 100) damage_delay_ = 0.6f;
+}
+
+void COrk_WarBoss::OnEnable()
+{
+	hp_ = max_hp_;
+	next_behavior_pattern_ = BehaviorPattern::Spawn;
+	weapon_ = Weapon::HeavyGun;
+	ptr_heavy_gun_->SetActive(true);
+	condition_ = -1.f;
 }
 
 COrk_WarBoss * COrk_WarBoss::Create(LPDIRECT3DDEVICE9 ptr_device)
@@ -187,6 +219,7 @@ HRESULT COrk_WarBoss::AddComponent()
 	ptr_head_collider_ = Engine::CCollider::Create(ptr_device_, this, Collider_Sphere);
 	ptr_body_collider_ = Engine::CCollider::Create(ptr_device_, this, Collider_Sphere);
 	ptr_skill_collider_ = Engine::CCollider::Create(ptr_device_, this, Collider_Sphere);
+	ptr_skill_collider_->enable_ = false;
 
 	return S_OK;
 }
@@ -231,11 +264,17 @@ void COrk_WarBoss::Release()
 
 void COrk_WarBoss::UpdateState(float delta_time)
 {
-	const float mind_time = (hp_ > (max_hp_ >> 2)) ? 2.f : 1.f;
+	const float mind_time = (hp_ > (max_hp_ >> 2)) ? 1.5f : 0.5f;
 
 	switch (pre_behavior_pattern_)
 	{
 	case BehaviorPattern::Spawn:
+		if (condition_ < 0.f) 
+		{
+			anim_time_ = 0.f;
+			condition_ = fmin(condition_ + delta_time, 0.f);
+		}
+
 		if (condition_ == 0.f && ptr_upper_anim_ctrl_->CheckCurrentAnimationEnd(0.1))
 		{
 			++condition_;
@@ -307,11 +346,13 @@ void COrk_WarBoss::DamageChangeState()
 		ptr_gun_->SetActive(true);
 		ptr_klaw_->SetActive(true);
 
+		CreateExplosionEffect();
 		next_behavior_pattern_ = BehaviorPattern::Spawn;
 		condition_ = 0.f;
 
 		upper_shoot_rot_y_ = 0.f;
-		speed_ = 5.f;
+		speed_ = 7.f;
+		Subject()->set_camera_shaking(true);
 	}
 	else if (false == first_skill_ && hp_ < (max_hp_ >> 3))
 	{
@@ -441,6 +482,13 @@ void COrk_WarBoss::KlawIdle()
 
 void COrk_WarBoss::HeavyShoot(float delta_time)
 {
+	if (attack_delay_ <= 0.f)
+	{
+		Fire();
+		attack_delay_ = 0.1f;
+	}
+	attack_delay_ -= delta_time;
+
 	if (condition_ == 0.f)
 	{
 		ptr_transform_->LookAt(ptr_target_->transform()->position());
@@ -472,6 +520,13 @@ void COrk_WarBoss::KlawShoot(float delta_time)
 	constexpr float square_dist = 10.f * 10.f;
 	const float square_target_dist = (ptr_target_->transform()->position() - ptr_transform_->position()).Magnitude();
 
+	if (attack_delay_ <= 0.f)
+	{
+		Fire();
+		attack_delay_ = 0.5f;
+	}
+	attack_delay_ -= delta_time;
+
 	ptr_transform_->LookAt(ptr_target_->transform()->position());
 
 	Vector3 right_vector = ((int)condition_ & 1) ? ptr_lower_transform_->Right().Normalize() : (ptr_lower_transform_->Right() * -1.f).Normalize();
@@ -488,7 +543,7 @@ void COrk_WarBoss::KlawShoot(float delta_time)
 
 	condition_ += delta_time * 0.5f;
 
-	if (condition_ >= 3.f)
+	if (condition_ >= 3.f || option != -1)
 	{
 		upper_shoot_rot_y_ = 0.f;
 		condition_ = 0.f;
@@ -601,6 +656,7 @@ void COrk_WarBoss::KlawAttack(float delta_time)
 	}
 	else if (condition_ == 4.f && true == ptr_upper_anim_ctrl_->CheckCurrentAnimationEnd(0.1))
 	{
+		ptr_klaw_->ptr_sphere_coll()->enable_ = false;
 		next_behavior_pattern_ = BehaviorPattern::Idle;
 		condition_ = 0.f;
 	}
@@ -611,6 +667,7 @@ void COrk_WarBoss::KlawAttack(float delta_time)
 		int option = -1;
 		ptr_transform_->move_dir() = move_dir * (speed_ * 2.f) * delta_time;
 		current_cell_index_ = Engine::GameManager()->MoveFromNavMesh(ptr_transform_->position(), ptr_transform_->move_dir(), current_cell_index_, option);
+		ptr_klaw_->ptr_sphere_coll()->enable_ = true;
 	}
 }
 
@@ -624,21 +681,33 @@ void COrk_WarBoss::BastionOfDestruction(float delta_time)
 			ptr_upper_anim_ctrl_->SetAnimationTrack("Klaw_Ground_Attack_Loop");
 			ptr_lower_anim_ctrl_->SetAnimationTrack("Klaw_Ground_Attack_Loop");
 			++condition_;
+			current_cell_index_ = -1;
+			// Skill Range Effect
+			if (nullptr == ptr_skill_range_)
+			{
+				ptr_skill_range_ = CWarBossSkillRange::Create(ptr_device_, &skill_pos_);
+				Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, TEXT("WarBoss_SkillRange"), ptr_skill_range_);
+			}
+			ptr_jump_effect_->SetActive(true);
 		}
 	}
 	else if (condition_ == 1.f)
 	{
-		skill_pos_y_ += 50.f * delta_time;
-		ptr_transform_->LookAt(ptr_target_->transform()->position());
-		Vector3 move_dir = ptr_transform_->Forward().Normalize();
+		skill_pos_y_ += 100.f * delta_time;
+		Vector3 pos = ptr_lower_transform_->position();
+		pos.y = 0.f;
+		Vector3 move_dir = (ptr_target_->transform()->position() - pos).Normalize();
+		move_dir *= speed_ * 0.8f * delta_time;
 		int option = -1;
-		ptr_transform_->move_dir() = move_dir * (speed_ * 0.5f) * delta_time;
-		current_cell_index_ = Engine::GameManager()->MoveFromNavMesh(ptr_transform_->position(), ptr_transform_->move_dir(), current_cell_index_, option);
+		ptr_transform_->position() += move_dir;
 		if (skill_pos_y_ > 500.f)
 		{
 			skill_pos_y_ = 500.f;
 			++condition_;
+			ptr_jump_effect_->transform()->rotation().x = 3.14f;
 		}
+		skill_pos_ = ptr_lower_transform_->position();
+		skill_pos_.y = 0.f;
 	}
 	else if (condition_ == 2.f)
 	{
@@ -649,14 +718,25 @@ void COrk_WarBoss::BastionOfDestruction(float delta_time)
 			++condition_;
 			ptr_upper_anim_ctrl_->SetAnimationTrack("Klaw_Ground_Attack_End");
 			ptr_lower_anim_ctrl_->SetAnimationTrack("Klaw_Ground_Attack_End");
+			CreateSkillEffect();
+			ptr_jump_effect_->transform()->rotation().x = 0.f;
+			ptr_jump_effect_->SetActive(false);
+			Subject()->set_camera_shaking(true);
 		}
 	}
 	else if (condition_ == 3.f)
 	{
-		if (true == ptr_upper_anim_ctrl_->CheckCurrentAnimationEnd(0.1))
+		if (nullptr != ptr_skill_range_)
+		{
+			ptr_skill_range_->Destroy();
+			ptr_skill_range_ = nullptr;
+			ptr_skill_collider_->enable_ = true;
+		}
+		else if (true == ptr_upper_anim_ctrl_->CheckCurrentAnimationEnd(0.1))
 		{
 			next_behavior_pattern_ = BehaviorPattern::Idle;
 			condition_ = 0.f;
+			ptr_skill_collider_->enable_ = false;
 		}
 	}
 	ptr_transform_->position().y = skill_pos_y_;
@@ -680,10 +760,126 @@ void COrk_WarBoss::Down()
 }
 void COrk_WarBoss::Victim()
 {
+	if (true == ptr_upper_anim_ctrl_->CheckCurrentAnimationEnd(2.0) && false == victim_blood_)
+	{
+		victim_blood_ = true;
+		CreateVictimBlood();
+	}
 	ptr_transform_->LookAt(ptr_target_->transform()->position());
 }
+
+void COrk_WarBoss::CheckCollision()
+{
+	const CollList& space_marin_coll_list = CollSystem()->GetColliderList(TAG_PLAYER);
+
+	if (true == ptr_skill_collider_->enable_)
+	{
+		for (auto& space_marin_coll : space_marin_coll_list)
+		{
+			if (true == ptr_skill_collider_->TriggerCheck(space_marin_coll))
+				space_marin_coll->ptr_object()->ApplyDamage(80);
+		}
+	}
+
+	if (pre_behavior_pattern_ == BehaviorPattern::Attack && weapon_ == Weapon::HeavyGun)
+	{
+		for (auto& space_marin_coll : space_marin_coll_list)
+		{
+			if (true == ptr_body_collider_->TriggerCheck(space_marin_coll))
+				space_marin_coll->ptr_object()->ApplyDamage(30);
+		}
+	}
+
+}
+
 void COrk_WarBoss::Fire()
 {
+	if (weapon_ == Weapon::HeavyGun)
+	{
+		Vector3 fire_dir = ptr_transform_->Forward();
+		fire_dir.x += (float)random_range(-30, 30) * 0.01f;
+		fire_dir.y += (float)random_range(-30, 30) * 0.01f;
+		fire_dir_ = fire_dir.Normalize();
+		Engine::CGameObject* hit_obj = nullptr;
+		float dist = 0.f;
+
+		for (int i = 0; i < 2; ++i)
+		{
+			fire_pos_ = ptr_heavy_gun_->GetFirePos(i);
+			if (true == CollSystem()->RaycastCheck(fire_pos_, fire_dir_, &dist, hit_obj, TAG_PLAYER))
+			{
+				if (nullptr != hit_obj)
+					hit_obj->ApplyDamage(10);
+				fire_range_pos_ = fire_pos_ + fire_dir_ * dist;
+				CreateBulletHitEffect(fire_range_pos_);
+			}
+			else
+				fire_range_pos_ = fire_pos_ + fire_dir_ * 20.f;
+
+			CreateFireEffect();
+		}
+	}
+	else if(weapon_ == Weapon::Klaw)
+	{
+		Vector3 fire_dir = ptr_transform_->Forward();
+		fire_dir.x += (float)random_range(-30, 30) * 0.01f;
+		fire_dir.y += (float)random_range(-30, 30) * 0.01f;
+		fire_dir_ = fire_dir.Normalize();
+		fire_pos_ = ptr_gun_->GetFirePos();
+		Engine::CGameObject* hit_obj = nullptr;
+		float dist = 0.f;
+		if (true == CollSystem()->RaycastCheck(fire_pos_, fire_dir_, &dist, hit_obj, TAG_PLAYER))
+		{
+			if (nullptr != hit_obj)
+				hit_obj->ApplyDamage(10);
+			fire_range_pos_ = fire_pos_ + fire_dir_ * dist;
+			CreateBulletHitEffect(fire_range_pos_);
+		}
+		else
+			fire_range_pos_ = fire_pos_ + fire_dir_ * 20.f;
+
+		CreateFireEffect();
+	}
+}
+
+void COrk_WarBoss::CreateExplosionEffect()
+{
+	TCHAR effect_key[64] = TEXT("");
+	wsprintf(effect_key, TEXT("OrkWarboss_Explosion_Effect"));
+	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, effect_key, CExplosion::Create(ptr_device_, ptr_transform_->position()));
+}
+
+void COrk_WarBoss::CreateSkillEffect()
+{
+	TCHAR effect_key[64] = TEXT("");
+	wsprintf(effect_key, TEXT("OrkWarboss_Skill_Effect"));
+	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, effect_key, CWarBossSkill::Create(ptr_device_, skill_pos_));
+}
+
+void COrk_WarBoss::CreateVictimBlood()
+{
+	TCHAR effect_key[64] = TEXT("");
+	wsprintf(effect_key, TEXT("OrkWarboss_Victim_Blood"));
+	Vector3 effect_pos = *(Vector3*)&ptr_body_frame_->combined_matrix.m[3][0];
+	D3DXVec3TransformCoord(&effect_pos, &effect_pos, &ptr_transform_->mat_world());
+	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, effect_key, CExecutionBlood::Create(ptr_device_, effect_pos));
+}
+
+void COrk_WarBoss::CreateFireEffect()
+{
+	TCHAR effect_key[64] = TEXT("");
+	wsprintf(effect_key, TEXT("WarBoss_Bullet_Fire_Effect"));
+	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, effect_key, CFireEffect::Create(ptr_device_, &fire_pos_));
+
+	wsprintf(effect_key, TEXT("WarBoss_Fire_Line_"));
+	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, effect_key, CFireLineSmoke::Create(ptr_device_, fire_pos_, fire_range_pos_));
+}
+
+void COrk_WarBoss::CreateBulletHitEffect(const Vector3 & hit_position)
+{
+	TCHAR effect_key[64] = TEXT("");
+	wsprintf(effect_key, TEXT("WarBoss_Bullet_Hit_Effect"));
+	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, effect_key, CHitEffect::Create(ptr_device_, hit_position, TEXT("HitBlood")));
 }
 
 #ifdef _DEBUG
@@ -710,14 +906,17 @@ void COrk_WarBoss::DebugRender()
 	ptr_body_collider_->DebugRender();
 	ptr_debug_shader_->EndShader();
 
-	mat_coll._41 = ptr_skill_collider_->GetSpherePos().x;
-	mat_coll._42 = ptr_skill_collider_->GetSpherePos().y;
-	mat_coll._43 = ptr_skill_collider_->GetSpherePos().z;
-	ptr_effect->SetMatrix("g_mat_world", &mat_coll);
+	if (true == ptr_skill_collider_->enable_)
+	{
+		mat_coll._41 = ptr_skill_collider_->GetSpherePos().x;
+		mat_coll._42 = ptr_skill_collider_->GetSpherePos().y;
+		mat_coll._43 = ptr_skill_collider_->GetSpherePos().z;
+		ptr_effect->SetMatrix("g_mat_world", &mat_coll);
 
-	ptr_debug_shader_->BegineShader(1);
-	ptr_skill_collider_->DebugRender();
-	ptr_debug_shader_->EndShader();
+		ptr_debug_shader_->BegineShader(1);
+		ptr_skill_collider_->DebugRender();
+		ptr_debug_shader_->EndShader();
+	}
 
 	//Matrix mat_view, mat_proj;
 	//ptr_device_->GetTransform(D3DTS_VIEW, &mat_view);

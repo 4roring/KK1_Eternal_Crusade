@@ -65,9 +65,13 @@ public:
 	///<param name = "ctrl_id">컨트롤 아이디 0번은 플레이어, 그 외에 번호는 AI가 조작한다.</param>
 	static CSpaceMarin* Create(LPDIRECT3DDEVICE9 ptr_device, int ctrl_id = 0);
 
+public:
+	virtual void ApplyDamage(int damage) override;
+
 private:
 	HRESULT AddComponent();
 	HRESULT AddWeapon();
+	HRESULT AddUI();
 	void Release();
 
 private:
@@ -84,6 +88,8 @@ private:
 
 private:
 	void CreateFireEffect();
+	void CreateBulletHitEffect(const Vector3& hit_position);
+	void CreateRunEffect(const Vector3& foot_pos);
 
 private:
 	void SetConstantTable(LPD3DXEFFECT ptr_effect);
@@ -95,6 +101,9 @@ private:
 	const Matrix* ptr_head_matrix_ = nullptr;
 	Engine::CCollider* ptr_body_collider_ = nullptr;
 	const Matrix* ptr_body_matrix_ = nullptr;
+	const Matrix* ptr_left_foot_matrix_ = nullptr;
+	const Matrix* ptr_right_foot_matrix_ = nullptr;
+	bool foot_effect_ = false;
 
 private:
 	Engine::CAnimController* ptr_upper_anim_ctrl_ = nullptr;
@@ -125,8 +134,10 @@ private:
 	int shield_ = 0;
 	int max_hp_ = 0;
 	int hp_ = 0;
+	int max_bullet_ = 0;
 	int bullet_count_ = 0;
-	float damage_time_ = 0.f;
+	float shield_recovery_time_ = 0.f;
+	float damage_delay_ = 0.f;
 	float condition_ = 0.f;
 
 private:

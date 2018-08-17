@@ -29,11 +29,13 @@ public:
 	Engine::CTransform* ptr_lower_transform();
 	Vector3& GetFirePos() const;
 	int current_cell_index() const;
+	int cell_option() const;
 
 public:
 	void set_fire(bool is_fire);
 	void set_slash(bool is_slash);
 	void set_fire_range_pos(const Vector3& fire_range_pos);
+	void SetController(bool is_control);
 
 private:
 	HRESULT Initialize(int ctrl_id);
@@ -46,6 +48,7 @@ public:
 
 public:
 	virtual void ApplyDamage(int damage) override;
+	virtual void OnEnable() override;
 
 public:
 	static COrk* Create(LPDIRECT3DDEVICE9 ptr_device, int ctrl_id);
@@ -65,6 +68,11 @@ private: // LateUpdate Function
 	void UpdateUpperAnimState();
 	void Fire();
 	void Slash();
+
+private:
+	void CreateFireEffect();
+	void CreateBulletHitEffect(const Vector3& hit_position);
+
 
 private: // Render Function
 	void SetConstantTable(LPD3DXEFFECT ptr_effect);
@@ -98,6 +106,8 @@ private:
 	bool fire_ = false;
 	bool slash_ = false;
 	float attack_delay_ = 0.f;
+	float damage_delay_ = 0.f;
+	int cell_option_ = -1;
 
 private:
 	float anim_time_ = 0.f;
@@ -117,6 +127,7 @@ private:
 	Vector3 ray_dir_ = Vector3();
 
 private:
+	int max_hp_ = 0;
 	int hp_ = 0;
 	int condition_ = 0;
 

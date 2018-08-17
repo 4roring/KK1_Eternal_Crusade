@@ -15,6 +15,8 @@
 
 #include "Transform.h"
 #include "Shader.h"
+#include "Texture.h"
+#include "RectTexture.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -137,6 +139,22 @@ void CMapToolView::OnInitialUpdate()
 	hr = Engine::GameManager()->Add_Prototype(0, TEXT("Shader_Default")
 		, Engine::CShader::Create(ptr_device_, TEXT("../../Reference/Shader/DefaultShader.hlsl")));
 	assert(hr == S_OK && "Shader_NormalMap Component Add Failed");
+
+	hr = Engine::GameManager()->Add_Prototype(0, TEXT("Shader_Particle")
+		, Engine::CShader::Create(ptr_device_, TEXT("../../Reference/Shader/ParticleEffectShader.hlsl")));
+	assert(hr == S_OK && "Shader_Particle Component Add Failed");
+
+	hr = Engine::GameManager()->Add_Prototype(0, TEXT("Shader_Mesh_Particle")
+		, Engine::CShader::Create(ptr_device_, TEXT("../../Reference/Shader/MeshEffectShader.hlsl")));
+	assert(hr == S_OK && "Shader_Mesh_Particle Component Add Failed");
+
+	hr = Engine::GameManager()->Add_Prototype(0, TEXT("Texture_Blood")
+		, Engine::CTexture::Create(ptr_device_, Engine::TEXTURETYPE::NORMAL, TEXT("../../Client/bin/Resources/Texture/Effect/T_FxBlood02Alpha.tga"), 1));
+	assert(hr == S_OK && "Shader_NormalMap Component Add Failed");
+
+	hr = Engine::GameManager()->Add_Prototype(0, TEXT("Buffer_RectTexture")
+		, Engine::CRectTexture::Create(ptr_device_));
+	assert(hr == S_OK && "Buffer_RectTexture Component Add Failed");
 }
 
 

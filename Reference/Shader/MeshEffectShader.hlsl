@@ -116,10 +116,22 @@ technique Default_Technique
         ALPHABLENDENABLE = TRUE;
         SRCBLEND = SRCALPHA;
         DESTBLEND = INVSRCALPHA;
-        
         CULLMODE = NONE;
 
         VertexShader = compile vs_3_0 VS_MAIN();
         PixelShader = compile ps_3_0 PS_LINE();
     }
+
+    pass AlphaTest
+    {
+        ALPHATESTENABLE = TRUE;
+        ALPHAFUNC = Greater;
+        ALPHAREF = 0x0f;
+
+        CULLMODE = NONE;
+
+        VertexShader = compile vs_3_0 VS_MAIN();
+        PixelShader = compile ps_3_0 PS_MAIN();
+    }
+
 }

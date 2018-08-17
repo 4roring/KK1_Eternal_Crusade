@@ -406,7 +406,11 @@ void NavMeshEditor::OnClick_Save()
 	CString path = TEXT("");
 	Tool()->ptr_stage_editor()->GetPathFromDialog(FALSE, path);
 
-	if (path.IsEmpty()) return;
+	if (path.IsEmpty()) 
+	{
+		Tool()->SetFileMode(false);
+		return;
+	}
 
 	HANDLE file = CreateFile(path, GENERIC_WRITE, 0, nullptr
 		, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
@@ -449,7 +453,11 @@ void NavMeshEditor::OnClick_Load()
 	CString path = TEXT("");
 	Tool()->ptr_stage_editor()->GetPathFromDialog(TRUE, path);
 
-	if (path.IsEmpty()) return;
+	if (path.IsEmpty())
+	{
+		Tool()->SetFileMode(false);
+		return;
+	}
 
 	Release_All();
 

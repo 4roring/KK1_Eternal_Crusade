@@ -16,7 +16,10 @@ private:
 public:
 	const Matrix& inv_mat_proj();
 	const Matrix& inv_mat_view();
-	Vector3 camera_pos();
+	Vector3* camera_pos() const;
+	Vector3* player_pos() const;
+	bool camera_shaking() const;
+	const Matrix& GetOrthoProjection();
 
 public:
 	void SetSpaceMarinData(int* ptr_shield, int* ptr_hp, int* ptr_current_cell, int ctrl_id);
@@ -25,6 +28,9 @@ public:
 	void SetBossHp(int* ptr_hp);
 	void SetBossPosition(Vector3* ptr_boss_pos);
 	void SetInverseCameraInfo(Matrix* inv_mat_proj, Matrix* inv_mat_view, Vector3* camera_pos);
+	void set_player_pos(Vector3* player_pos);
+	void set_camera_shaking(bool is_shaking);
+	void SetOrthoProjection(const Matrix& mat_ortho);
 
 public:
 	void RegisterObserver(CSpaceMarinObserver*& ptr_observer);
@@ -50,10 +56,16 @@ private: // Camera Data
 	Matrix* inv_mat_view_ = nullptr;
 	Vector3* camera_pos_ = nullptr;
 
+private:
+	Vector3* player_pos_ = nullptr;
 
 private: // Observer
 	std::list<CSpaceMarinObserver*> space_marin_observer_list_;
 	std::list<CEnemyObserver*> enemy_observer_list_;
+
+private:
+	bool camera_shaking_ = false;
+	Matrix mat_ortho_proj_;
 };
 
 static CSubject* Subject()

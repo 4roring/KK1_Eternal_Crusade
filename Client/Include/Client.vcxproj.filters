@@ -155,6 +155,42 @@
     <Filter Include="02.GameObject\Effect\FireLineSmoke">
       <UniqueIdentifier>{cee55c25-e852-44a4-b894-619289a442a1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Effect\Explosion">
+      <UniqueIdentifier>{ba591240-0aa2-43a6-af5e-34520928efbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Effect\SwordEletro">
+      <UniqueIdentifier>{35f54ce2-b567-4ff6-9be0-c923de1b38d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Effect\ExecutionBlood">
+      <UniqueIdentifier>{219f984b-17ea-48c9-9eb2-21b408b52da2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Effect\MoveDust">
+      <UniqueIdentifier>{118a6962-d054-4a2c-a053-277be7c390a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Effect\WarBossJump">
+      <UniqueIdentifier>{e386cab6-7192-4337-ac04-d8b10e6b8af9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Effect\WarBossSkill">
+      <UniqueIdentifier>{437143e3-3d9a-4d28-9373-79f633262722}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Effect\WarBossSkillRange">
+      <UniqueIdentifier>{8e440d25-7159-4250-ab2c-3d4845288ae8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Effect\HitEffect">
+      <UniqueIdentifier>{96ef0475-44bd-43b6-9609-b146e100fffc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\UI\Hp">
+      <UniqueIdentifier>{9828bcf6-fc9a-4dfe-b838-264408146e1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\UI\Shield">
+      <UniqueIdentifier>{8bfd9223-6aac-4099-99c9-9f433acf47fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\UI\Weapon">
+      <UniqueIdentifier>{a97abab4-a574-4928-ac76-b0017244e67e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07.SoundManager">
+      <UniqueIdentifier>{97b6bf28-8af1-4a67-8dd2-a276c7f50b37}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -278,6 +314,39 @@
     <ClInclude Include="..\Code\FireLineSmoke.h">
       <Filter>02.GameObject\Effect\FireLineSmoke</Filter>
     </ClInclude>
+    <ClInclude Include="..\Code\Explosion.h">
+      <Filter>02.GameObject\Effect\Explosion</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\SwordEletro.h">
+      <Filter>02.GameObject\Effect\SwordEletro</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\MoveDust.h">
+      <Filter>02.GameObject\Effect\MoveDust</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\WarBossSkill.h">
+      <Filter>02.GameObject\Effect\WarBossSkill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\WarBossSkillRange.h">
+      <Filter>02.GameObject\Effect\WarBossSkillRange</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\ExecutionBlood.h">
+      <Filter>02.GameObject\Effect\ExecutionBlood</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\HitEffect.h">
+      <Filter>02.GameObject\Effect\HitEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\WarBossJump.h">
+      <Filter>02.GameObject\Effect\WarBossJump</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\UI_Hp.h">
+      <Filter>02.GameObject\UI\Hp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\UI.h">
+      <Filter>02.GameObject\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\UI_Shield.h">
+      <Filter>02.GameObject\UI\Shield</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -379,6 +448,39 @@
     </ClCompile>
     <ClCompile Include="..\Code\FireLineSmoke.cpp">
       <Filter>02.GameObject\Effect\FireLineSmoke</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Explosion.cpp">
+      <Filter>02.GameObject\Effect\Explosion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\SwordEletro.cpp">
+      <Filter>02.GameObject\Effect\SwordEletro</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\MoveDust.cpp">
+      <Filter>02.GameObject\Effect\MoveDust</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\WarBossSkill.cpp">
+      <Filter>02.GameObject\Effect\WarBossSkill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\WarBossSkillRange.cpp">
+      <Filter>02.GameObject\Effect\WarBossSkillRange</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\ExecutionBlood.cpp">
+      <Filter>02.GameObject\Effect\ExecutionBlood</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\HitEffect.cpp">
+      <Filter>02.GameObject\Effect\HitEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\WarBossJump.cpp">
+      <Filter>02.GameObject\Effect\WarBossJump</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\UI_Hp.cpp">
+      <Filter>02.GameObject\UI\Hp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\UI.cpp">
+      <Filter>02.GameObject\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\UI_Shield.cpp">
+      <Filter>02.GameObject\UI\Shield</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

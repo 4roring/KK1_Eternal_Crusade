@@ -13,9 +13,9 @@ struct Vector3 : public D3DXVECTOR3
 	{
 		x = 0.f; y = 0.f; z = 0.f;
 	}
-	Vector3(float _x)
+	Vector3(float value)
 	{
-		x = _x; y = 0.f; z = 0.f;
+		x = value; y = value; z = value;
 	}
 	Vector3(float _x, float _y)
 	{
@@ -29,11 +29,16 @@ struct Vector3 : public D3DXVECTOR3
 	{
 		x = rhs.x; y = rhs.y; z = rhs.z;
 	}
+	Vector3(Vector3&& rhs)
+	{
+		*this = std::move(rhs);
+	}
 	Vector3& operator=(const Vector3& rhs)
 	{
 		x = rhs.x; y = rhs.y; z = rhs.z;
 		return *this;
 	}
+	
 
 
 	// Vector3 + float
@@ -107,7 +112,6 @@ struct Vector3 : public D3DXVECTOR3
 
 		return *this;
 	}
-
 
 	// Vector3 * float
 	Vector3 operator*(float value)

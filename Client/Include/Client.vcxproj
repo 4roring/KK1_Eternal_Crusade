@@ -153,10 +153,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Code\HitEffect.h" />
     <ClInclude Include="..\Code\ChainSword.h" />
     <ClInclude Include="..\Code\EnemyAIController.h" />
     <ClInclude Include="..\Code\EnemyObserver.h" />
     <ClInclude Include="..\Code\EventManager.h" />
+    <ClInclude Include="..\Code\ExecutionBlood.h" />
+    <ClInclude Include="..\Code\Explosion.h" />
     <ClInclude Include="..\Code\FireEffect.h" />
     <ClInclude Include="..\Code\FireLineSmoke.h" />
     <ClInclude Include="..\Code\Function.h" />
@@ -169,6 +172,7 @@
     <ClInclude Include="..\Code\Loading.h" />
     <ClInclude Include="..\Code\Logo.h" />
     <ClInclude Include="..\Code\MainGame.h" />
+    <ClInclude Include="..\Code\MoveDust.h" />
     <ClInclude Include="..\Code\Ork.h" />
     <ClInclude Include="..\Code\Ork_Gun.h" />
     <ClInclude Include="..\Code\Ork_HeavyGun.h" />
@@ -184,8 +188,15 @@
     <ClInclude Include="..\Code\SpaceMarinObserver.h" />
     <ClInclude Include="..\Code\Stage.h" />
     <ClInclude Include="..\Code\Subject.h" />
+    <ClInclude Include="..\Code\SwordEletro.h" />
     <ClInclude Include="..\Code\Tyranid.h" />
+    <ClInclude Include="..\Code\UI.h" />
+    <ClInclude Include="..\Code\UI_Hp.h" />
+    <ClInclude Include="..\Code\UI_Shield.h" />
     <ClInclude Include="..\Code\Value.h" />
+    <ClInclude Include="..\Code\WarBossJump.h" />
+    <ClInclude Include="..\Code\WarBossSkill.h" />
+    <ClInclude Include="..\Code\WarBossSkillRange.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="CollisionSystem.h" />
     <ClInclude Include="Frustum.h" />
@@ -196,12 +207,15 @@
     <ClInclude Include="TestPlane2.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Code\HitEffect.cpp" />
     <ClCompile Include="..\Code\ChainSword.cpp" />
     <ClCompile Include="..\Code\Controller.cpp" />
     <ClCompile Include="..\Code\DynamicCamera.cpp" />
     <ClCompile Include="..\Code\EnemyAIController.cpp" />
     <ClCompile Include="..\Code\EnemyObserver.cpp" />
     <ClCompile Include="..\Code\EventManager.cpp" />
+    <ClCompile Include="..\Code\ExecutionBlood.cpp" />
+    <ClCompile Include="..\Code\Explosion.cpp" />
     <ClCompile Include="..\Code\FireEffect.cpp" />
     <ClCompile Include="..\Code\FireLineSmoke.cpp" />
     <ClCompile Include="..\Code\Gun_Phobos.cpp" />
@@ -209,6 +223,7 @@
     <ClCompile Include="..\Code\Loading.cpp" />
     <ClCompile Include="..\Code\Logo.cpp" />
     <ClCompile Include="..\Code\MainGame.cpp" />
+    <ClCompile Include="..\Code\MoveDust.cpp" />
     <ClCompile Include="..\Code\Ork.cpp" />
     <ClCompile Include="..\Code\Ork_Gun.cpp" />
     <ClCompile Include="..\Code\Ork_HeavyGun.cpp" />
@@ -223,7 +238,14 @@
     <ClCompile Include="..\Code\SpaceMarinObserver.cpp" />
     <ClCompile Include="..\Code\Stage.cpp" />
     <ClCompile Include="..\Code\Subject.cpp" />
+    <ClCompile Include="..\Code\SwordEletro.cpp" />
     <ClCompile Include="..\Code\Tyranid.cpp" />
+    <ClCompile Include="..\Code\UI.cpp" />
+    <ClCompile Include="..\Code\UI_Hp.cpp" />
+    <ClCompile Include="..\Code\UI_Shield.cpp" />
+    <ClCompile Include="..\Code\WarBossJump.cpp" />
+    <ClCompile Include="..\Code\WarBossSkill.cpp" />
+    <ClCompile Include="..\Code\WarBossSkillRange.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="CollisionSystem.cpp" />
     <ClCompile Include="Frustum.cpp" />

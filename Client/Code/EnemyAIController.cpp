@@ -38,13 +38,16 @@ void CEnemyAIController::LateInit()
 	ptr_forward_transform_->AddReferenceCount();
 	current_state_ = State::Idle;
 
-	ptr_target_ = dynamic_cast<CSpaceMarin*>(Engine::GameManager()->FindObject(MAINTAIN_STAGE, TEXT("SpaceMarin_1")));
+	ptr_target_ = dynamic_cast<CSpaceMarin*>(Engine::GameManager()->FindObject(MAINTAIN_STAGE, TEXT("SpaceMarin")));
 	ptr_target_transform_ = ptr_target_->transform();
 }
 
 void CEnemyAIController::Update(float delta_time)
 {
 	CController::Update(delta_time);
+
+	//if (ptr_ctrl_unit_->cell_option() != -1)
+	//	current_state_ = State::Idle;
 
 	switch (current_state_)
 	{
@@ -157,7 +160,7 @@ void CEnemyAIController::Gun_Attack(float delta_time)
 	{
 		ptr_ctrl_unit_->set_fire(true);
 		ptr_ctrl_transform_->LookAt(ptr_target_transform_->position());
-		attack_delay_ = 1.f;
+		attack_delay_ = 1.5f;
 		++condition_;
 	}
 

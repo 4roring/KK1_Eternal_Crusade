@@ -19,6 +19,11 @@ int CSpaceMarinObserver::GetCurrentCell(int ctrl_id)
 	return current_cell_[ctrl_id];
 }
 
+int CSpaceMarinObserver::GetShiled(int ctrl_id)
+{
+	return shield_[ctrl_id];
+}
+
 void CSpaceMarinObserver::Update(int * shield, int * hp, int * current_cell, int index)
 {
 	shield_[index] = *shield;

@@ -26,6 +26,8 @@ void Engine::CGameObject::AddComponent(const std::wstring & instance_key, CCompo
 void Engine::CGameObject::SetActive(bool active)
 {
 	active_ = active;
+	if (true == active_) OnEnable();
+	else OnDisable();
 }
 
 void Engine::CGameObject::Destroy()
@@ -95,6 +97,14 @@ void Engine::CGameObject::ApplyDamage(int damage)
 bool Engine::CGameObject::CheckRaycast(const Vector3 & ray_pos, const Vector3 & ray_dir, float * hit_dist)
 {
 	return false;
+}
+
+void Engine::CGameObject::OnEnable()
+{
+}
+
+void Engine::CGameObject::OnDisable()
+{
 }
 
 void Engine::CGameObject::Release()

@@ -20,7 +20,6 @@ private:
 	HRESULT Initialize(Vector3* pos);
 
 public:
-	virtual void LateInit() override;
 	virtual void Update(float delta_time) override;
 	virtual void LateUpdate() override;
 	virtual void Render() override;

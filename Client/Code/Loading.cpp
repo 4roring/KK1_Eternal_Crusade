@@ -18,6 +18,7 @@
 #include "Stage.h"
 #include "LevelObject.h"
 #include "Transform.h"
+#include "ParticleSystem.h"
 
 #include <filesystem>
 namespace FILESYSTEM = std::experimental::filesystem;
@@ -48,6 +49,11 @@ HRESULT CLoading::InitLoading()
 
 	thread_ = (HANDLE)_beginthreadex(nullptr, 0, LoadingFunction, this, 0, nullptr);
 	assert(nullptr != thread_ && "Loading Thread Create Failed");
+
+	Matrix mat_ortho;
+	D3DXMatrixOrthoLH(&mat_ortho, kWinCx, kWinCy, 0.f, 1.f);
+	Subject()->SetOrthoProjection(mat_ortho);
+
 	return S_OK;
 }
 
@@ -55,6 +61,8 @@ HRESULT CLoading::Stage_Loading()
 {
 	lstrcpy(loading_message_, TEXT("Texture Loading"));
 	HRESULT hr = E_FAIL;
+
+	EventManager()->InitEvent();
 
 	// Shader
 	lstrcpy(loading_message_, TEXT("Shader Complie and Loading"));
@@ -74,7 +82,13 @@ HRESULT CLoading::Stage_Loading()
 		, TEXT("Shader_Mesh_Effect")
 		, Engine::CShader::Create(ptr_device_
 			, TEXT("../../Reference/Shader/MeshEffectShader.hlsl")));
-	assert(hr == S_OK && "Shader_DynamicMesh Component Add Failed");
+	assert(hr == S_OK && "Shader_Mesh_Effect Component Add Failed");
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
+		, TEXT("Shader_Point_Effect")
+		, Engine::CShader::Create(ptr_device_
+			, TEXT("../../Reference/Shader/ParticleEffectShader.hlsl")));
+	assert(hr == S_OK && "Shader_Point_Effect Component Add Failed");
 
 	//hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
 	//	, TEXT("Shader_DynamicMesh_Color")
@@ -86,13 +100,19 @@ HRESULT CLoading::Stage_Loading()
 		, TEXT("Shader_NormalMap")
 		, Engine::CShader::Create(ptr_device_
 			, TEXT("../../Reference/Shader/Deferred/Deferred_StaticMeshShader.hlsl")));
-	assert(hr == S_OK && "Shader_DynamicMesh Component Add Failed");
+	assert(hr == S_OK && "Shader_NormalMap Component Add Failed");
 
 	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
 		, TEXT("Shader_Sky")
 		, Engine::CShader::Create(ptr_device_
 			, TEXT("../../Reference/Shader/SkyShader.hlsl")));
-	assert(hr == S_OK && "Shader_DynamicMesh Component Add Failed");
+	assert(hr == S_OK && "Shader_Sky Component Add Failed");
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
+		, TEXT("Shader_UI")
+		, Engine::CShader::Create(ptr_device_
+			, TEXT("../../Reference/Shader/UIShader.hlsl")));
+	assert(hr == S_OK && "Shader_UI Component Add Failed");
 
 	lstrcpy(loading_message_, TEXT("Texture Loading"));
 	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
@@ -100,19 +120,32 @@ HRESULT CLoading::Stage_Loading()
 		, Engine::CTexture::Create(ptr_device_, Engine::TEXTURETYPE::CUBE
 			, TEXT("../bin/Resources/Texture/Skybox/Skybox.dds"), 1));
 
-	lstrcpy(loading_message_, TEXT("Texture Loading"));
 	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
 		, TEXT("Explosion_Texture")
 		, Engine::CTexture::Create(ptr_device_, Engine::TEXTURETYPE::NORMAL
 			, TEXT("../bin/Resources/Texture/Effect/T_ExplosionSeq4x4_001.tga"), 1));
 
-	lstrcpy(loading_message_, TEXT("Texture Loading"));
 	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
 		, TEXT("LineSmoke_Texture")
 		, Engine::CTexture::Create(ptr_device_, Engine::TEXTURETYPE::NORMAL
 			, TEXT("../bin/Resources/Texture/Effect/T_RibbonSmoky.tga"), 1));
 
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("SkillRange_Texture")
+		, Engine::CTexture::Create(ptr_device_, Engine::TEXTURETYPE::NORMAL
+			, TEXT("../bin/Resources/Texture/Effect/Skill_Range.png"), 1));
 
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("HP_UI_Texture")
+		, Engine::CTexture::Create(ptr_device_, Engine::TEXTURETYPE::NORMAL
+			, TEXT("../bin/Resources/Texture/UI/HP_Panel%d.tga"), 2));
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("Shield_UI_Texture")
+		, Engine::CTexture::Create(ptr_device_, Engine::TEXTURETYPE::NORMAL
+			, TEXT("../bin/Resources/Texture/UI/Shield_Panel%d.tga"), 2));
+
+	
 	// Mesh
 	lstrcpy(loading_message_, TEXT("Mesh Loading"));
 
@@ -146,6 +179,29 @@ HRESULT CLoading::Stage_Loading()
 			, TEXT("../bin/Resources/Mesh/Ork_WarBoss/")
 			, TEXT("Ork_WarBoss.X")));
 	assert(hr == S_OK && "Ork Mesh Add Failed");
+
+
+	// Particle Effect
+	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/HitBlood.dat"));
+	assert(hr == S_OK && "Effect Data Load Failed");
+	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/SwordHitBlood.dat"));
+	assert(hr == S_OK && "Effect Data Load Failed");
+	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/BulletHit.dat"));
+	assert(hr == S_OK && "Effect Data Load Failed");
+	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/ExecutionBlood.dat"));
+	assert(hr == S_OK && "Effect Data Load Failed");
+	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/Explosion_1.dat"));
+	assert(hr == S_OK && "Effect Data Load Failed");
+	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/Sword_Lightning.dat"));
+	assert(hr == S_OK && "Effect Data Load Failed");
+	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/Move_Dust.dat"));
+	assert(hr == S_OK && "Effect Data Load Failed");
+	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/WarBoss_Skill_Dust.dat"));
+	assert(hr == S_OK && "Effect Data Load Failed");
+	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/WarBoss_Skill_Mini_Stone.dat"));
+	assert(hr == S_OK && "Effect Data Load Failed");
+	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/WarBoss_Skill_Jump.dat"));
+	assert(hr == S_OK && "Effect Data Load Failed");
 
 
 	//hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
@@ -207,7 +263,6 @@ HRESULT CLoading::Stage_Loading()
 
 	NavMeshDataLoad(TEXT("../bin/Data/StageData/Stage_1_Nav.dat"));
 	StageDataLoad(MAINTAIN_STAGE, TEXT("../bin/Data/StageData/Stage_1.dat"));
-
 
 	lstrcpy(loading_message_, TEXT("Loading Complete"));
 
@@ -330,6 +385,8 @@ void CLoading::AddEnemyOrk(HANDLE file, const TCHAR * mesh_key, const TCHAR * ob
 	ReadFile(file, ptr_obj->transform()->position(), sizeof(Vector3), &byte, nullptr);
 	ReadFile(file, ptr_obj->transform()->rotation(), sizeof(Vector3), &byte, nullptr);
 	ReadFile(file, temp, sizeof(Vector3), &byte, nullptr);
+
+	EventManager()->AddEnemy(object_key, ptr_obj);
 }
 
 void CLoading::AddOrkWarBoss(HANDLE file, const TCHAR * mesh_key, const TCHAR * object_key, MAINTAINID stage_id, DWORD & byte)
@@ -344,6 +401,8 @@ void CLoading::AddOrkWarBoss(HANDLE file, const TCHAR * mesh_key, const TCHAR * 
 	ReadFile(file, ptr_obj->transform()->position(), sizeof(Vector3), &byte, nullptr);
 	ReadFile(file, ptr_obj->transform()->rotation(), sizeof(Vector3), &byte, nullptr);
 	ReadFile(file, temp, sizeof(Vector3), &byte, nullptr);
+
+	EventManager()->AddEnemy(object_key, ptr_obj);
 }
 
 HRESULT CLoading::FindAndLoadMesh(MAINTAINID stage_id, const std::wstring & mesh_key, const std::wstring & path)
@@ -361,10 +420,13 @@ HRESULT CLoading::FindAndLoadMesh(MAINTAINID stage_id, const std::wstring & mesh
 				return S_OK;
 		}
 
+		TCHAR ex[128] = TEXT("");
+		lstrcmp(ex, directory.path().c_str());
+
 		if (FILESYSTEM::is_regular_file(directory.status())
 			&& 0 == mesh_key.compare(directory.path().stem()))
 		{
-			std::wstring file_path = directory.path().c_str();
+			std::wstring file_path = directory.path();
 			const std::wstring file_name = mesh_key + TEXT(".X");
 			auto iter = file_path.rfind(TEXT("\\"));
 			file_path = file_path.substr(0, ++iter);
@@ -430,6 +492,97 @@ HRESULT CLoading::NavMeshDataLoad(const TCHAR * path)
 
 	CloseHandle(file);
 	return S_OK;
+}
+
+HRESULT CLoading::EffectDataLoad(const TCHAR * path)
+{
+	HANDLE file = CreateFile(path, GENERIC_READ, 0, nullptr
+		, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+	DWORD byte = 0;
+	TCHAR texture_key[MAX_PATH] = TEXT("");
+	int max_particle = 0;
+	int type = 0;
+
+	ReadFile(file, &type, sizeof(unsigned int), &byte, nullptr);
+	ReadFile(file, &max_particle, sizeof(int), &byte, nullptr);
+
+	Engine::CParticleSystem* ptr_particle_system_ = Engine::CParticleSystem::Create(ptr_device_, max_particle, (Engine::ParticleType)type);
+
+	ReadFile(file, ptr_particle_system_->particles()->origin, sizeof(Vector3), &byte, nullptr);
+	ReadFile(file, ptr_particle_system_->particles()->origin_min, sizeof(Vector3), &byte, nullptr);
+	ReadFile(file, ptr_particle_system_->particles()->origin_max, sizeof(Vector3), &byte, nullptr);
+
+	ReadFile(file, ptr_particle_system_->particles()->velocity, sizeof(Vector3), &byte, nullptr);
+	ReadFile(file, ptr_particle_system_->particles()->velocity_min, sizeof(Vector3), &byte, nullptr);
+	ReadFile(file, ptr_particle_system_->particles()->velocity_max, sizeof(Vector3), &byte, nullptr);
+
+	ReadFile(file, ptr_particle_system_->particles()->gravity, sizeof(Vector3), &byte, nullptr);
+
+	ReadFile(file, &ptr_particle_system_->particles()->scale, sizeof(float), &byte, nullptr);
+	ReadFile(file, &ptr_particle_system_->particles()->scale_min, sizeof(float), &byte, nullptr);
+	ReadFile(file, &ptr_particle_system_->particles()->scale_max, sizeof(float), &byte, nullptr);
+	ReadFile(file, &ptr_particle_system_->particles()->speed, sizeof(float), &byte, nullptr);
+	ReadFile(file, &ptr_particle_system_->particles()->life_time, sizeof(float), &byte, nullptr);
+	ReadFile(file, &ptr_particle_system_->particles()->color.r, sizeof(float), &byte, nullptr);
+	ReadFile(file, &ptr_particle_system_->particles()->color.g, sizeof(float), &byte, nullptr);
+	ReadFile(file, &ptr_particle_system_->particles()->color.b, sizeof(float), &byte, nullptr);
+	ReadFile(file, &ptr_particle_system_->particles()->color.a, sizeof(float), &byte, nullptr);
+
+	ReadFile(file, &texture_key, sizeof(texture_key), &byte, nullptr);
+
+	ReadFile(file, &ptr_particle_system_->particles()->duration, sizeof(float), &byte, nullptr);
+
+	ReadFile(file, &ptr_particle_system_->particles()->max_u, sizeof(float), &byte, nullptr);
+	ReadFile(file, &ptr_particle_system_->particles()->max_v, sizeof(float), &byte, nullptr);
+
+	ReadFile(file, &ptr_particle_system_->particles()->loop, sizeof(bool), &byte, nullptr);
+	ReadFile(file, &ptr_particle_system_->particles()->uv_animation, sizeof(bool), &byte, nullptr);
+	ReadFile(file, &ptr_particle_system_->particles()->uv_loop, sizeof(bool), &byte, nullptr);
+	ReadFile(file, &ptr_particle_system_->particles()->random_origin, sizeof(bool), &byte, nullptr);
+	ReadFile(file, &ptr_particle_system_->particles()->random_velocity, sizeof(bool), &byte, nullptr);
+	ReadFile(file, &ptr_particle_system_->particles()->random_color, sizeof(bool), &byte, nullptr);
+	ReadFile(file, &ptr_particle_system_->particles()->random_rotation, sizeof(bool), &byte, nullptr);
+	ReadFile(file, &ptr_particle_system_->particles()->random_scale, sizeof(bool), &byte, nullptr);
+
+	CloseHandle(file);
+
+	if (type == 1)
+	{
+		if (true == CheckExistTexture(texture_key))
+			ptr_particle_system_->SetParticleTexture(MAINTAIN_STAGE, texture_key);
+		ptr_particle_system_->SetParticleMeshKey(MAINTAIN_STATIC, TEXT("Buffer_RectTexture"));
+	}
+
+	FILESYSTEM::path key = path;
+	Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE, key.stem(), ptr_particle_system_);
+
+	return S_OK;
+}
+
+bool CLoading::CheckExistTexture(const TCHAR * texture_key)
+{
+	Engine::CComponent* ptr_component = Engine::GameManager()->FindComponent(MAINTAIN_STAGE, texture_key);
+	if (nullptr == ptr_component)
+	{
+		FILESYSTEM::path tex_path = TEXT("../bin/Resources/Texture/Effect/");
+		if (false == FILESYSTEM::is_directory(tex_path))
+			return false;
+
+		for (const auto directory : FILESYSTEM::directory_iterator(tex_path))
+		{
+			if (true == FILESYSTEM::is_regular_file(directory.path())
+				&& 0 == directory.path().stem().compare(texture_key))
+			{
+				Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE, texture_key,
+					Engine::CTexture::Create(ptr_device_, Engine::TEXTURETYPE::NORMAL, directory.path(), 1));
+				return true;
+			}
+		}
+		return false;
+	}
+	else
+		return true;
 }
 
 bool CLoading::ClockwiseCheckOfNavCell(std::array<Vector3, 3>& cell_point_array)

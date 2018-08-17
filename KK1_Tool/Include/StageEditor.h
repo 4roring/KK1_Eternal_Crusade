@@ -70,7 +70,7 @@ private:
 private:
 	CListBox resource_list_;
 	CListBox object_list_;
-	std::unordered_map<std::wstring, MapObject*> map_object_;
+	std::map<std::wstring, MapObject*> map_object_;
 	MapObject* ptr_select_object_ = nullptr;
 
 private:

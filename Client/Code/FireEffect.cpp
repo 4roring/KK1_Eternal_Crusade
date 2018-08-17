@@ -33,13 +33,9 @@ HRESULT CFireEffect::Initialize(Vector3* pos)
 	return hr;
 }
 
-void CFireEffect::LateInit()
-{
-}
-
 void CFireEffect::Update(float delta_time)
 {
-	ComputeViewZ(Subject()->camera_pos());
+	ComputeViewZ(*Subject()->camera_pos());
 
 	ptr_transform_->position() = *ptr_fix_pos_;
 	CGameObject::Update(delta_time);
@@ -51,13 +47,13 @@ void CFireEffect::Update(float delta_time)
 	//
 	//ptr_transform_->mat_world() = mat_bill * ptr_transform_->mat_world();
 
-	ptr_transform_->LookAt_XY(Subject()->camera_pos());
+	ptr_transform_->LookAt_XY(*Subject()->camera_pos());
 
 	frame_num_ += max_u_ * max_v_ * delta_time;
 	if (frame_num_ >= max_u_)
 	{
 		frame_num_ = 0.f;
-		if (++scene_num_ <= max_v_)
+		if (++scene_num_ >= max_v_)
 			destroy_ = true;
 	}
 }

@@ -18,6 +18,13 @@ CPlayerCamera::~CPlayerCamera()
 	Release();
 }
 
+void CPlayerCamera::EnableEvent()
+{
+	event_mode_ = true;
+	next_eye_ = eye();
+	next_at_ = at();
+}
+
 HRESULT CPlayerCamera::InitCamera(MAINTAINID stage_id)
 {
 	HRESULT hr = CCamera::InitCamera();
@@ -41,12 +48,19 @@ HRESULT CPlayerCamera::InitCamera(MAINTAINID stage_id)
 	current_cell_index_ = -1;
 
 	Subject()->SetInverseCameraInfo(&inv_mat_proj_, &inv_mat_view_, &eye());
+	EventManager()->SetEventCamera(this);
 
 	return hr;
 }
 
 void CPlayerCamera::Update(float delta_time)
 {
+	if (true == event_mode_)
+	{
+		EventCamera(delta_time);
+		return;
+	}
+
 	Vector3 player_right = ptr_player_transform_->Right().Normalize();
 	Vector3 player_up = ptr_player_transform_->Up().Normalize();
 	Vector3 player_forward = ptr_player_transform_->Forward().Normalize();
@@ -81,26 +95,28 @@ void CPlayerCamera::Update(float delta_time)
 	//ptr_transform_->position() = CCamera::eye();
 	//CGameObject::Update(0.f);
 	//ptr_sphere_coll_->SetSphereCollider(2.f, Vector3());
+
+	if (true == Subject()->camera_shaking())
+		CameraShaking(delta_time);
+	CCamera::Update(delta_time);
 }
 
 void CPlayerCamera::LateUpdate()
 {
-	check_list_.clear();
-	CollSystem()->TriggerCheck(ptr_sphere_coll_, TAG_MAPOBJECT, check_list_);
-	if (false == check_list_.empty())
-	{
-		float dist = 9999.f;
+	//check_list_.clear();
+	//CollSystem()->TriggerCheck(ptr_sphere_coll_, TAG_MAPOBJECT, check_list_);
+	//if (false == check_list_.empty())
+	//{
+	//	float dist = 9999.f;
 
-		for(auto& target : check_list_)
-			target->RaycastCheck(ray_pos_, ray_dir_, &dist);
+	//	for(auto& target : check_list_)
+	//		target->RaycastCheck(ray_pos_, ray_dir_, &dist);
 
-		if(dist < 5.5f)
-			eye() = ray_pos_ + ray_dir_ * dist;
-	}
+	//	if(dist < 5.5f)
+	//		eye() = ray_pos_ + ray_dir_ * dist;
+	//}
 
-	CCamera::Update(0.f);
-
-	Engine::GameManager()->AddRenderLayer(Engine::RENDERLAYER::LAYER_NONEALPHA, this);
+	//Engine::GameManager()->AddRenderLayer(Engine::RENDERLAYER::LAYER_NONEALPHA, this);
 }
 
 void CPlayerCamera::Render()
@@ -185,6 +201,7 @@ void CPlayerCamera::Release()
 	Engine::Safe_Release_Delete(ptr_sphere_coll_);
 	Engine::Safe_Delete(ptr_frustum_);
 	Engine::Safe_Release(ptr_player_transform_);
+	Engine::Safe_Release(ptr_boss_transform_);
 
 #ifdef _DEBUG
 	Engine::Safe_Release(ptr_line_);
@@ -193,9 +210,50 @@ void CPlayerCamera::Release()
 
 HRESULT CPlayerCamera::GetComponent(MAINTAINID stage_id)
 {
-	ptr_player_transform_ = Engine::GameManager()->GetComponent<Engine::CTransform>(stage_id, TEXT("SpaceMarin_1"), TEXT("Transform"));
+	ptr_player_transform_ = Engine::GameManager()->GetComponent<Engine::CTransform>(stage_id, TEXT("SpaceMarin"), TEXT("Transform"));
 	if (nullptr == ptr_player_transform_) return E_FAIL;
 	ptr_player_transform_->AddReferenceCount();
 
+	ptr_boss_transform_ = Engine::GameManager()->GetComponent<Engine::CTransform>(stage_id, TEXT("Ork_WarBoss"), TEXT("Transform"));
+	if (nullptr == ptr_boss_transform_) return E_FAIL;
+	ptr_boss_transform_->AddReferenceCount();
+
 	return S_OK;
+}
+
+void CPlayerCamera::CameraShaking(float delta_time)
+{
+	shaking_time_ += delta_time;
+
+	shaking_value_ = (shaking_value_ == 0.5f) ? -0.5f : 0.5f;
+	eye().y += shaking_value_;
+	at().y += shaking_value_;
+
+	if (shaking_time_ >= 0.7f)
+	{
+		Subject()->set_camera_shaking(false);
+		shaking_time_ = 0.f;
+	}
+}
+
+void CPlayerCamera::EventCamera(float delta_time)
+{
+	Vector3 boss_forward = ptr_boss_transform_->Forward().Normalize();
+	Vector3 boss_up = ptr_boss_transform_->Up().Normalize();
+	Vector3 target_eye = ptr_boss_transform_->position() + boss_forward * 3.5f + boss_up * 2.f;
+	Vector3 target_at = ptr_boss_transform_->position();
+	target_at.y += 1.f;
+
+	event_time_ += delta_time * 0.5f;
+
+	if(event_time_ <= 1.f)
+		D3DXVec3Lerp(&eye(), &next_eye_, &target_eye, event_time_);
+	else if(event_time_ >= 3.f)
+		D3DXVec3Lerp(&eye(), &target_eye, &next_eye_, event_time_ - 3.f);
+
+	if (event_time_ >= 4.f)
+		event_mode_ = false;
+
+
+	CCamera::Update(delta_time);
 }

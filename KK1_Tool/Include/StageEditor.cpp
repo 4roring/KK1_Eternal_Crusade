@@ -7,7 +7,6 @@
 #include "afxdialogex.h"
 
 #include "ResourceLoader.h"
-#include <memory>
 
 #include "MapObject.h"
 #include "Transform.h"
@@ -89,7 +88,7 @@ BOOL StageEditor::OnInitDialog()
 	// TODO:  여기에 추가 초기화 작업을 추가합니다.
 
 	ptr_device_ = Engine::GraphicDevice()->GetDevice();
-	std::auto_ptr<ResourceLoader> auto_ptr_resource_loader(ResourceLoader::Create(ptr_device_, TEXT("../../Client/bin/Resources/Mesh/"), resource_list_));
+	APRESOURCELOADER resource_loader(ResourceLoader::Create(ptr_device_, TEXT("../../Client/bin/Resources/Mesh/"), resource_list_, ResourceLoader::ResourceType::StaticMesh));
 
 	Tool()->SetStageEditor(this);
 
@@ -614,7 +613,11 @@ void StageEditor::OnClickSave()
 	CString path;
 	GetPathFromDialog(FALSE, path);
 
-	if (path.IsEmpty()) return;
+	if (path.IsEmpty())
+	{
+		Tool()->SetFileMode(false);
+		return;
+	}
 
 	HANDLE file = CreateFile(path, GENERIC_WRITE, 0, nullptr
 		, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
@@ -654,7 +657,11 @@ void StageEditor::OnClickLoad()
 	CString path;
 	GetPathFromDialog(TRUE, path);
 
-	if (path.IsEmpty()) return;
+	if (path.IsEmpty())
+	{
+		Tool()->SetFileMode(false);
+		return;
+	}
 
 	object_list_.ResetContent();
 	ClearMapObject();

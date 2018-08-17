@@ -19,6 +19,9 @@ private:
 public:
 	virtual ~CPlayerCamera();
 
+public:
+	void EnableEvent();
+
 private:
 	HRESULT InitCamera(MAINTAINID stage_id);
 
@@ -37,9 +40,13 @@ public:
 private:
 	HRESULT AddComponent();
 	void Release();
-
+	
 public:
 	HRESULT GetComponent(MAINTAINID stage_id);
+
+private:
+	void CameraShaking(float delta_time);
+	void EventCamera(float delta_time);
 
 private:
 	Engine::CCollider* ptr_sphere_coll_ = nullptr;
@@ -61,6 +68,16 @@ private:
 private:
 	Matrix inv_mat_proj_;
 	Matrix inv_mat_view_;
+
+private:
+	float shaking_time_ = 0.f;
+	float shaking_value_ = 0.f;
+
+private:
+	Engine::CTransform* ptr_boss_transform_ = nullptr;
+	bool event_mode_ = false;
+	float event_time_ = 0.f;
+
 
 #ifdef _DEBUG
 private:

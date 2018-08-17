@@ -47,7 +47,7 @@ technique Default_Technique
 
         POINTSPRITEENABLE = TRUE;
         POINTSCALEENABLE = TRUE;
-        POINTSIZE = 1.f;
+        POINTSIZE = 3.f;
         POINTSIZE_MIN = 0.f;
 
         POINTSCALE_A = 0.f;

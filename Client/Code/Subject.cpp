@@ -6,6 +6,7 @@
 
 CSubject::CSubject()
 {
+	D3DXMatrixIdentity(&mat_ortho_proj_);
 }
 
 CSubject::~CSubject()
@@ -23,9 +24,24 @@ const Matrix & CSubject::inv_mat_view()
 	return *inv_mat_view_;
 }
 
-Vector3 CSubject::camera_pos()
+Vector3* CSubject::camera_pos() const
 {
-	return *camera_pos_;
+	return camera_pos_;
+}
+
+Vector3 * CSubject::player_pos() const
+{
+	return player_pos_;
+}
+
+bool CSubject::camera_shaking() const
+{
+	return camera_shaking_;
+}
+
+const Matrix & CSubject::GetOrthoProjection()
+{
+	return mat_ortho_proj_;
 }
 
 void CSubject::SetSpaceMarinData(int* ptr_shield, int* ptr_hp, int* ptr_current_cell, int ctrl_id)
@@ -62,6 +78,21 @@ void CSubject::SetInverseCameraInfo(Matrix * inv_mat_proj, Matrix * inv_mat_view
 	inv_mat_proj_ = inv_mat_proj;
 	inv_mat_view_ = inv_mat_view;
 	camera_pos_ = camera_pos;
+}
+
+void CSubject::set_player_pos(Vector3 * player_pos)
+{
+	player_pos_ = player_pos;
+}
+
+void CSubject::set_camera_shaking(bool is_shaking)
+{
+	camera_shaking_ = is_shaking;
+}
+
+void CSubject::SetOrthoProjection(const Matrix & mat_ortho)
+{
+	mat_ortho_proj_ = mat_ortho;
 }
 
 void CSubject::RegisterObserver(CSpaceMarinObserver *& ptr_observer)

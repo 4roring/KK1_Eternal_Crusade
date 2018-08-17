@@ -31,9 +31,11 @@ public:
 	void AddEnemyOrk(HANDLE file, const TCHAR* mesh_key, const TCHAR* object_key, MAINTAINID stage_id, DWORD& byte);
 	void AddOrkWarBoss(HANDLE file, const TCHAR* mesh_key, const TCHAR* object_key, MAINTAINID stage_id, DWORD& byte);
 
-
+private:
 	HRESULT FindAndLoadMesh(MAINTAINID stage_id, const std::wstring& mesh_key, const std::wstring& path);
 	HRESULT NavMeshDataLoad(const TCHAR* path);
+	HRESULT EffectDataLoad(const TCHAR* path);
+	bool CheckExistTexture(const TCHAR* texture_key);
 	bool ClockwiseCheckOfNavCell(std::array<Vector3, 3>& cell_point_array);
 
 public:

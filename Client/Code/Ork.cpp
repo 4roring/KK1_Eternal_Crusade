@@ -11,6 +11,10 @@
 #include "Ork_Gun.h"
 #include "Ork_Sword.h"
 
+#include "FireEffect.h"
+#include "FireLineSmoke.h"
+#include "HitEffect.h"
+
 COrk::COrk(LPDIRECT3DDEVICE9 ptr_device)
 	: Engine::CGameObject(ptr_device)
 {
@@ -36,6 +40,11 @@ int COrk::current_cell_index() const
 	return current_cell_index_;
 }
 
+int COrk::cell_option() const
+{
+	return cell_option_;
+}
+
 void COrk::set_fire(bool is_fire)
 {
 	fire_ = is_fire;
@@ -49,6 +58,11 @@ void COrk::set_slash(bool is_slash)
 void COrk::set_fire_range_pos(const Vector3 & fire_range_pos)
 {
 	fire_range_pos_ = fire_range_pos;
+}
+
+void COrk::SetController(bool is_control)
+{
+	ptr_ctrl_->enable_ = is_control;
 }
 
 HRESULT COrk::Initialize(int ctrl_id)
@@ -67,10 +81,12 @@ HRESULT COrk::Initialize(int ctrl_id)
 	ptr_body_frame_ = ptr_mesh_->FindFrame("joint_TorsoC_01");
 
 	current_cell_index_ = -1;
-	hp_ = 100;
+	max_hp_ = 250;
+	hp_ = max_hp_;
 	next_lower_state_ = LowerState::Idle;
 
-	ptr_ctrl_->enable_ = false;
+	SetActive(false);
+	//ptr_ctrl_->enable_ = false;
 
 	return S_OK;
 }
@@ -79,6 +95,9 @@ void COrk::LateInit()
 {
 	HRESULT hr = AddWeapon();
 	assert(!FAILED(hr) && "Ork Add Weapon Failed");
+
+	ptr_sword_->SetActive(false);
+	ptr_gun_->SetActive(false);
 
 	if (current_cell_index_ == -1)
 		current_cell_index_ = Engine::GameManager()->FindCellIndex(ptr_transform_->position());
@@ -106,6 +125,8 @@ void COrk::Update(float delta_time)
 	CollSystem()->AddRaycastList(ptr_head_collider_, TAG_ENEMY);
 	CollSystem()->AddRaycastList(ptr_body_collider_, TAG_ENEMY);
 	CollSystem()->AddColliderList(ptr_body_collider_, TAG_ENEMY);
+
+	if (damage_delay_ > 0.f) damage_delay_ -= delta_time;
 }
 
 void COrk::LateUpdate()
@@ -116,6 +137,7 @@ void COrk::LateUpdate()
 	UpdateLowerAnimState();
 	UpdateUpperAnimState();
 	CollSystem()->CollisionCheck(ptr_body_collider_, TAG_ENEMY);
+	CollSystem()->CollisionCheck(ptr_body_collider_, TAG_PLAYER);
 }
 
 void COrk::Render()
@@ -144,13 +166,32 @@ void COrk::Render()
 
 void COrk::ApplyDamage(int damage)
 {
-	hp_ -= damage;
+	if (pre_lower_state_ == LowerState::Down_Dead) return;
+
+	if (damage_delay_ <= 0.f)
+	{
+		hp_ -= damage;
+		if (hp_ < 0) hp_ = 0;
+	}
+
+	if (damage_delay_ <= 0.f && damage == 100) damage_delay_ = 0.6f;
 
 	if (hp_ <= 0)
 	{
 		next_lower_state_ = LowerState::Down;
 		next_upper_state_ = UpperState::Down;
+		ptr_ctrl_->enable_ = false;
 	}
+}
+
+void COrk::OnEnable()
+{
+	ptr_sword_->SetActive(true);
+	ptr_gun_->SetActive(true);
+
+	hp_ = max_hp_;
+	next_lower_state_ = LowerState::Idle;
+	next_upper_state_ = UpperState::Idle;
 }
 
 COrk * COrk::Create(LPDIRECT3DDEVICE9 ptr_device, int ctrl_id)
@@ -330,7 +371,6 @@ void COrk::UpdateLowerAnimState()
 		ptr_lower_anim_ctrl_->SetTrackPosition(0.0);
 		pre_lower_state_ = next_lower_state_;
 	}
-
 }
 
 void COrk::UpdateUpperAnimState()
@@ -372,18 +412,18 @@ void COrk::UpdateUpperAnimState()
 void COrk::Run()
 {
 	if (pre_lower_state_ == LowerState::Down_Dead) return;
-	int option = -1;
-	current_cell_index_ = Engine::GameManager()->MoveFromNavMesh(ptr_transform_->position(), ptr_transform_->move_dir(), current_cell_index_, option);
+	cell_option_ = -1;
+	current_cell_index_ = Engine::GameManager()->MoveFromNavMesh(ptr_transform_->position(), ptr_transform_->move_dir(), current_cell_index_, cell_option_);
 }
 
 void COrk::Fire()
 {
 	if (true == fire_)
 	{
-		Vector3 fire_dir = transform()->Forward();
-		fire_dir.x += random_range(-30, 30) * 0.01f;
-		fire_dir.y += random_range(-30, 30) * 0.01f;
-		fire_dir = fire_dir.Normalize();
+		Vector3 fire_dir = ptr_transform_->Forward();
+		fire_dir.x += (float)random_range(-30, 30) * 0.01f;
+		fire_dir.y += (float)random_range(-30, 30) * 0.01f;
+		ray_dir_ = fire_dir.Normalize();
 
 		switch (pre_upper_state_)
 		{
@@ -397,7 +437,20 @@ void COrk::Fire()
 		case UpperState::Run_Aiming:
 			// Fire!!!
 			ray_pos_ = ptr_gun_->GetFirePos();
-			ray_dir_ = fire_dir * 5.f;
+			Engine::CGameObject* hit_obj = nullptr;
+			float dist = 0.f;
+			if (true == CollSystem()->RaycastCheck(ray_pos_, ray_dir_, &dist, hit_obj, TAG_PLAYER))
+			{
+				if (nullptr != hit_obj)
+					hit_obj->ApplyDamage(10);
+				fire_range_pos_ = ray_pos_ + ray_dir_ * dist;
+				CreateBulletHitEffect(fire_range_pos_);
+			}
+			else
+				fire_range_pos_ = ray_pos_ + ray_dir_ * 20.f;
+
+			CreateFireEffect();
+
 			fire_ = false;
 			break;
 		}
@@ -421,6 +474,24 @@ void COrk::Slash()
 		}
 		slash_ = false;
 	}
+}
+
+void COrk::CreateFireEffect()
+{
+	TCHAR effect_key[64] = TEXT("");
+	wsprintf(effect_key, TEXT("Ork_%d_Bullet_Fire_Effect"), control_id_);
+	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, effect_key, CFireEffect::Create(ptr_device_, &ptr_gun_->GetFirePos()));
+
+	wsprintf(effect_key, TEXT("Ork_%d_Fire_Line_"), control_id_);
+	Vector3 effect_pos = ptr_gun_->GetFirePos();
+	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, effect_key, CFireLineSmoke::Create(ptr_device_, effect_pos, fire_range_pos_));
+}
+
+void COrk::CreateBulletHitEffect(const Vector3 & hit_position)
+{
+	TCHAR effect_key[64] = TEXT("");
+	wsprintf(effect_key, TEXT("Ork_%d_Bullet_Hit_Effect"), control_id_);
+	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, effect_key, CHitEffect::Create(ptr_device_, hit_position, TEXT("HitBlood")));
 }
 
 void COrk::SetConstantTable(LPD3DXEFFECT ptr_effect)
@@ -462,21 +533,21 @@ void COrk::DebugRender()
 	ptr_device_->GetTransform(D3DTS_VIEW, &mat_view);
 	ptr_device_->GetTransform(D3DTS_PROJECTION, &mat_proj);
 
-	Vector3 line_[2] = { ray_pos_, ray_pos_ + ray_dir_};
+	//Vector3 line_[2] = { ray_pos_, ray_pos_ + ray_dir_};
 
-	for (auto& point : line_)
-	{
-		D3DXVec3TransformCoord(&point, &point, &mat_view);
-		if (point.z < 0.f)
-			point.z = 0.f;
-		D3DXVec3TransformCoord(&point, &point, &mat_proj);
-	}
+	//for (auto& point : line_)
+	//{
+	//	D3DXVec3TransformCoord(&point, &point, &mat_view);
+	//	if (point.z < 0.f)
+	//		point.z = 0.f;
+	//	D3DXVec3TransformCoord(&point, &point, &mat_proj);
+	//}
 
-	ptr_line_->SetWidth(2.f);
-	ptr_line_->Begin();
+	//ptr_line_->SetWidth(2.f);
+	//ptr_line_->Begin();
 
-	ptr_line_->DrawTransform(line_, 2, nullptr, D3DXCOLOR(1.f, 1.f, 0.f, 1.f));
+	//ptr_line_->DrawTransform(line_, 2, nullptr, D3DXCOLOR(1.f, 1.f, 0.f, 1.f));
 
-	ptr_line_->End();
+	//ptr_line_->End();
 }
 #endif // _DEBUG

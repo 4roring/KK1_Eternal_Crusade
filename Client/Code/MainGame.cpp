@@ -58,7 +58,7 @@ HRESULT CMainGame::InitGame()
 	light_info.Diffuse = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
 	light_info.Ambient = D3DXCOLOR(0.2f, 0.2f, 0.2f, 1.f);
 	light_info.Specular = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
-	light_info.Direction = Vector3(0.f, -1.f, 0.5f);
+	light_info.Direction = Vector3(0.f, -1.f, 0.8f);
 
 	ptr_game_manager_->AddLight(light_info);
 
@@ -130,6 +130,7 @@ void CMainGame::Render_FPS()
 
 void CMainGame::Release()
 {
+	EventManager()->DestroyInstance();
 	CollSystem()->DestroyInstance();
 	ptr_input_->DestroyInstance();
 	ptr_input_ = nullptr;

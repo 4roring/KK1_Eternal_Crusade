@@ -35,23 +35,20 @@ HRESULT Engine::CRenderer::Initialize()
 
 	// Deferred
 	hr = ptr_gbuffer->AddTargetBuffer(ptr_device_, GBuffer::Target_Albedo, view_port.Width, view_port.Height, D3DFMT_A8B8G8R8, D3DXCOLOR(0.f, 0.f, 0.f, 0.f)); if (FAILED(hr)) return E_FAIL;
-	hr = ptr_gbuffer->Add_DebugTarget(GBuffer::Target_Albedo, 0.f, 0.f, 150.f, 150.f); if (FAILED(hr)) return E_FAIL;
-
 	hr = ptr_gbuffer->AddTargetBuffer(ptr_device_, GBuffer::Target_Normal, view_port.Width, view_port.Height, D3DFMT_A16B16G16R16F, D3DXCOLOR(0.f, 0.f, 0.f, 1.f)); if (FAILED(hr)) return E_FAIL;
-	hr = ptr_gbuffer->Add_DebugTarget(GBuffer::Target_Normal, 0.f, 150.f, 150.f, 150.f); if (FAILED(hr)) return E_FAIL;
-
 	hr = ptr_gbuffer->AddTargetBuffer(ptr_device_, GBuffer::Target_Depth, view_port.Width, view_port.Height, D3DFMT_A32B32G32R32F, D3DXCOLOR(0.f, 0.f, 0.f, 1.f)); if (FAILED(hr)) return E_FAIL;
-	hr = ptr_gbuffer->Add_DebugTarget(GBuffer::Target_Depth, 0.f, 300.f, 150.f, 150.f); if (FAILED(hr)) return E_FAIL;
-
 	hr = ptr_gbuffer->AddTargetBuffer(ptr_device_, GBuffer::Target_Specular, view_port.Width, view_port.Height, D3DFMT_A16B16G16R16F, D3DXCOLOR(0.f, 0.f, 0.f, 1.f)); if (FAILED(hr)) return E_FAIL;
-	hr = ptr_gbuffer->Add_DebugTarget(GBuffer::Target_Specular, 0.f, 450.f, 150.f, 150.f); if (FAILED(hr)) return E_FAIL;
+
+	//hr = ptr_gbuffer->Add_DebugTarget(GBuffer::Target_Albedo, 0.f, 0.f, 150.f, 150.f); if (FAILED(hr)) return E_FAIL;
+	//hr = ptr_gbuffer->Add_DebugTarget(GBuffer::Target_Normal, 0.f, 150.f, 150.f, 150.f); if (FAILED(hr)) return E_FAIL;
+	//hr = ptr_gbuffer->Add_DebugTarget(GBuffer::Target_Depth, 0.f, 300.f, 150.f, 150.f); if (FAILED(hr)) return E_FAIL;
+	//hr = ptr_gbuffer->Add_DebugTarget(GBuffer::Target_Specular, 0.f, 450.f, 150.f, 150.f); if (FAILED(hr)) return E_FAIL;
 
 	// LightAcc
 	hr = ptr_gbuffer->AddTargetBuffer(ptr_device_, GBuffer::Target_Shade, view_port.Width, view_port.Height, D3DFMT_A16B16G16R16F, D3DXCOLOR(0.f, 0.f, 0.f, 1.f)); if (FAILED(hr)) return E_FAIL;
-	hr = ptr_gbuffer->Add_DebugTarget(GBuffer::Target_Shade, 150.f, 0.f, 150.f, 150.f); if (FAILED(hr)) return E_FAIL;
-
 	hr = ptr_gbuffer->AddTargetBuffer(ptr_device_, GBuffer::Target_Light_Specular, view_port.Width, view_port.Height, D3DFMT_A16B16G16R16F, D3DXCOLOR(0.f, 0.f, 0.f, 0.f)); if (FAILED(hr)) return E_FAIL;
-	hr = ptr_gbuffer->Add_DebugTarget(GBuffer::Target_Light_Specular, 150.f, 150.f, 150.f, 150.f); if (FAILED(hr)) return E_FAIL;
+	//hr = ptr_gbuffer->Add_DebugTarget(GBuffer::Target_Shade, 150.f, 0.f, 150.f, 150.f); if (FAILED(hr)) return E_FAIL;
+	//hr = ptr_gbuffer->Add_DebugTarget(GBuffer::Target_Light_Specular, 150.f, 150.f, 150.f, 150.f); if (FAILED(hr)) return E_FAIL;
 
 	// MRT
 	hr = ptr_gbuffer->AddMultiRenderTarget(GBuffer::MRT_DEFERRED, GBuffer::Target_Albedo); if (FAILED(hr)) return E_FAIL;
@@ -77,8 +74,8 @@ void Engine::CRenderer::Render()
 	Render_Alpha();
 	Render_UI();
 
-	ptr_gbuffer->Render_DebugTarget(GBuffer::MRT_DEFERRED);
-	ptr_gbuffer->Render_DebugTarget(GBuffer::MRT_LIGHT);
+	//ptr_gbuffer->Render_DebugTarget(GBuffer::MRT_DEFERRED);
+	//ptr_gbuffer->Render_DebugTarget(GBuffer::MRT_LIGHT);
 
 	RenderGroupRelease();
 }

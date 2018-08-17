@@ -106,6 +106,8 @@ void CToolManager::Render()
 	case TabID::Animation:
 		break;
 	case TabID::Particle:
+		if (nullptr != ptr_stage_editor_)
+			ptr_stage_editor_->Render();
 		if (nullptr != ptr_particle_editor_)
 			ptr_particle_editor_->Render();
 		break;

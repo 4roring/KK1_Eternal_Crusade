@@ -11,6 +11,7 @@ public:
 public:
 	int GetHp(int ctrl_id);
 	int GetCurrentCell(int ctrl_id);
+	int GetShiled(int ctrl_id);
 
 public:
 	void Update(int* shield, int* hp, int* current_cell, int index);

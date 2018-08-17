@@ -32,6 +32,9 @@ void CDynamicCamera::Update(float delta_time)
 		Engine::Input()->FixMouseCenter(g_hwnd, kWinCx, kWinCy);
 		MouseMove();
 	}
+
+	if (true == Subject()->camera_shaking())
+		CameraShaking(delta_time);
 }
 
 CDynamicCamera * CDynamicCamera::Create(LPDIRECT3DDEVICE9 ptr_device, const Vector3 & eye, const Vector3 & at)
@@ -127,4 +130,16 @@ void CDynamicCamera::MouseMove()
 
 		at() = eye() + dir;
 	}
+}
+
+void CDynamicCamera::CameraShaking(float delta_time)
+{
+	shaking_time_ += delta_time;
+
+	shaking_value_ = (shaking_value_ == 1.f) ? -1.f : 1.f;
+	eye().y += shaking_value_;
+	at().y += shaking_value_;
+
+	if (shaking_time_ >= 2.f)
+		Subject()->set_camera_shaking(false);
 }

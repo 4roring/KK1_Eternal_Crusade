@@ -7,6 +7,9 @@
 #include "Collider.h"
 #include "AnimController.h"
 
+#include "SwordEletro.h"
+#include "HitEffect.h"
+
 CChainSword::CChainSword(LPDIRECT3DDEVICE9 ptr_device)
 	: Engine::CGameObject(ptr_device)
 {
@@ -62,6 +65,9 @@ HRESULT CChainSword::Initialize()
 	ptr_anim_ctrl_->SetTrackPosition(0.0);
 	anim_speed_ = 0.1f;
 
+	ptr_eletro_effect_ = CSwordEletro::Create(ptr_device_, &ptr_transform_->mat_world());
+	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, TEXT("Chain_Sword_Effect"), ptr_eletro_effect_);
+
 	return hr;
 }
 
@@ -78,11 +84,18 @@ void CChainSword::Update(float delta_time)
 void CChainSword::LateUpdate()
 {
 	Engine::GameManager()->AddRenderLayer(Engine::RENDERLAYER::LAYER_NONEALPHA, this);
-	const CollList& enemy_coll_list = CollSystem()->GetColliderList(TAG_ENEMY);
-	for (auto& enemy_coll : enemy_coll_list)
+	
+	if (true == ptr_sphere_coll_->enable_)
 	{
-		if (true == ptr_sphere_coll_->TriggerCheck(enemy_coll))
-			enemy_coll->ptr_object()->ApplyDamage(100);
+		const CollList& enemy_coll_list = CollSystem()->GetColliderList(TAG_ENEMY);
+		for (auto& enemy_coll : enemy_coll_list)
+		{
+			if (true == ptr_sphere_coll_->TriggerCheck(enemy_coll))
+			{
+				enemy_coll->ptr_object()->ApplyDamage(100);
+				CreateHitEffect();
+			}
+		}
 	}
 }
 
@@ -120,6 +133,16 @@ void CChainSword::Render()
 #endif // _DEBUG
 }
 
+void CChainSword::OnEnable()
+{
+	ptr_eletro_effect_->SetActive(true);
+}
+
+void CChainSword::OnDisable()
+{
+	ptr_eletro_effect_->SetActive(false);
+}
+
 CChainSword * CChainSword::Create(LPDIRECT3DDEVICE9 ptr_device)
 {
 	CChainSword* ptr_obj = new CChainSword(ptr_device);
@@ -145,6 +168,7 @@ HRESULT CChainSword::AddComponent()
 
 	ptr_sphere_coll_ = Engine::CCollider::Create(ptr_device_, this, Collider_Sphere);
 
+
 #ifdef _DEBUG
 	hr = Ready_Component(MAINTAIN_STATIC, TEXT("Shader_Default"), TEXT("Shader_Debug"), ptr_debug_shader_);
 	assert(!FAILED(hr) && "ReadyComponent Failed of LevelObject Shader Component");
@@ -156,4 +180,13 @@ void CChainSword::Release()
 {
 	Safe_Delete(ptr_anim_ctrl_);
 	Safe_Release_Delete(ptr_sphere_coll_);
+	ptr_eletro_effect_->Destroy();
+	ptr_eletro_effect_ = nullptr;
+}
+
+void CChainSword::CreateHitEffect()
+{
+	TCHAR effect_key[64] = TEXT("");
+	wsprintf(effect_key, TEXT("ChainSword_HitEffect"));
+	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, effect_key, CHitEffect::Create(ptr_device_, ptr_sphere_coll_->GetSpherePos(), TEXT("SwordHitBlood")));
 }

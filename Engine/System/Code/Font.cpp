@@ -17,7 +17,7 @@ HRESULT Engine::KK1_Font::InitFont(int height, uint32 width, uint32 weight, cons
 	font_info.Width = width;
 	font_info.Weight = weight;
 	lstrcpy(font_info.FaceName, face_name);
-	font_info.CharSet = HANGUL_CHARSET;
+	font_info.CharSet = DEFAULT_CHARSET;
 
 	return D3DXCreateFontIndirect(ptr_device_, &font_info, &ptr_font_);
 }
