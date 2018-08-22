@@ -63,6 +63,7 @@ void CUI_Hp::Render()
 
 	ptr_effect->Begin(nullptr, 0);
 
+	// Hp Bar Out line
 	ptr_effect->BeginPass(0);
 	ptr_buffer_->Render();
 	ptr_effect->EndPass();
@@ -74,10 +75,22 @@ void CUI_Hp::Render()
 	ptr_effect->SetTexture("g_color_texture", ptr_texture_->GetTexture(1));
 	ptr_effect->CommitChanges();
 
+	// Hp Bar Gage
 	ptr_effect->BeginPass(1);
 	ptr_buffer_->Render();
 	ptr_effect->EndPass();
 
+	mat_view_._11 = 70.f;
+	mat_view_._22 = 70.f;
+	mat_view_._41 = -15.f - (kWinCx >> 1);
+	ptr_effect->SetMatrix("g_mat_view", &mat_view_);
+	ptr_effect->SetTexture("g_color_texture", ptr_mark_texture_->GetTexture(0));
+	ptr_effect->CommitChanges();
+
+	// CSM Mark
+	ptr_effect->BeginPass(0);
+	ptr_buffer_->Render();
+	ptr_effect->EndPass();
 	ptr_effect->End();
 }
 
@@ -104,6 +117,9 @@ HRESULT CUI_Hp::AddComponent()
 	hr = Ready_Component(MAINTAIN_STATIC, TEXT("Buffer_RectTexture"), TEXT("Buffer"), ptr_buffer_);
 	assert(hr == S_OK && "ReadyComponent Failed of UI_Hp Buffer Component");
 	hr = Ready_Component(MAINTAIN_STAGE, TEXT("HP_UI_Texture"), TEXT("Texture"), ptr_texture_);
+	assert(!FAILED(hr) && "ReadyComponent Failed of UI_Hp Texture Component");
+
+	hr = Ready_Component(MAINTAIN_STAGE, TEXT("CSM_Mark_UI_Texture"), TEXT("Texture_Mark"), ptr_mark_texture_);
 	assert(!FAILED(hr) && "ReadyComponent Failed of UI_Hp Texture Component");
 
 	return S_OK;

@@ -153,6 +153,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Code\Bomb.h" />
+    <ClInclude Include="..\Code\CUI_Damage.h" />
+    <ClInclude Include="..\Code\Granade.h" />
+    <ClInclude Include="..\Code\GranadeTrail.h" />
     <ClInclude Include="..\Code\HitEffect.h" />
     <ClInclude Include="..\Code\ChainSword.h" />
     <ClInclude Include="..\Code\EnemyAIController.h" />
@@ -170,6 +174,7 @@
     <ClInclude Include="..\Code\Include.h" />
     <ClInclude Include="..\Code\LevelObject.h" />
     <ClInclude Include="..\Code\Loading.h" />
+    <ClInclude Include="..\Code\LoadingScene.h" />
     <ClInclude Include="..\Code\Logo.h" />
     <ClInclude Include="..\Code\MainGame.h" />
     <ClInclude Include="..\Code\MoveDust.h" />
@@ -181,9 +186,22 @@
     <ClInclude Include="..\Code\Ork_WarBoss.h" />
     <ClInclude Include="..\Code\PlayerCamera.h" />
     <ClInclude Include="..\Code\PlayerController.h" />
+    <ClInclude Include="..\Code\Rioreus.h" />
+    <ClInclude Include="..\Code\Rioreus_Cry.h" />
+    <ClInclude Include="..\Code\Rioreus_Fall.h" />
+    <ClInclude Include="..\Code\Rioreus_Fire.h" />
+    <ClInclude Include="..\Code\Rioreus_Groggy.h" />
+    <ClInclude Include="..\Code\Rioreus_Idle.h" />
+    <ClInclude Include="..\Code\Rioreus_Rotate.h" />
+    <ClInclude Include="..\Code\Rioreus_Somersault.h" />
+    <ClInclude Include="..\Code\Rioreus_Sprint.h" />
+    <ClInclude Include="..\Code\Rioreus_State.h" />
+    <ClInclude Include="..\Code\Rioreus_TailAttack.h" />
+    <ClInclude Include="..\Code\Rioreus_Walk.h" />
     <ClInclude Include="..\Code\SceneSelector.h" />
     <ClInclude Include="..\Code\ScreenImage.h" />
     <ClInclude Include="..\Code\Skybox.h" />
+    <ClInclude Include="..\Code\SoundManager.h" />
     <ClInclude Include="..\Code\SpaceMarin.h" />
     <ClInclude Include="..\Code\SpaceMarinObserver.h" />
     <ClInclude Include="..\Code\Stage.h" />
@@ -191,8 +209,10 @@
     <ClInclude Include="..\Code\SwordEletro.h" />
     <ClInclude Include="..\Code\Tyranid.h" />
     <ClInclude Include="..\Code\UI.h" />
+    <ClInclude Include="..\Code\UI_Aim.h" />
     <ClInclude Include="..\Code\UI_Hp.h" />
     <ClInclude Include="..\Code\UI_Shield.h" />
+    <ClInclude Include="..\Code\UI_Weapon.h" />
     <ClInclude Include="..\Code\Value.h" />
     <ClInclude Include="..\Code\WarBossJump.h" />
     <ClInclude Include="..\Code\WarBossSkill.h" />
@@ -207,6 +227,10 @@
     <ClInclude Include="TestPlane2.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Code\Bomb.cpp" />
+    <ClCompile Include="..\Code\CUI_Damage.cpp" />
+    <ClCompile Include="..\Code\Granade.cpp" />
+    <ClCompile Include="..\Code\GranadeTrail.cpp" />
     <ClCompile Include="..\Code\HitEffect.cpp" />
     <ClCompile Include="..\Code\ChainSword.cpp" />
     <ClCompile Include="..\Code\Controller.cpp" />
@@ -221,6 +245,7 @@
     <ClCompile Include="..\Code\Gun_Phobos.cpp" />
     <ClCompile Include="..\Code\LevelObject.cpp" />
     <ClCompile Include="..\Code\Loading.cpp" />
+    <ClCompile Include="..\Code\LoadingScene.cpp" />
     <ClCompile Include="..\Code\Logo.cpp" />
     <ClCompile Include="..\Code\MainGame.cpp" />
     <ClCompile Include="..\Code\MoveDust.cpp" />
@@ -232,8 +257,21 @@
     <ClCompile Include="..\Code\Ork_WarBoss.cpp" />
     <ClCompile Include="..\Code\PlayerCamera.cpp" />
     <ClCompile Include="..\Code\PlayerController.cpp" />
+    <ClCompile Include="..\Code\Rioreus.cpp" />
+    <ClCompile Include="..\Code\Rioreus_Cry.cpp" />
+    <ClCompile Include="..\Code\Rioreus_Fall.cpp" />
+    <ClCompile Include="..\Code\Rioreus_Fire.cpp" />
+    <ClCompile Include="..\Code\Rioreus_Groggy.cpp" />
+    <ClCompile Include="..\Code\Rioreus_Idle.cpp" />
+    <ClCompile Include="..\Code\Rioreus_Rotate.cpp" />
+    <ClCompile Include="..\Code\Rioreus_Somersault.cpp" />
+    <ClCompile Include="..\Code\Rioreus_Sprint.cpp" />
+    <ClCompile Include="..\Code\Rioreus_State.cpp" />
+    <ClCompile Include="..\Code\Rioreus_TailAttack.cpp" />
+    <ClCompile Include="..\Code\Rioreus_Walk.cpp" />
     <ClCompile Include="..\Code\ScreenImage.cpp" />
     <ClCompile Include="..\Code\Skybox.cpp" />
+    <ClCompile Include="..\Code\SoundManager.cpp" />
     <ClCompile Include="..\Code\SpaceMarin.cpp" />
     <ClCompile Include="..\Code\SpaceMarinObserver.cpp" />
     <ClCompile Include="..\Code\Stage.cpp" />
@@ -241,8 +279,10 @@
     <ClCompile Include="..\Code\SwordEletro.cpp" />
     <ClCompile Include="..\Code\Tyranid.cpp" />
     <ClCompile Include="..\Code\UI.cpp" />
+    <ClCompile Include="..\Code\UI_Aim.cpp" />
     <ClCompile Include="..\Code\UI_Hp.cpp" />
     <ClCompile Include="..\Code\UI_Shield.cpp" />
+    <ClCompile Include="..\Code\UI_Weapon.cpp" />
     <ClCompile Include="..\Code\WarBossJump.cpp" />
     <ClCompile Include="..\Code\WarBossSkill.cpp" />
     <ClCompile Include="..\Code\WarBossSkillRange.cpp" />

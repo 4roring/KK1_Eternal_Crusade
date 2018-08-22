@@ -59,6 +59,11 @@ void Engine::CCollider::SetWorld(Matrix * ptr_world)
 	}
 }
 
+void Engine::CCollider::set_delta_time(float delta_time)
+{
+	delta_time_ = delta_time;
+}
+
 HRESULT Engine::CCollider::InitCollider(CGameObject * ptr_object, ColliderType coll_type)
 {
 	if (nullptr == ptr_object) return E_FAIL;
@@ -235,10 +240,10 @@ bool Engine::CCollider::CollisionSphereToSphere(CCollider * ptr_src, CCollider *
 	const float dist = (ptr_src->ptr_sphere_info_->world_position - ptr_dst->ptr_sphere_info_->world_position).Magnitude();
 	const float radius_sum = ptr_src->ptr_sphere_info_->radius + ptr_dst->ptr_sphere_info_->radius;
 
-	if (dist <= radius_sum)
+	if (dist <= (radius_sum * radius_sum))
 	{
 		Vector3 move_dir = (ptr_dst->ptr_object()->transform()->position() - ptr_src->ptr_object()->transform()->position()).Normalize();
-		float move_dist = sqrtf(radius_sum - dist) * 0.3f;
+		float move_dist = sqrtf(radius_sum - dist) * delta_time_;
 		ptr_dst->ptr_object()->transform()->move_dir() = move_dir * move_dist;
 		return true;
 	}
@@ -250,7 +255,7 @@ bool Engine::CCollider::TriggerSphereToSphere(CCollider * ptr_src, CCollider * p
 	const float dist = (ptr_src->ptr_sphere_info_->world_position - ptr_dst->ptr_sphere_info_->world_position).Magnitude();
 	const float radius_sum = ptr_src->ptr_sphere_info_->radius + ptr_dst->ptr_sphere_info_->radius;
 
-	if (dist <= radius_sum)
+	if (dist <= (radius_sum * radius_sum))
 		return true;
 
 	return false;

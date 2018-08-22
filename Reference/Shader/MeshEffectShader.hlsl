@@ -87,6 +87,38 @@ PS_OUT PS_LINE(PS_IN In)
     return Out;
 }
 
+struct VS_IN_COLOR
+{
+    vector position : POSITION;
+    float2 color : COLOR;
+};
+
+struct VS_OUT_COLOR
+{
+    vector position : POSITION;
+    float2 color : COLOR;
+};
+
+VS_OUT_COLOR VS_COLOR(VS_IN_COLOR In)
+{
+    VS_OUT_COLOR Out = (VS_OUT) 0;
+	
+    Matrix mat_transform;
+
+    mat_transform = mul(mul(g_mat_world, g_mat_view), g_mat_projection);
+
+    Out.position = mul(vector(In.position.xyz, 1.f), mat_transform);
+    Out.color = In.color;
+
+    return Out;
+}
+
+vector PS_COLOR(vector color : COLOR) : COLOR
+{
+    return color;
+}
+
+
 technique Default_Technique
 {
     pass DefaultEffect
@@ -134,4 +166,14 @@ technique Default_Technique
         PixelShader = compile ps_3_0 PS_MAIN();
     }
 
+    pass VertexColor
+    {
+        ALPHABLENDENABLE = TRUE;
+        SRCBLEND = SRCALPHA;
+        DESTBLEND = INVSRCALPHA;
+        CULLMODE = NONE;
+
+        VertexShader = compile vs_3_0 VS_COLOR();
+        PixelShader = compile ps_3_0 PS_COLOR();
+    }
 }

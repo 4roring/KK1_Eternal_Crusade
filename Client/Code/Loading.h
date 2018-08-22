@@ -7,7 +7,7 @@ END
 class CLoading
 {
 public:
-	enum class LOADINGID { LOGO, TITLE, STAGE, STAGE_SPECIAL };
+	enum class LOADINGID { LOGO, TITLE, STAGE, STAGE_MH };
 
 private:
 	explicit CLoading(LOADINGID loading_id, Engine::CScene** pp_scene_);
@@ -22,7 +22,7 @@ public:
 public:
 	HRESULT InitLoading();
 	HRESULT Stage_Loading();
-	HRESULT Stage_Special_Loading();
+	HRESULT Stage_MH_Loading();
 
 public:
 	HRESULT StageDataLoad(MAINTAINID stage_id, const TCHAR* path);
@@ -30,6 +30,7 @@ public:
 	void AddTeamSpaceMarin(HANDLE file, const TCHAR* mesh_key, const TCHAR* object_key, MAINTAINID stage_id, DWORD& byte);
 	void AddEnemyOrk(HANDLE file, const TCHAR* mesh_key, const TCHAR* object_key, MAINTAINID stage_id, DWORD& byte);
 	void AddOrkWarBoss(HANDLE file, const TCHAR* mesh_key, const TCHAR* object_key, MAINTAINID stage_id, DWORD& byte);
+	void AddRioreus(HANDLE file, const TCHAR* mesh_key, const TCHAR* object_key, MAINTAINID stage_id, DWORD& byte);
 
 private:
 	HRESULT FindAndLoadMesh(MAINTAINID stage_id, const std::wstring& mesh_key, const std::wstring& path);
@@ -37,6 +38,12 @@ private:
 	HRESULT EffectDataLoad(const TCHAR* path);
 	bool CheckExistTexture(const TCHAR* texture_key);
 	bool ClockwiseCheckOfNavCell(std::array<Vector3, 3>& cell_point_array);
+
+private:
+	HRESULT SpaceMarinLoad();
+	HRESULT OrkLoad();
+	HRESULT EffectLoad();
+	HRESULT TextureLoad();
 
 public:
 	static CLoading* Create(LOADINGID loading_id, Engine::CScene** pp_scene_);

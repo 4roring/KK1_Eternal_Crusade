@@ -11,8 +11,8 @@ namespace KEY
 	constexpr DWORD D		= 0x00000040;
 	constexpr DWORD C		= 0x00000080;
 	constexpr DWORD LSHIFT	= 0x00000100;
-	constexpr DWORD NUM3	= 0x00000200;
-	constexpr DWORD NUM4	= 0x00000400;
+	constexpr DWORD NUM1	= 0x00000200;
+	constexpr DWORD NUM2	= 0x00000400;
 	constexpr DWORD E		= 0x00000800;
 	constexpr DWORD R		= 0x00001000;
 	constexpr DWORD X		= 0x00002000;
@@ -21,4 +21,5 @@ namespace KEY
 	constexpr DWORD B		= 0x00010000;
 	constexpr DWORD Q		= 0x00020000;
 	constexpr DWORD SPACE	= 0x00040000;
+	constexpr DWORD G		= 0x00080000;
 }

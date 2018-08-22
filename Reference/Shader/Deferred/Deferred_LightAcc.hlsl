@@ -49,7 +49,7 @@ PS_OUT PS_DIRECTIONAL(PS_IN ps_in)
     vector normal = tex2D(normal_sampler, ps_in.texture_uv);
     normal.xyz = normal.xyz * 2.f - 1.f;
 
-    ps_out.shade.rgb = max(dot(normalize(g_light_dir) * -1.f, normal), 0.f);
+    ps_out.shade.rgb = saturate(dot(normalize(g_light_dir) * -1.f, normal));
     ps_out.shade.a = 1.f;
     ps_out.shade = g_light_diffuse * ps_out.shade + g_light_ambient;
 

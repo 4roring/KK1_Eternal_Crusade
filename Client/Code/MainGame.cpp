@@ -42,8 +42,11 @@ HRESULT CMainGame::InitGame()
 	hr = ptr_game_manager_->InitComponentManager(MAINTAIN_END);
 	assert(hr == S_OK && "Init Component Manager Failed");
 
+	hr = Engine::GraphicDevice()->AddFont(TEXT("FFFFORWA"), TEXT("../bin/Resources/Font/FFFFORWA.TTF"), 60, 34, FW_BOLD);
+	assert(hr == S_OK && "Add FFFFORWA Font Failed");
+
 	hr = Engine::GraphicDevice()->AddFont(TEXT("¹ÙÅÁ"), 28, 20, FW_NORMAL);
-	assert(hr == S_OK && "Add FPS Font Failed");
+	assert(hr == S_OK && "Add ¹ÙÅÁ Font Failed");
 	ptr_fps_font_ = Engine::GraphicDevice()->GetFont(TEXT("¹ÙÅÁ"));
 	assert(nullptr != ptr_fps_font_ && "Get FPS Font Failed");
 
@@ -52,15 +55,7 @@ HRESULT CMainGame::InitGame()
 	assert(hr == S_OK && "Add RectTexture Component Failed");
 
 	hr = ptr_game_manager_->SetNextScene(CLogo::Create(ptr_device_));
-
-	D3DLIGHT9 light_info = {};
-	light_info.Type = D3DLIGHT_DIRECTIONAL;
-	light_info.Diffuse = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
-	light_info.Ambient = D3DXCOLOR(0.2f, 0.2f, 0.2f, 1.f);
-	light_info.Specular = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
-	light_info.Direction = Vector3(0.f, -1.f, 0.8f);
-
-	ptr_game_manager_->AddLight(light_info);
+	assert(hr == S_OK && "Set Next Scene Failed");
 
 	ptr_time_->InitTime();
 	ptr_input_->InitInputDevice(g_hinstance, g_hwnd);
@@ -72,6 +67,7 @@ HRESULT CMainGame::InitGame()
 void CMainGame::Update()
 {
 	if (true == NullCheckOfManager()) return;
+	Sound()->Update();
 	ptr_input_->SetInputState();
 	ptr_time_->SetTime();
 	ptr_game_manager_->Update(Engine::Time()->GetDeltaTime());
@@ -130,6 +126,7 @@ void CMainGame::Render_FPS()
 
 void CMainGame::Release()
 {
+	Sound()->DestroyInstance();
 	EventManager()->DestroyInstance();
 	CollSystem()->DestroyInstance();
 	ptr_input_->DestroyInstance();

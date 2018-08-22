@@ -22,6 +22,7 @@ CStage::CStage(LPDIRECT3DDEVICE9 ptr_device)
 
 CStage::~CStage()
 {
+	Release();
 }
 
 HRESULT CStage::LateInit()
@@ -40,6 +41,12 @@ HRESULT CStage::LateInit()
 	assert(!FAILED(hr) && "Add_Light Call Failed");
 	
 	CScene::LateInit();
+
+	ShowCursor(FALSE);
+
+	Matrix mat_ortho;
+	D3DXMatrixOrthoLH(&mat_ortho, kWinCx, kWinCy, 0.f, 1.f);
+	Subject()->SetOrthoProjection(mat_ortho);
 
 	return S_OK;
 }
@@ -102,11 +109,21 @@ HRESULT CStage::Add_UI_Layer()
 
 HRESULT CStage::Add_Light()
 {
+	D3DLIGHT9 light_info = {};
+	light_info.Type = D3DLIGHT_DIRECTIONAL;
+	light_info.Diffuse = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
+	light_info.Ambient = D3DXCOLOR(0.2f, 0.2f, 0.2f, 1.f);
+	light_info.Specular = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
+	light_info.Direction = Vector3(0.f, -1.f, 0.8f);
+
+	Engine::GameManager()->AddLight(light_info);
+
 	return S_OK;
 }
 
 void CStage::Release()
 {
 	Engine::GameManager()->PrototypeClearances(MAINTAIN_STAGE);
+	Subject()->DestroyInstance();
 	Engine::GameManager()->ClearLight();
 }

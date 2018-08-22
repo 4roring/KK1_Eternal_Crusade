@@ -29,6 +29,11 @@ bool Engine::CNavLine::CheckLine(const Vector2 & move_point)
 	else return false;
 }
 
+Vector2 Engine::CNavLine::normal()
+{
+	return normal_;
+}
+
 Engine::CNavLine * Engine::CNavLine::Create(const Vector3 & start_point, const Vector3 & end_point)
 {
 	CNavLine* ptr_navline = new CNavLine;

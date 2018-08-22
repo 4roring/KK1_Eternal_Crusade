@@ -141,5 +141,5 @@ void CDynamicCamera::CameraShaking(float delta_time)
 	at().y += shaking_value_;
 
 	if (shaking_time_ >= 2.f)
-		Subject()->set_camera_shaking(false);
+		Subject()->SetCameraShaking(false, 0.f, 0.f, Vector3());
 }

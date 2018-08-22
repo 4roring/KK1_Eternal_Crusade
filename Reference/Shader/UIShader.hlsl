@@ -58,17 +58,16 @@ struct PS_IN
 	float2 texture_uv : TEXCOORD0;
 };
 
-struct PS_OUT
+vector PS_MAIN(PS_IN In) : COLOR
 {
-	vector color : COLOR0;
-};
+    return tex2D(color_sampler, In.texture_uv);
+}
 
-PS_OUT PS_MAIN(PS_IN In)
+vector PS_ALPHA(PS_IN In) : COLOR
 {
-	PS_OUT Out = (PS_OUT)0;
-    Out.color = tex2D(color_sampler, In.texture_uv);
-
-	return Out;
+    vector color = tex2D(color_sampler, In.texture_uv);
+    color.a *= g_alpha;
+    return color;
 }
 
 technique Default_Technique
@@ -93,5 +92,16 @@ technique Default_Technique
 
         VertexShader = compile vs_3_0 VS_UV();
         PixelShader = compile ps_3_0 PS_MAIN();
+    }
+
+    pass Alpha
+    {
+        ALPHABLENDENABLE = TRUE;
+        SRCBLEND = SRCALPHA;
+        DESTBLEND = INVSRCALPHA;
+        CULLMODE = NONE;
+
+        VertexShader = compile vs_3_0 VS_MAIN();
+        PixelShader = compile ps_3_0 PS_ALPHA();
     }
 }

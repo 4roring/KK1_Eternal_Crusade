@@ -11,6 +11,8 @@
 #include "PlayerController.h"
 #include "Gun_Phobos.h"
 #include "ChainSword.h"
+#include "Granade.h"
+
 #include "FireEffect.h"
 #include "FireLineSmoke.h"
 #include "HitEffect.h"
@@ -18,6 +20,9 @@
 
 #include "UI_Hp.h"
 #include "UI_Shield.h"
+#include "UI_Weapon.h"
+#include "UI_Aim.h"
+#include "CUI_Damage.h"
 
 CSpaceMarin::CSpaceMarin(LPDIRECT3DDEVICE9 ptr_device)
 	: Engine::CGameObject(ptr_device)
@@ -125,6 +130,20 @@ void CSpaceMarin::set_next_rot_y(float next_rot_y)
 	next_rot_y_ = next_rot_y;
 }
 
+void CSpaceMarin::set_toss()
+{
+	toss_ = true;
+}
+
+void CSpaceMarin::set_reload()
+{
+	if (weapon_ == Weapon::Gun && evade_ == false && bullet_count_ != max_bullet_)
+	{
+		Sound()->PlaySound(ptr_reload_sound_, Sound()->CHANNEL_PLAYER);
+		reload_ = true;
+	}
+}
+
 void CSpaceMarin::SetRay(const Vector3 & ray_pos, const Vector3 & ray_dir)
 {
 	ray_pos_ = ray_pos;
@@ -166,6 +185,12 @@ HRESULT CSpaceMarin::Initialize(int ctrl_id)
 	max_shield_ = 100;
 	shield_ = max_shield_;
 
+	max_bullet_ = 30;
+	bullet_count_ = max_bullet_;
+
+	max_granade_ = 2;
+	granade_count_ = max_granade_;
+
 	return S_OK;
 }
 
@@ -186,6 +211,15 @@ void CSpaceMarin::LateInit()
 		assert(!FAILED(hr) && "Player UI Create Failed");
 	}
 
+	ptr_gun_sound_ = Sound()->FindSound(TEXT("SpaceMarin_Gun"));
+	ptr_sword_sound_ = Sound()->FindSound(TEXT("Chain_Sword"));
+	ptr_run_sound_ = Sound()->FindSound(TEXT("SpaceMarin_Run"));
+	ptr_evade_sound_ = Sound()->FindSound(TEXT("Evade"));
+	ptr_reload_sound_ = Sound()->FindSound(TEXT("Reload"));
+	ptr_toss_sound_ = Sound()->FindSound(TEXT("Toss"));
+
+	CGameObject::Update(0.f);
+
 #ifdef _DEBUG
 	D3DXCreateLine(ptr_device_, &ptr_line_);
 	ptr_line_->SetAntialias(TRUE);
@@ -203,12 +237,6 @@ void CSpaceMarin::Update(float delta_time)
 		shield_recovery_time_ = 1.f;
 	}
 
-	//if (ptr_upper_anim_ctrl_->GetPeriod() <= ptr_upper_anim_ctrl_->GetTrackPosition())
-	//	ptr_upper_anim_ctrl_->SetTrackPosition(0.0);
-
-	//if (ptr_lower_anim_ctrl_->GetPeriod() <= ptr_lower_anim_ctrl_->GetTrackPosition())
-	//	ptr_lower_anim_ctrl_->SetTrackPosition(0.0);
-
 	ptr_lower_transform_->position() = ptr_transform_->position();
 	if (pre_lower_state_ == LowerState::Idle)
 	{
@@ -216,7 +244,7 @@ void CSpaceMarin::Update(float delta_time)
 		{
 			next_rot_y_ = ptr_transform_->rotation().y - ptr_lower_transform_->rotation().y;
 			next_lower_state_ = LowerState::Turn;
-			
+
 		}
 	}
 	else if (pre_lower_state_ != LowerState::Turn)
@@ -228,6 +256,7 @@ void CSpaceMarin::Update(float delta_time)
 		CollSystem()->AddRaycastList(ptr_body_collider_, TAG_PLAYER);
 	}
 	CollSystem()->AddColliderList(ptr_body_collider_, TAG_PLAYER);
+	ptr_body_collider_->set_delta_time(delta_time);
 
 	UpdateState(delta_time);
 	Engine::CGameObject::Update(delta_time);
@@ -236,6 +265,13 @@ void CSpaceMarin::Update(float delta_time)
 void CSpaceMarin::LateUpdate()
 {
 	Engine::GameManager()->AddRenderLayer(Engine::RENDERLAYER::LAYER_NONEALPHA, this);
+
+	if (true == toss_)
+		GranadeToss();
+
+	if (true == reload_)
+		Reload();
+	
 	UpdateLowerAnimState();
 	UpdateUpperAnimState();
 
@@ -243,6 +279,7 @@ void CSpaceMarin::LateUpdate()
 		Fire();
 	else
 		Attack();
+
 
 	if (true == evade_)
 	{
@@ -309,7 +346,12 @@ void CSpaceMarin::ApplyDamage(int damage)
 	else if (damage >= 30)
 		damage_delay_ = 0.6f;
 
-	shield_ -= damage;
+	if (damage != 0)
+	{
+		shield_ -= damage;
+		ptr_damage_ui_->SetActive(true);
+	}
+
 	if (shield_ < 0)
 	{
 		hp_ += shield_;
@@ -342,7 +384,7 @@ HRESULT CSpaceMarin::AddComponent()
 
 		if (nullptr != ptr_ctrl_)
 			Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE, TEXT("Component_PlayerController"), ptr_ctrl_->CloneComponent());
-	
+
 		Subject()->set_player_pos(&ptr_transform_->position());
 	}
 	else
@@ -353,7 +395,7 @@ HRESULT CSpaceMarin::AddComponent()
 	ptr_head_collider_ = Engine::CCollider::Create(ptr_device_, this, Collider_Sphere);
 	ptr_body_collider_ = Engine::CCollider::Create(ptr_device_, this, Collider_Sphere);
 
-	Subject()->SetSpaceMarinData(&shield_, &hp_, &current_cell_index_, control_id_);
+	Subject()->SetSpaceMarinData(&shield_, &hp_, &bullet_count_, &granade_count_, &current_cell_index_, control_id_);
 
 #ifdef _DEBUG
 	hr = Ready_Component(MAINTAIN_STATIC, TEXT("Shader_Default"), TEXT("Debug_Shader"), ptr_debug_shader_);
@@ -387,6 +429,13 @@ HRESULT CSpaceMarin::AddUI()
 {
 	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, TEXT("Player_HPUI"), CUI_Hp::Create(ptr_device_));
 	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, TEXT("Player_Shield_UI"), CUI_Shield::Create(ptr_device_));
+	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, TEXT("Player_Weapon_UI"), CUI_Weapon::Create(ptr_device_));
+
+	ptr_aim_ui_ = CUI_Aim::Create(ptr_device_);
+	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, TEXT("Player_Aim_UI"), ptr_aim_ui_);
+
+	ptr_damage_ui_ = CUI_Damage::Create(ptr_device_);
+	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, TEXT("Player_Aim_UI"), ptr_damage_ui_);
 
 	return S_OK;
 }
@@ -427,8 +476,7 @@ void CSpaceMarin::UpdateState(float delta_time)
 		Run();
 		if (ptr_transform_->move_dir().x == 0.f && ptr_transform_->move_dir().z == 0.f)
 		{
-			next_lower_state_ = LowerState::Idle;
-			next_upper_state_ = UpperState::Idle;
+			SwitchToIdle();
 			foot_effect_ = false;
 		}
 		break;
@@ -438,8 +486,7 @@ void CSpaceMarin::UpdateState(float delta_time)
 			evade_dir_ = Vector3(0.f, 0.f, 0.f);
 		if (ptr_upper_anim_ctrl_->CheckCurrentAnimationEnd(0.1))
 		{
-			next_lower_state_ = LowerState::Idle;
-			next_upper_state_ = UpperState::Idle;
+			SwitchToIdle();
 			evade_ = false;
 		}
 		break;
@@ -454,9 +501,7 @@ void CSpaceMarin::UpdateState(float delta_time)
 
 		if (true == ptr_lower_anim_ctrl_->CheckCurrentAnimationEnd(0.1))
 		{
-			next_lower_state_ = LowerState::Idle;
-			next_upper_state_ = UpperState::Idle;
-			condition_ = 0.f;
+			SwitchToIdle();
 			ptr_sword_->ptr_sphere_coll()->enable_ = false;
 		}
 		break;
@@ -466,6 +511,8 @@ void CSpaceMarin::UpdateState(float delta_time)
 		weapon_ = Weapon::ChainSword;
 		fire_ = false;
 		evade_ = false;
+		toss_ = false;
+		reload_ = false;
 		ptr_transform_->LookAt(execution_target_);
 
 		if (true == ptr_lower_anim_ctrl_->CheckCurrentAnimationEnd(1.9))
@@ -475,9 +522,7 @@ void CSpaceMarin::UpdateState(float delta_time)
 
 		if (true == ptr_lower_anim_ctrl_->CheckCurrentAnimationEnd(0.1))
 		{
-			next_lower_state_ = LowerState::Idle;
-			next_upper_state_ = UpperState::Idle;
-			condition_ = 0.f;
+			SwitchToIdle();
 			ptr_sword_->ptr_sphere_coll()->enable_ = false;
 			execution_ = false;
 			//ptr_sword_->transform()->rotation().z = D3DXToRadian(100.f);
@@ -499,10 +544,12 @@ void CSpaceMarin::UpdateLowerAnimState()
 			ptr_lower_anim_ctrl_->SetAnimationTrack("Turn");
 			break;
 		case LowerState::Attack:
+			Sound()->PlaySound(ptr_sword_sound_, Sound()->CHANNEL_PLAYER_ATTACK);
 			ptr_upper_anim_ctrl_->SetAnimationTrack("Sword_Attack1");
 			ptr_lower_anim_ctrl_->SetAnimationTrack("Sword_Attack1");
 			break;
 		case LowerState::Evade:
+			Sound()->PlaySound(ptr_evade_sound_, Sound()->CHANNEL_PLAYER);
 			switch (pre_move_dir_)
 			{
 			case MoveDirection::Forward:
@@ -558,10 +605,23 @@ void CSpaceMarin::UpdateUpperAnimState()
 		case UpperState::Run_Aiming:
 			ptr_upper_anim_ctrl_->SetAnimationTrack("Run_Shoot");
 			break;
+		case UpperState::Toss:
+			ptr_upper_anim_ctrl_->SetAnimationTrack("Granade_Toss");
+			break;
+		case UpperState::Reload:
+			ptr_upper_anim_ctrl_->SetAnimationTrack("Reload");
+			break;
 		}
 		ptr_upper_anim_ctrl_->SetTrackPosition(0.0);
 		pre_upper_state_ = next_upper_state_;
 	}
+}
+
+void CSpaceMarin::SwitchToIdle()
+{
+	next_lower_state_ = LowerState::Idle;
+	next_upper_state_ = UpperState::Idle;
+	condition_ = 0.f;
 }
 
 void CSpaceMarin::Run()
@@ -584,6 +644,8 @@ void CSpaceMarin::Run()
 			break;
 		}
 		pre_move_dir_ = next_move_dir_;
+		CreateRunEffect(*(Vector3*)&ptr_left_foot_matrix_->m[3][0]);
+		foot_effect_ = true;
 	}
 
 	if (weapon_ == Weapon::Gun)
@@ -616,6 +678,10 @@ void CSpaceMarin::Run()
 
 void CSpaceMarin::Evade(float delta_time)
 {
+	toss_ = false;
+	reload_ = false;
+	fire_ = false;
+
 	int option = -1;
 	current_cell_index_ = Engine::GameManager()->MoveFromNavMesh(ptr_transform_->position(), evade_dir_ * 7.f * delta_time, current_cell_index_, option);
 }
@@ -626,8 +692,44 @@ void CSpaceMarin::Execution()
 	evade_ = false;
 }
 
+void CSpaceMarin::Reload()
+{
+	fire_ = false;
+
+	next_upper_state_ = UpperState::Reload;
+	if (true == ptr_upper_anim_ctrl_->CheckCurrentAnimationEnd(0.1))
+	{
+		next_upper_state_ = UpperState::Idle;
+		bullet_count_ = max_bullet_;
+		reload_ = false;
+	}
+}
+
+void CSpaceMarin::GranadeToss()
+{
+	next_upper_state_ = UpperState::Toss;
+
+
+	if (true == ptr_upper_anim_ctrl_->CheckCurrentAnimationEnd(0.1))
+	{
+		next_upper_state_ = UpperState::Idle;
+		granade_toss_ = false;
+		toss_ = false;
+	}
+	else if (true == ptr_upper_anim_ctrl_->CheckCurrentAnimationEnd(0.5) && false == granade_toss_)
+	{
+		Vector3 start_pos = *(Vector3*)&ptr_hand_matrix_->m[3][0];
+		const Vector3 start_dir = ptr_transform_->Forward().Normalize();
+		D3DXVec3TransformCoord(&start_pos, &start_pos, &ptr_transform_->mat_world());
+		CreateGranade(start_pos, start_dir);
+		granade_toss_ = true;
+	}
+}
+
 void CSpaceMarin::Fire()
 {
+	ptr_aim_ui_->set_aim_state(0);
+
 	if (true == fire_)
 	{
 		switch (pre_upper_state_)
@@ -643,7 +745,7 @@ void CSpaceMarin::Fire()
 			if (true == CollSystem()->RaycastCheck(ray_pos_, ray_dir_, &dist, hit_obj, TAG_ENEMY))
 			{
 				if (nullptr != hit_obj)
-					hit_obj->ApplyDamage(10);
+					hit_obj->ApplyDamage(25);
 				fire_range_pos_ = ray_pos_ + ray_dir_ * dist;
 				CreateBulletHitEffect(fire_range_pos_);
 			}
@@ -652,6 +754,14 @@ void CSpaceMarin::Fire()
 			fire_ = false;
 			CreateFireEffect();
 			--bullet_count_;
+
+			if (bullet_count_ <= 0)
+				reload_ = true;
+
+			ptr_aim_ui_->set_aim_state(1);
+			
+			if (false == Subject()->camera_shaking())
+				Subject()->SetCameraShaking(true, 0.1f, 0.1f, Vector3(ptr_transform_->Forward().Normalize()) * -1.f);
 			break;
 		}
 	}
@@ -669,12 +779,14 @@ void CSpaceMarin::Attack()
 		{
 			if (condition_ == 0.f)
 			{
+				Sound()->PlaySound(ptr_sword_sound_, Sound()->CHANNEL_PLAYER);
 				ptr_upper_anim_ctrl_->SetAnimationTrack("Sword_Attack2");
 				ptr_lower_anim_ctrl_->SetAnimationTrack("Sword_Attack2");
 				++condition_;
 			}
 			else
 			{
+				Sound()->PlaySound(ptr_sword_sound_, Sound()->CHANNEL_PLAYER);
 				ptr_upper_anim_ctrl_->SetAnimationTrack("Sword_Attack1");
 				ptr_lower_anim_ctrl_->SetAnimationTrack("Sword_Attack1");
 				condition_ = 0.f;
@@ -686,6 +798,8 @@ void CSpaceMarin::Attack()
 
 void CSpaceMarin::CreateFireEffect()
 {
+	Sound()->PlaySound(ptr_gun_sound_, Sound()->CHANNEL_PLAYER_ATTACK);
+
 	TCHAR effect_key[64] = TEXT("");
 	wsprintf(effect_key, TEXT("Space_Marin_%d_Fire_Effect_%d"), control_id_, bullet_count_);
 	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, effect_key, CFireEffect::Create(ptr_device_, &ptr_gun_->GetFirePos()));
@@ -705,11 +819,22 @@ void CSpaceMarin::CreateBulletHitEffect(const Vector3 & hit_position)
 
 void CSpaceMarin::CreateRunEffect(const Vector3 & foot_pos)
 {
+	Sound()->PlaySound(ptr_run_sound_, Sound()->CHANNEL_PLAYER);
 	Vector3 effect_pos = {};
 	D3DXVec3TransformCoord(&effect_pos, &foot_pos, &ptr_transform_->mat_world());
 	TCHAR effect_key[64] = TEXT("");
 	wsprintf(effect_key, TEXT("Space_Marin_%d_Move_Dust_Effect_%d"), control_id_, (int)foot_effect_);
 	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, effect_key, CMoveDust::Create(ptr_device_, effect_pos));
+}
+
+void CSpaceMarin::CreateGranade(const Vector3 & start_pos, const Vector3 & start_dir)
+{
+	Engine::CGameObject* ptr_granade = CGranade::Create(ptr_device_, start_pos, start_dir);
+
+	TCHAR object_key[128] = TEXT("");
+	wsprintf(object_key, TEXT("Granade_%d"), granade_count_--);
+	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, object_key, ptr_granade);
+	Sound()->PlaySound(ptr_toss_sound_, Sound()->CHANNEL_PLAYER);
 }
 
 void CSpaceMarin::SetConstantTable(LPD3DXEFFECT ptr_effect)

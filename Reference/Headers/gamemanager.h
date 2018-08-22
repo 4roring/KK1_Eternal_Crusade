@@ -65,6 +65,7 @@ public:
 	void LinkCell();
 	int MoveFromNavMesh(Vector3& pos, const Vector3& dir, int current_index, int& out_pass_fail_option);
 	int MoveFromNavMesh(Vector3& pre_pos, const Vector3& next_pos, int current_index);
+	int MoveFromNavMesh(Vector3& pos, const Vector3& dir, int current_index, int& out_pass_fail_option, Vector2& out_line_normal);
 	int FindCellIndex(const Vector3& pos);
 	void ClearNavCell();
 

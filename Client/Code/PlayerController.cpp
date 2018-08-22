@@ -168,11 +168,17 @@ void CPlayerController::ControlAttack(float delta_time)
 			Vector3 ray_pos, ray_dir;
 			ComputeShootRay(ray_pos, ray_dir);
 			ptr_ctrl_unit_->SetRay(ray_pos, ray_dir);
-			attack_delay_ = 0.1f;
+			attack_delay_ = 0.3f;
 		}
 		else
 			attack_delay_ -= delta_time;
 	}
+
+	if (Engine::Input()->GetKeyDown(KEY::G))
+		ptr_ctrl_unit_->set_toss();
+
+	if (Engine::Input()->GetKeyDown(KEY::R))
+		ptr_ctrl_unit_->set_reload();
 }
 
 void CPlayerController::ControlEvade(float delta_time)

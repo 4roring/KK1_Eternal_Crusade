@@ -35,6 +35,7 @@ private:
 
 private:
 	Engine::CTexture* ptr_texture_ = nullptr;
+	Engine::CTexture* ptr_mark_texture_ = nullptr;
 
 private:
 	CSpaceMarinObserver* ptr_player_observer_ = nullptr;

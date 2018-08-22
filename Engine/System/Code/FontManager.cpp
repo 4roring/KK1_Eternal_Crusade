@@ -23,6 +23,20 @@ HRESULT Engine::CFontManager::AddFont(LPDIRECT3DDEVICE9 ptr_device, const std::w
 	return S_OK;
 }
 
+HRESULT Engine::CFontManager::AddFont(LPDIRECT3DDEVICE9 ptr_device, const std::wstring font_key, const std::wstring font_path, int height, uint32 width, uint32 weight)
+{
+	auto iter = map_font_.find(font_key);
+	if (iter != map_font_.end())
+		assert(!"Add Font Error!!!");
+
+	KK1_Font* ptr_font = KK1_Font::Create(ptr_device, height, width, weight, font_key.c_str(), font_path.c_str());
+	assert(nullptr != ptr_font && "Font Object Create Failed");
+
+	map_font_.emplace(font_key, ptr_font);
+	return S_OK;
+
+}
+
 Engine::KK1_Font * Engine::CFontManager::GetFont(const std::wstring font_key)
 {
 	auto iter = map_font_.find(font_key);

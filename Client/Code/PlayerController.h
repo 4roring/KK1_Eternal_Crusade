@@ -4,6 +4,7 @@
 
 class CPlayerCamera;
 class CSpaceMarin;
+class CUI_Aim;
 
 class CPlayerController
 	: public CController

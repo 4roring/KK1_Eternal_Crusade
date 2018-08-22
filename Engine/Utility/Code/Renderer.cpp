@@ -115,14 +115,8 @@ void Engine::CRenderer::AddRenderLayer(RENDERLAYER render_id, CGameObject * ptr_
 
 void Engine::CRenderer::Render_Priority()
 {
-	ptr_device_->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
-	ptr_device_->SetRenderState(D3DRS_ZENABLE, FALSE);
-
 	for (auto& object : render_layer_[LAYER_PRIORITY])
 		object->Render();
-
-	ptr_device_->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
-	ptr_device_->SetRenderState(D3DRS_ZENABLE, TRUE);
 }
 
 void Engine::CRenderer::Render_NoneAlpha()
@@ -145,14 +139,8 @@ void Engine::CRenderer::Render_Alpha()
 
 void Engine::CRenderer::Render_UI()
 {
-	ptr_device_->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
-	ptr_device_->SetRenderState(D3DRS_ZENABLE, FALSE);
-
 	for (auto& object : render_layer_[LAYER_UI])
 		object->Render();
-
-	ptr_device_->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
-	ptr_device_->SetRenderState(D3DRS_ZENABLE, TRUE);
 }
 
 void Engine::CRenderer::Render_Deferred()

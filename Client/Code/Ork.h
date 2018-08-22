@@ -131,6 +131,10 @@ private:
 	int hp_ = 0;
 	int condition_ = 0;
 
+private:
+	SoundSource* ptr_gun_sound_ = nullptr;
+	SoundSource* ptr_sword_sound_ = nullptr;
+
 #ifdef _DEBUG
 private:
 	Engine::CShader* ptr_debug_shader_ = nullptr;

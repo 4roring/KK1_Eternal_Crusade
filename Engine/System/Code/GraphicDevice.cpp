@@ -58,6 +58,11 @@ HRESULT Engine::CGraphicDevice::AddFont(const std::wstring font_key, int height,
 	return ptr_font_manager_->AddFont(ptr_device_, font_key, height, width, weight);
 }
 
+HRESULT Engine::CGraphicDevice::AddFont(const std::wstring font_key, const std::wstring font_path, int height, uint32 width, uint32 weight)
+{
+	return ptr_font_manager_->AddFont(ptr_device_, font_key, font_path, height, width, weight);
+}
+
 Engine::KK1_Font * Engine::CGraphicDevice::GetFont(const std::wstring font_key)
 {
 	return ptr_font_manager_->GetFont(font_key);

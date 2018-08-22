@@ -23,7 +23,7 @@ public:
 	void SetEventCamera(CPlayerCamera* ptr_camera);
 
 public:
-	void InitEvent();
+	void InitEvent_For_Stage1();
 	void CheckEvent(float delta_time);
 
 private:

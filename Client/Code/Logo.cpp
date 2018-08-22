@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Logo.h"
-#include "SceneSelector.h"
 #include "Loading.h"
 #include "Font.h"
 
@@ -29,7 +28,7 @@ HRESULT CLogo::InitScene()
 	hr = CScene::InitScene();
 	assert(hr == S_OK && "CScnen Class InitScene Failed");
 
-	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_LOGO
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_LOADING
 		, TEXT("Logo_Texture")
 		, Engine::CTexture::Create(ptr_device_
 			, Engine::TEXTURETYPE::NORMAL
@@ -51,7 +50,7 @@ HRESULT CLogo::InitScene()
 	hr = Add_GameLogic_Layer();
 	assert(!FAILED(hr) && "Add_GameLogic_Layer Call Failed");
 
-	ptr_loading_ = CLoading::Create(CLoading::LOADINGID::STAGE, &ptr_next_scene_);
+	ptr_loading_ = CLoading::Create(CLoading::LOADINGID::STAGE_MH, &ptr_next_scene_);
 	assert(nullptr != ptr_loading_ && "Failed to Create Loading Instance");
 
 	ptr_loading_text_ = Engine::GraphicDevice()->GetFont(TEXT("¹ÙÅÁ"));
@@ -88,7 +87,7 @@ CLogo * CLogo::Create(LPDIRECT3DDEVICE9 ptr_device)
 
 HRESULT CLogo::Add_GameLogic_Layer()
 {
-	Engine::CGameObject* ptr_object = CScreenImage::Create(ptr_device_);
+	Engine::CGameObject* ptr_object = CScreenImage::Create(ptr_device_, TEXT("Logo_Texture"));
 	assert(nullptr != ptr_object && "ScreenImage Object Create Failed");
 	AddObject(LAYER_GAMELOGIC, TEXT("LogoImage"), ptr_object);
 
@@ -98,5 +97,5 @@ HRESULT CLogo::Add_GameLogic_Layer()
 void CLogo::Release()
 {
 	Engine::Safe_Delete(ptr_loading_);
-	Engine::GameManager()->PrototypeClearances(MAINTAIN_LOGO);
+	Engine::GameManager()->PrototypeClearances(MAINTAIN_LOADING);
 }

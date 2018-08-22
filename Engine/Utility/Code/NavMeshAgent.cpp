@@ -40,6 +40,8 @@ void Engine::CNavMeshAgent::Release()
 	vec_nav_cell_.clear();
 
 	Safe_Release(ptr_line_);
+
+	ptr_nav_mesh_agent_ = nullptr;
 }
 
 Engine::CNavMeshAgent * Engine::CNavMeshAgent::Create(LPDIRECT3DDEVICE9 ptr_device, int cell_container_size)
@@ -177,6 +179,32 @@ int Engine::CNavMeshAgent::MoveFromNavMesh(Vector3& pre_pos, const Vector3& next
 	else
 		pre_pos += move_dir;
 
+	return next_index;
+}
+
+int Engine::CNavMeshAgent::MoveFromNavMesh(Vector3 & pos, const Vector3 & dir, int current_index, int & out_pass_fail_option, Vector2 & out_line_normal)
+{
+	NEIGHBORID neighbor_id = NEIGHBOR_END;
+	int next_index = current_index;
+
+	if (true == vec_nav_cell_[current_index]->CheckPass(pos, dir, neighbor_id))
+	{
+		const CNavCell* ptr_neighbor = vec_nav_cell_[current_index]->GetNeighbor(neighbor_id);
+		if (nullptr == ptr_neighbor)
+		{
+			out_pass_fail_option = vec_nav_cell_[current_index]->option();
+			out_line_normal = vec_nav_cell_[current_index]->GetLine((LINEID)neighbor_id)->normal();
+		}
+		else
+		{
+			next_index = ptr_neighbor->index();
+			pos += dir;
+		}
+	}
+	else
+		pos += dir;
+
+	SetPosY(pos, next_index);
 	return next_index;
 }
 

@@ -36,7 +36,6 @@ STDOVERRIDEMETHODIMP Engine::CLoader::CreateMeshContainer(LPCSTR ptr_name
 {
 	LPD3DXMESH ptr_mesh = ptr_mesh_data->pMesh;
 
-
 	HRESULT hr = E_FAIL;
 	BoneMesh* ptr_mesh_container = new BoneMesh;
 	ZeroMemory(ptr_mesh_container, sizeof(BoneMesh));

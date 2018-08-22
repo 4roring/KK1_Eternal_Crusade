@@ -17,10 +17,25 @@ HRESULT Engine::KK1_Font::InitFont(int height, uint32 width, uint32 weight, cons
 	font_info.Width = width;
 	font_info.Weight = weight;
 	lstrcpy(font_info.FaceName, face_name);
+	font_info.CharSet = HANGUL_CHARSET;
+
+	return D3DXCreateFontIndirect(ptr_device_, &font_info, &ptr_font_);
+}
+
+HRESULT Engine::KK1_Font::InitFont(int height, uint32 width, uint32 weight, const TCHAR * face_name, const TCHAR * font_path)
+{
+	AddFontResourceEx(font_path, FR_PRIVATE, 0);
+
+	D3DXFONT_DESC font_info = {};
+	font_info.Height = height;
+	font_info.Width = width;
+	font_info.Weight = weight;
+	lstrcpy(font_info.FaceName, face_name);
 	font_info.CharSet = DEFAULT_CHARSET;
 
 	return D3DXCreateFontIndirect(ptr_device_, &font_info, &ptr_font_);
 }
+
 
 void Engine::KK1_Font::Render(const TCHAR * text, const D3DXCOLOR & color, const Vector3 & position)
 {
@@ -32,6 +47,18 @@ Engine::KK1_Font * Engine::KK1_Font::Create(LPDIRECT3DDEVICE9 ptr_device, int he
 {
 	KK1_Font* ptr_font = new KK1_Font(ptr_device);
 	if (FAILED(ptr_font->InitFont(height, width, weight, face_name)))
+	{
+		Safe_Delete(ptr_font);
+		assert(!"Init Font Failed");
+	}
+
+	return ptr_font;
+}
+
+Engine::KK1_Font * Engine::KK1_Font::Create(LPDIRECT3DDEVICE9 ptr_device, int height, uint32 width, uint32 weight, const TCHAR * face_name, const TCHAR * font_path)
+{
+	KK1_Font* ptr_font = new KK1_Font(ptr_device);
+	if (FAILED(ptr_font->InitFont(height, width, weight, face_name, font_path)))
 	{
 		Safe_Delete(ptr_font);
 		assert(!"Init Font Failed");

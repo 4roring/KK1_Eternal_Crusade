@@ -121,6 +121,10 @@ HRESULT Engine::CGameManager::SetNextScene(CScene * ptr_scene)
 HRESULT Engine::CGameManager::Create_NavMeshAgent(int cell_container_size)
 {
 	if (nullptr == ptr_device_) return E_FAIL;
+
+	if (ptr_nav_mesh_agent_ != nullptr)
+		Safe_Delete(ptr_nav_mesh_agent_);
+
 	ptr_nav_mesh_agent_ = CNavMeshAgent::Create(ptr_device_, cell_container_size);
 	if (nullptr == ptr_nav_mesh_agent_) return E_FAIL;
 
@@ -145,6 +149,11 @@ int Engine::CGameManager::MoveFromNavMesh(Vector3 & pos, const Vector3 & dir, in
 int Engine::CGameManager::MoveFromNavMesh(Vector3 & pre_pos, const Vector3 & next_pos, int current_index)
 {
 	return ptr_nav_mesh_agent_->MoveFromNavMesh(pre_pos, next_pos, current_index);
+}
+
+int Engine::CGameManager::MoveFromNavMesh(Vector3 & pos, const Vector3 & dir, int current_index, int & out_pass_fail_option, Vector2 & out_line_normal)
+{
+	return ptr_nav_mesh_agent_->MoveFromNavMesh(pos, dir, current_index, out_pass_fail_option, out_line_normal);
 }
 
 int Engine::CGameManager::FindCellIndex(const Vector3 & pos)
@@ -174,12 +183,14 @@ HRESULT Engine::CGameManager::AddLight(const D3DLIGHT9 & light_info)
 
 void Engine::CGameManager::ClearLight()
 {
-	ptr_light_manager_->ClearLight();
+	if(ptr_light_manager_ != nullptr)
+		ptr_light_manager_->ClearLight();
 }
 
 void Engine::CGameManager::Release()
 {
 	ptr_light_manager_->DestroyInstance();
+	ptr_light_manager_ = nullptr;
 	Safe_Delete(ptr_nav_mesh_agent_);
 	Safe_Delete(ptr_renderer_);
 	Safe_Delete(ptr_scene_);

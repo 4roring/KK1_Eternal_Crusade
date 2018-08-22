@@ -15,12 +15,12 @@ CScreenImage::~CScreenImage()
 	Release();
 }
 
-HRESULT CScreenImage::Initialize()
+HRESULT CScreenImage::Initialize(const std::wstring& texture_key)
 {
 	HRESULT hr = CGameObject::Initialize();
 	assert(!FAILED(hr) && "CGameObject::Initialize call failed in ScreenImage");
 
-	hr = AddComponent();
+	hr = AddComponent(texture_key);
 	assert(!FAILED(hr) && "AddComponent call failed in ScreenImage");
 
 	return S_OK;
@@ -50,10 +50,10 @@ void CScreenImage::Render()
 	ptr_shader_->EndShader();
 }
 
-CScreenImage * CScreenImage::Create(LPDIRECT3DDEVICE9 ptr_device)
+CScreenImage * CScreenImage::Create(LPDIRECT3DDEVICE9 ptr_device, const std::wstring& texture_key)
 {
 	CScreenImage* ptr_object = new CScreenImage(ptr_device);
-	if (FAILED(ptr_object->Initialize()))
+	if (FAILED(ptr_object->Initialize(texture_key)))
 	{
 		Safe_Delete(ptr_object);
 		assert(!"ScreenImage Object Create Failed");
@@ -61,16 +61,16 @@ CScreenImage * CScreenImage::Create(LPDIRECT3DDEVICE9 ptr_device)
 	return ptr_object;
 }
 
-HRESULT CScreenImage::AddComponent()
+HRESULT CScreenImage::AddComponent(const std::wstring& texture_key)
 {
 	HRESULT hr = E_FAIL;
 
 	hr = Ready_Component(MAINTAIN_STATIC, TEXT("Buffer_RectTexture"), TEXT("Buffer"), ptr_buffer_);
 	assert(hr == S_OK && "ScreenImage Buffer ReadyComponent Failed");
-	hr = Ready_Component(MAINTAIN_LOGO, TEXT("Logo_Texture"), TEXT("Texture"), ptr_texture_);
-	assert(hr == S_OK && "ScreenImage Texture ReadyComponent Failed");
 	hr = Ready_Component(MAINTAIN_STATIC, TEXT("Shader_Default"), TEXT("Shader"), ptr_shader_);
 	assert(hr == S_OK && "ScreenImage Shader ReadyComponent Failed");
+	hr = Ready_Component(MAINTAIN_LOADING, texture_key, TEXT("Texture"), ptr_texture_);
+	assert(hr == S_OK && "ScreenImage Texture ReadyComponent Failed");
 
 	return S_OK;
 }

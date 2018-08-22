@@ -86,6 +86,7 @@ private:
 	void CreateVictimBlood();
 	void CreateFireEffect();
 	void CreateBulletHitEffect(const Vector3& hit_position);
+	void CreateSprintEffect(const Vector3& foot_pos);
 
 private:
 	Engine::CDynamicMesh* ptr_mesh_ = nullptr;
@@ -125,6 +126,8 @@ private:
 	const Matrix* ptr_right_hand_matrix_ = nullptr;
 	COrk_HeavyGun* ptr_heavy_gun_ = nullptr;
 	const Matrix* ptr_back_matrix_ = nullptr;
+	const Matrix* ptr_left_foot_matrix_ = nullptr;
+	const Matrix* ptr_right_foot_matrix_ = nullptr;
 
 private:
 	Vector3 fire_pos_ = {};
@@ -141,6 +144,7 @@ private:
 	float speed_ = 0.f;
 	bool first_skill_ = false;
 	bool victim_blood_ = false;
+	bool foot_effect_ = false;
 
 private:
 	CSpaceMarin* ptr_target_ = nullptr;
@@ -149,6 +153,19 @@ private:
 
 private:
 	std::vector<Vector3> path_;
+
+private:
+	SoundSource* ptr_spawn1_sound_ = nullptr;
+	SoundSource* ptr_spawn2_sound_ = nullptr;
+	SoundSource* ptr_heavy_gun_sound_ = nullptr;
+	SoundSource* ptr_gun_sound_ = nullptr;
+	SoundSource* ptr_klaw_sound_ = nullptr;
+	SoundSource* ptr_skill_voice_ = nullptr;
+	SoundSource* ptr_skill_sound_ = nullptr;
+	SoundSource* ptr_chain_sword_sound_ = nullptr;
+	SoundSource* ptr_explosion_sound_ = nullptr;
+	SoundSource* ptr_run_sound_ = nullptr;
+	SoundSource* ptr_hit_sound_ = nullptr;
 
 #ifdef _DEBUG
 private:

@@ -14,10 +14,12 @@ public:
 
 public:
 	HRESULT InitFont(int height, uint32 width, uint32 weight, const TCHAR* face_name);
+	HRESULT InitFont(int height, uint32 width, uint32 weight, const TCHAR* face_name, const TCHAR* font_path);
 	void Render(const TCHAR* text, const D3DXCOLOR& color, const Vector3& position);
 
 public:
 	static KK1_Font* Create(LPDIRECT3DDEVICE9 ptr_device, int height, uint32 width, uint32 weight, const TCHAR* face_name);
+	static KK1_Font* Create(LPDIRECT3DDEVICE9 ptr_device, int height, uint32 width, uint32 weight, const TCHAR* face_name, const TCHAR* font_path);
 
 private:
 	void Release();

@@ -24,6 +24,7 @@
 #include "FireEffect.h"
 #include "FireLineSmoke.h"
 #include "HitEffect.h"
+#include "MoveDust.h"
 
 COrk_WarBoss::COrk_WarBoss(LPDIRECT3DDEVICE9 ptr_device)
 	: Engine::CGameObject(ptr_device)
@@ -59,6 +60,8 @@ HRESULT COrk_WarBoss::Initialize()
 
 	ptr_head_frame_ = ptr_mesh_->FindFrame("joint_Head_01");
 	ptr_body_frame_ = ptr_mesh_->FindFrame("joint_TorsoC_01");
+	ptr_left_foot_matrix_ = ptr_mesh_->FindFrameMatrix("joint_ToeLT_01");
+	ptr_right_foot_matrix_ = ptr_mesh_->FindFrameMatrix("joint_ToeRT_01");
 
 	current_cell_index_ = -1;
 	max_hp_ = 2000;
@@ -97,6 +100,18 @@ void COrk_WarBoss::LateInit()
 	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, TEXT("WarBoss Jump Effect"), ptr_jump_effect_);
 	ptr_jump_effect_->SetActive(false);
 
+	ptr_spawn1_sound_ = Sound()->FindSound(TEXT("Ork_Voice_1"));
+	ptr_spawn2_sound_ = Sound()->FindSound(TEXT("Ork_Voice_2"));
+	ptr_heavy_gun_sound_ = Sound()->FindSound(TEXT("HeavyGun"));
+	ptr_gun_sound_ = Sound()->FindSound(TEXT("Ork_Gun"));
+	ptr_klaw_sound_ = Sound()->FindSound(TEXT("Ork_Sword"));
+	ptr_skill_voice_ = Sound()->FindSound(TEXT("BastionOfDestruction_Voice"));
+	ptr_skill_sound_ = Sound()->FindSound(TEXT("BastionOfDestruction_Sound"));
+	ptr_chain_sword_sound_ = Sound()->FindSound(TEXT("Chain_Sword"));
+	ptr_explosion_sound_ = Sound()->FindSound(TEXT("Explosion"));
+	ptr_run_sound_ = Sound()->FindSound(TEXT("SpaceMarin_Run"));
+	ptr_hit_sound_ = Sound()->FindSound(TEXT("Hit"));
+
 #ifdef _DEBUG
 	D3DXCreateLine(ptr_device_, &ptr_line_);
 	ptr_line_->SetAntialias(TRUE);
@@ -119,6 +134,7 @@ void COrk_WarBoss::Update(float delta_time)
 	CollSystem()->AddRaycastList(ptr_body_collider_, TAG_ENEMY);
 	CollSystem()->AddRaycastList(ptr_head_collider_, TAG_ENEMY);
 	CollSystem()->AddColliderList(ptr_body_collider_, TAG_ENEMY);
+	ptr_body_collider_->set_delta_time(delta_time);
 
 	if (damage_delay_ > 0.f) damage_delay_ -= delta_time;
 }
@@ -127,7 +143,7 @@ void COrk_WarBoss::LateUpdate()
 {
 	Engine::GameManager()->AddRenderLayer(Engine::RENDERLAYER::LAYER_NONEALPHA, this);
 	CollSystem()->CollisionCheck(ptr_body_collider_, TAG_ENEMY);
-	CollSystem()->CollisionCheck(ptr_body_collider_, TAG_PLAYER);
+	//CollSystem()->CollisionCheck(ptr_body_collider_, TAG_PLAYER);
 
 	CheckCollision();
 
@@ -275,14 +291,22 @@ void COrk_WarBoss::UpdateState(float delta_time)
 			condition_ = fmin(condition_ + delta_time, 0.f);
 		}
 
-		if (condition_ == 0.f && ptr_upper_anim_ctrl_->CheckCurrentAnimationEnd(0.1))
+		if (condition_ == 0.f)
 		{
+			Sound()->PlaySound(ptr_spawn1_sound_, Sound()->CHANNEL_ENEMY);
+			++condition_;
+		}
+
+		if (condition_ == 1.f && true == ptr_upper_anim_ctrl_->CheckCurrentAnimationEnd(0.1))
+		{
+			Sound()->StopSound(Sound()->CHANNEL_ENEMY);
+			Sound()->PlaySound(ptr_spawn2_sound_, Sound()->CHANNEL_ENEMY);
 			++condition_;
 			ptr_upper_anim_ctrl_->SetAnimationTrack("Spawn_2");
 			ptr_lower_anim_ctrl_->SetAnimationTrack("Spawn_2");
 		}
 		
-		if (condition_ == 1.f && ptr_upper_anim_ctrl_->CheckCurrentAnimationEnd(0.1))
+		if (condition_ == 2.f && ptr_upper_anim_ctrl_->CheckCurrentAnimationEnd(0.1))
 		{
 			condition_ = 0.f;
 			next_behavior_pattern_ = BehaviorPattern::Idle;
@@ -341,6 +365,8 @@ void COrk_WarBoss::DamageChangeState()
 {
 	if (hp_ <= (max_hp_ >> 1) && weapon_ == Weapon::HeavyGun)
 	{
+		Sound()->StopAll();
+		Sound()->PlaySound(ptr_explosion_sound_, Sound()->CHANNEL_ENEMY);
 		weapon_ = Weapon::Klaw;
 		ptr_heavy_gun_->SetActive(false);
 		ptr_gun_->SetActive(true);
@@ -352,7 +378,7 @@ void COrk_WarBoss::DamageChangeState()
 
 		upper_shoot_rot_y_ = 0.f;
 		speed_ = 7.f;
-		Subject()->set_camera_shaking(true);
+		Subject()->SetCameraShaking(true, 0.7f, 0.7f, Vector3(0.f, 1.f, 0.f));
 	}
 	else if (false == first_skill_ && hp_ < (max_hp_ >> 3))
 	{
@@ -410,6 +436,8 @@ void COrk_WarBoss::UpdateAnimState()
 			{
 				ptr_upper_anim_ctrl_->SetAnimationTrack("Heavy_Sprint");
 				ptr_lower_anim_ctrl_->SetAnimationTrack("Heavy_Sprint");
+				CreateSprintEffect(*(Vector3*)&ptr_left_foot_matrix_->m[3][0]);
+				foot_effect_ = true;
 			}
 			else if (weapon_ == Weapon::Klaw)
 			{
@@ -426,6 +454,7 @@ void COrk_WarBoss::UpdateAnimState()
 			ptr_lower_anim_ctrl_->SetAnimationTrack("Down_In");
 			break;
 		case BehaviorPattern::Victim:
+			Sound()->PlaySound(ptr_hit_sound_, Sound()->CHANNEL_ENEMY);
 			ptr_upper_anim_ctrl_->SetAnimationTrack("Down_Victim");
 			ptr_lower_anim_ctrl_->SetAnimationTrack("Down_Victim");
 			break;
@@ -491,6 +520,7 @@ void COrk_WarBoss::HeavyShoot(float delta_time)
 
 	if (condition_ == 0.f)
 	{
+		Sound()->PlaySound(ptr_heavy_gun_sound_, Sound()->CHANNEL_ENEMY_ATTACK);
 		ptr_transform_->LookAt(ptr_target_->transform()->position());
 		lower_shoot_rot_y_ = ptr_transform_->rotation().y;
 		upper_shoot_rot_y_ = D3DXToRadian(60.f);
@@ -506,7 +536,7 @@ void COrk_WarBoss::HeavyShoot(float delta_time)
 	current_cell_index_ = Engine::GameManager()->MoveFromNavMesh(ptr_transform_->position(), ptr_transform_->move_dir(), current_cell_index_, option);
 
 	condition_ += delta_time;
-	if (condition_ >= 5.f)
+	if (condition_ >= 2.5f)
 	{
 		upper_shoot_rot_y_ = 0.f;
 		condition_ = 0.f;
@@ -565,8 +595,23 @@ void COrk_WarBoss::HeavyAttack(float delta_time)
 	ptr_transform_->move_dir() = move_dir * speed_ * speed_ * delta_time;
 	current_cell_index_ = Engine::GameManager()->MoveFromNavMesh(ptr_transform_->position(), ptr_transform_->move_dir(), current_cell_index_, option);
 	
-	if(current_cell_index_ == 223)
+	if (ptr_lower_anim_ctrl_->CheckCurrentAnimationEnd(0.5) && foot_effect_ == true)
+	{
+		CreateSprintEffect(*(Vector3*)&ptr_right_foot_matrix_->m[3][0]);
+		foot_effect_ = false;
+	}
+	else if (ptr_lower_anim_ctrl_->CheckCurrentAnimationEnd(0.1) && foot_effect_ == false)
+	{
+		ptr_lower_anim_ctrl_->SetTrackPosition(0.0);
+		CreateSprintEffect(*(Vector3*)&ptr_left_foot_matrix_->m[3][0]);
+		foot_effect_ = true;
+	}
+
+	if (current_cell_index_ == 223)
+	{
+		ptr_transform_->LookAt(ptr_target_->transform()->position());
 		next_behavior_pattern_ = BehaviorPattern::Shoot;
+	}
 
 	if (option != -1 && ++condition_ > 3.f)
 	{
@@ -644,6 +689,7 @@ void COrk_WarBoss::KlawAttack(float delta_time)
 	{
 		++condition_;
 		ptr_transform_->LookAt(ptr_target_->transform()->position());
+		Sound()->PlaySound(ptr_klaw_sound_, Sound()->CHANNEL_ENEMY_ATTACK);
 		ptr_upper_anim_ctrl_->SetAnimationTrack("Klaw_Attack1");
 		ptr_lower_anim_ctrl_->SetAnimationTrack("Klaw_Attack1");
 	}
@@ -651,6 +697,7 @@ void COrk_WarBoss::KlawAttack(float delta_time)
 	{
 		++condition_;
 		ptr_transform_->LookAt(ptr_target_->transform()->position());
+		Sound()->PlaySound(ptr_klaw_sound_, Sound()->CHANNEL_ENEMY_ATTACK);
 		ptr_upper_anim_ctrl_->SetAnimationTrack("Klaw_Attack2");
 		ptr_lower_anim_ctrl_->SetAnimationTrack("Klaw_Attack2");
 	}
@@ -676,8 +723,12 @@ void COrk_WarBoss::BastionOfDestruction(float delta_time)
 	if (condition_ == 0.f)
 	{
 		anim_time_ *= 0.5f;
+		Sound()->StopSound(Sound()->CHANNEL_ENEMY);
+		Sound()->PlaySound(ptr_skill_voice_, Sound()->CHANNEL_ENEMY);
 		if (true == ptr_upper_anim_ctrl_->CheckCurrentAnimationEnd(0.1))
 		{
+			Sound()->StopSound(Sound()->CHANNEL_ENEMY_ATTACK);
+			Sound()->PlaySound(ptr_skill_sound_, Sound()->CHANNEL_ENEMY_ATTACK);
 			ptr_upper_anim_ctrl_->SetAnimationTrack("Klaw_Ground_Attack_Loop");
 			ptr_lower_anim_ctrl_->SetAnimationTrack("Klaw_Ground_Attack_Loop");
 			++condition_;
@@ -721,7 +772,7 @@ void COrk_WarBoss::BastionOfDestruction(float delta_time)
 			CreateSkillEffect();
 			ptr_jump_effect_->transform()->rotation().x = 0.f;
 			ptr_jump_effect_->SetActive(false);
-			Subject()->set_camera_shaking(true);
+			Subject()->SetCameraShaking(true, 0.7f, 0.7f, Vector3(0.f, 1.f, 0.f));
 		}
 	}
 	else if (condition_ == 3.f)
@@ -814,7 +865,10 @@ void COrk_WarBoss::Fire()
 				CreateBulletHitEffect(fire_range_pos_);
 			}
 			else
-				fire_range_pos_ = fire_pos_ + fire_dir_ * 20.f;
+				fire_range_pos_ = fire_pos_ + fire_dir_ * 50.f;
+			
+			if(weapon_ == Weapon::Klaw)
+				Sound()->PlaySound(ptr_gun_sound_, Sound()->CHANNEL_ENEMY_ATTACK);
 
 			CreateFireEffect();
 		}
@@ -858,6 +912,8 @@ void COrk_WarBoss::CreateSkillEffect()
 
 void COrk_WarBoss::CreateVictimBlood()
 {
+	Sound()->PlaySound(ptr_chain_sword_sound_, Sound()->CHANNEL_ENEMY_ATTACK);
+
 	TCHAR effect_key[64] = TEXT("");
 	wsprintf(effect_key, TEXT("OrkWarboss_Victim_Blood"));
 	Vector3 effect_pos = *(Vector3*)&ptr_body_frame_->combined_matrix.m[3][0];
@@ -873,6 +929,9 @@ void COrk_WarBoss::CreateFireEffect()
 
 	wsprintf(effect_key, TEXT("WarBoss_Fire_Line_"));
 	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, effect_key, CFireLineSmoke::Create(ptr_device_, fire_pos_, fire_range_pos_));
+	
+	if(weapon_ == Weapon::Klaw)
+		Sound()->PlaySound(ptr_gun_sound_, Sound()->CHANNEL_ENEMY_ATTACK);
 }
 
 void COrk_WarBoss::CreateBulletHitEffect(const Vector3 & hit_position)
@@ -880,6 +939,16 @@ void COrk_WarBoss::CreateBulletHitEffect(const Vector3 & hit_position)
 	TCHAR effect_key[64] = TEXT("");
 	wsprintf(effect_key, TEXT("WarBoss_Bullet_Hit_Effect"));
 	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, effect_key, CHitEffect::Create(ptr_device_, hit_position, TEXT("HitBlood")));
+}
+
+void COrk_WarBoss::CreateSprintEffect(const Vector3 & foot_pos)
+{
+	Sound()->PlaySound(ptr_run_sound_, Sound()->CHANNEL_ENEMY);
+	Vector3 effect_pos = {};
+	D3DXVec3TransformCoord(&effect_pos, &foot_pos, &ptr_transform_->mat_world());
+	TCHAR effect_key[64] = TEXT("");
+	wsprintf(effect_key, TEXT("war_boss_Move_Dust_Effect_%d"), (int)foot_effect_);
+	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, effect_key, CMoveDust::Create(ptr_device_, effect_pos));
 }
 
 #ifdef _DEBUG

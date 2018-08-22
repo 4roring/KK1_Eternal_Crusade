@@ -102,6 +102,9 @@ void COrk::LateInit()
 	if (current_cell_index_ == -1)
 		current_cell_index_ = Engine::GameManager()->FindCellIndex(ptr_transform_->position());
 
+	ptr_gun_sound_ = Sound()->FindSound(TEXT("Ork_Gun"));
+	ptr_sword_sound_ = Sound()->FindSound(TEXT("Ork_Sword"));
+
 #ifdef _DEBUG
 	D3DXCreateLine(ptr_device_, &ptr_line_);
 	ptr_line_->SetAntialias(TRUE);
@@ -125,6 +128,7 @@ void COrk::Update(float delta_time)
 	CollSystem()->AddRaycastList(ptr_head_collider_, TAG_ENEMY);
 	CollSystem()->AddRaycastList(ptr_body_collider_, TAG_ENEMY);
 	CollSystem()->AddColliderList(ptr_body_collider_, TAG_ENEMY);
+	ptr_body_collider_->set_delta_time(delta_time);
 
 	if (damage_delay_ > 0.f) damage_delay_ -= delta_time;
 }
@@ -392,9 +396,11 @@ void COrk::UpdateUpperAnimState()
 			ptr_upper_anim_ctrl_->SetAnimationTrack("Run_Aim");
 			break;
 		case UpperState::Attack_1:
+			Sound()->PlaySound(ptr_sword_sound_, Sound()->CHANNEL_ENEMY_ATTACK);
 			ptr_upper_anim_ctrl_->SetAnimationTrack("Attack_1");
 			break;
-		case UpperState::Attack_2:
+		case UpperState::Attack_2:			
+			Sound()->PlaySound(ptr_sword_sound_, Sound()->CHANNEL_ENEMY_ATTACK);
 			ptr_upper_anim_ctrl_->SetAnimationTrack("Attack_2");
 			break;
 		case UpperState::Down:
@@ -478,6 +484,8 @@ void COrk::Slash()
 
 void COrk::CreateFireEffect()
 {
+	Sound()->PlaySound(ptr_gun_sound_, Sound()->CHANNEL_ENEMY_ATTACK);
+
 	TCHAR effect_key[64] = TEXT("");
 	wsprintf(effect_key, TEXT("Ork_%d_Bullet_Fire_Effect"), control_id_);
 	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, effect_key, CFireEffect::Create(ptr_device_, &ptr_gun_->GetFirePos()));

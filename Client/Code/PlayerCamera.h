@@ -71,7 +71,11 @@ private:
 
 private:
 	float shaking_time_ = 0.f;
+	float shaking_acc_time_ = 0.f;
 	float shaking_value_ = 0.f;
+	float shaking_power_ = 0.f;
+	Vector3 shaking_dir_ = {};
+
 
 private:
 	Engine::CTransform* ptr_boss_transform_ = nullptr;

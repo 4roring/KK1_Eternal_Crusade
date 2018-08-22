@@ -64,9 +64,6 @@
     <Filter Include="05.Resources\VIBuffer\RectTexture">
       <UniqueIdentifier>{da476c67-10a7-49dd-a0ba-b8db75d1caf5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05.Resources\VIBuffer\TrailTexture">
-      <UniqueIdentifier>{3c1562c9-3dfb-4552-b09e-5fc08513bf25}</UniqueIdentifier>
-    </Filter>
     <Filter Include="05.Resources\VIBuffer\CubeTexture">
       <UniqueIdentifier>{c738c02f-be73-464c-8a4c-434e8354dbc8}</UniqueIdentifier>
     </Filter>
@@ -126,6 +123,9 @@
     </Filter>
     <Filter Include="04.Component\ParticleSystem\Particle\BillboardParticle">
       <UniqueIdentifier>{1bce088a-e4ee-43e5-afe9-fbdda5d253ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05.Resources\VIBuffer\TrailColor">
+      <UniqueIdentifier>{3c1562c9-3dfb-4552-b09e-5fc08513bf25}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -243,6 +243,12 @@
     <ClInclude Include="..\Code\Particle.h">
       <Filter>04.Component\ParticleSystem\Particle</Filter>
     </ClInclude>
+    <ClInclude Include="..\Code\Loader_Soft.h">
+      <Filter>05.Resources\Mesh\DynamicMesh\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\TrailColor.h">
+      <Filter>05.Resources\VIBuffer\TrailColor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\GameManager.cpp">
@@ -352,6 +358,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\Particle.cpp">
       <Filter>04.Component\ParticleSystem\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Loader_Soft.cpp">
+      <Filter>05.Resources\Mesh\DynamicMesh\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\TrailColor.cpp">
+      <Filter>05.Resources\VIBuffer\TrailColor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

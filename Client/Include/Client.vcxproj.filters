@@ -191,6 +191,66 @@
     <Filter Include="07.SoundManager">
       <UniqueIdentifier>{97b6bf28-8af1-4a67-8dd2-a276c7f50b37}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\ControlObject\Rioreus">
+      <UniqueIdentifier>{ddaec09b-e48a-45fe-b122-c9dfec6dbec4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject\SpaceMarin\Granade">
+      <UniqueIdentifier>{11cdf27d-6e5b-4833-8e86-a053646e719d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Effect\Bomb">
+      <UniqueIdentifier>{cb478ba0-0bb4-4e89-a0db-965409a02231}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Effect\GranadeTrail">
+      <UniqueIdentifier>{97db3279-572e-4dbc-a7c0-31223ea49d1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\UI\Aim">
+      <UniqueIdentifier>{3aec6eb9-efd5-4a39-8878-219dfe575acc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\UI\Damage">
+      <UniqueIdentifier>{2cebb49e-784f-4ac1-a47b-97e04c802dc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Scene\03.LoadingScene">
+      <UniqueIdentifier>{665ab59b-97ad-4016-9368-017edb4f531f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject\Rioreus\PartCollider">
+      <UniqueIdentifier>{8ae989e6-e9cc-4e95-9206-3034b33d3fe3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject\Rioreus\Rioreus_State">
+      <UniqueIdentifier>{fe171701-718d-45a1-9401-dd79d6ed6259}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject\Rioreus\Rioreus_State\State_Rotate">
+      <UniqueIdentifier>{df046fcb-283b-47f0-b621-fd70821222a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject\Rioreus\Rioreus_State\Fall">
+      <UniqueIdentifier>{f9780596-a8bd-4d9d-9d42-7ffd9e8e5aa5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject\Rioreus\Rioreus_State\Glide">
+      <UniqueIdentifier>{b3a79834-772e-419d-8959-cde94822b28b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject\Rioreus\Rioreus_State\Fire">
+      <UniqueIdentifier>{4000ff69-4a3d-42ab-94c1-beef8a698524}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject\Rioreus\Rioreus_State\TailAttack">
+      <UniqueIdentifier>{7d2d22ba-5c87-4dfb-86a4-55cf6c96734e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject\Rioreus\Rioreus_State\Sprint">
+      <UniqueIdentifier>{8798422f-5fbc-4b59-bba6-487e6418884d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject\Rioreus\Rioreus_State\Groggy">
+      <UniqueIdentifier>{c1879ad1-2f7e-485a-ab53-d3d042ae5c54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject\Rioreus\Rioreus_State\Somersault">
+      <UniqueIdentifier>{92fd5593-8080-4046-b963-d35ffd55922f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject\Rioreus\Rioreus_State\Cry">
+      <UniqueIdentifier>{75672cb2-e9f1-4769-adcb-64fa67027aef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject\Rioreus\Rioreus_State\Idle">
+      <UniqueIdentifier>{cbd17fc3-1c1c-4b1a-9b70-d057915661c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject\Rioreus\Rioreus_State\Walk">
+      <UniqueIdentifier>{8039e0b5-d6b9-4c3b-8aac-5505450b7f6e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -347,6 +407,66 @@
     <ClInclude Include="..\Code\UI_Shield.h">
       <Filter>02.GameObject\UI\Shield</Filter>
     </ClInclude>
+    <ClInclude Include="..\Code\UI_Weapon.h">
+      <Filter>02.GameObject\UI\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\SoundManager.h">
+      <Filter>07.SoundManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Rioreus.h">
+      <Filter>02.GameObject\ControlObject\Rioreus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Granade.h">
+      <Filter>02.GameObject\ControlObject\SpaceMarin\Granade</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Bomb.h">
+      <Filter>02.GameObject\Effect\Bomb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\GranadeTrail.h">
+      <Filter>02.GameObject\Effect\GranadeTrail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\UI_Aim.h">
+      <Filter>02.GameObject\UI\Aim</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\CUI_Damage.h">
+      <Filter>02.GameObject\UI\Damage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\LoadingScene.h">
+      <Filter>01.Scene\03.LoadingScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Rioreus_State.h">
+      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Rioreus_Idle.h">
+      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\Idle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Rioreus_Rotate.h">
+      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\State_Rotate</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Rioreus_Walk.h">
+      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\Walk</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Rioreus_Cry.h">
+      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\Cry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Rioreus_Sprint.h">
+      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\Sprint</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Rioreus_TailAttack.h">
+      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\TailAttack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Rioreus_Fall.h">
+      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\Fall</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Rioreus_Fire.h">
+      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\Fire</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Rioreus_Groggy.h">
+      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\Groggy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Rioreus_Somersault.h">
+      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\Somersault</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -481,6 +601,66 @@
     </ClCompile>
     <ClCompile Include="..\Code\UI_Shield.cpp">
       <Filter>02.GameObject\UI\Shield</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\UI_Weapon.cpp">
+      <Filter>02.GameObject\UI\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\SoundManager.cpp">
+      <Filter>07.SoundManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Rioreus.cpp">
+      <Filter>02.GameObject\ControlObject\Rioreus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Granade.cpp">
+      <Filter>02.GameObject\ControlObject\SpaceMarin\Granade</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Bomb.cpp">
+      <Filter>02.GameObject\Effect\Bomb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\GranadeTrail.cpp">
+      <Filter>02.GameObject\Effect\GranadeTrail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\UI_Aim.cpp">
+      <Filter>02.GameObject\UI\Aim</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUI_Damage.cpp">
+      <Filter>02.GameObject\UI\Damage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\LoadingScene.cpp">
+      <Filter>01.Scene\03.LoadingScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Rioreus_State.cpp">
+      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Rioreus_Idle.cpp">
+      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\Idle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Rioreus_Rotate.cpp">
+      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\State_Rotate</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Rioreus_Walk.cpp">
+      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\Walk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Rioreus_Cry.cpp">
+      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\Cry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Rioreus_Sprint.cpp">
+      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\Sprint</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Rioreus_TailAttack.cpp">
+      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\TailAttack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Rioreus_Fall.cpp">
+      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\Fall</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Rioreus_Fire.cpp">
+      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\Fire</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Rioreus_Groggy.cpp">
+      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\Groggy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Rioreus_Somersault.cpp">
+      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\Somersault</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

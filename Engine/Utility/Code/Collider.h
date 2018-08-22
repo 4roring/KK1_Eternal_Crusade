@@ -24,6 +24,7 @@ public:
 
 public:
 	void SetWorld(Matrix* ptr_world);
+	void set_delta_time(float delta_time);
 
 private:
 	HRESULT InitCollider(CGameObject* ptr_object, ColliderType coll_type);
@@ -65,6 +66,9 @@ private:
 
 private:
 	LPDIRECT3DDEVICE9 ptr_device_ = nullptr;
+
+private:
+	float delta_time_ = 0.f;
 };
 
 END

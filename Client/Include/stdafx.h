@@ -25,4 +25,7 @@
 #include "Subject.h"
 #include "EventManager.h"
 
+#include "fmod.h"
+#include "SoundManager.h"
+
 

@@ -113,5 +113,6 @@ HRESULT CUI_Shield::AddComponent()
 
 void CUI_Shield::Release()
 {
-	Subject()->RemoveObserver(ptr_player_observer_);
+	if (nullptr != ptr_player_observer_)
+		Subject()->RemoveObserver(ptr_player_observer_);
 }

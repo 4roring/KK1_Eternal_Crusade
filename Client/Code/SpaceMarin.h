@@ -18,8 +18,8 @@ class CSpaceMarin
 {
 public:
 	enum class Weapon { Gun, ChainSword, End };
-	enum class LowerState { Idle, Turn, Run, Attack, Reload, Evade, Execution, End };
-	enum class UpperState { Idle, Shoot, Run, Run_Aiming, End };
+	enum class LowerState { Idle, Turn, Run, Attack, Evade, Execution, End };
+	enum class UpperState { Idle, Shoot, Run, Run_Aiming, Toss, Reload, End };
 	enum class MoveDirection { Forward, Backward, Right, Left, End };
 
 private:
@@ -47,6 +47,8 @@ public:
 	void set_execution();
 	void set_execution_target(const Vector3& target_pos);
 	void set_next_rot_y(float next_rot_y);
+	void set_toss();
+	void set_reload();
 	void SetRay(const Vector3& ray_pos, const Vector3& ray_dir);
 
 private:
@@ -78,9 +80,12 @@ private:
 	void UpdateState(float delta_time);
 	void UpdateLowerAnimState();
 	void UpdateUpperAnimState();
+	void SwitchToIdle();
 	void Run();
 	void Evade(float delta_time);
 	void Execution();
+	void Reload();
+	void GranadeToss();
 
 private:
 	void Fire();
@@ -90,6 +95,7 @@ private:
 	void CreateFireEffect();
 	void CreateBulletHitEffect(const Vector3& hit_position);
 	void CreateRunEffect(const Vector3& foot_pos);
+	void CreateGranade(const Vector3& start_pos, const Vector3& start_dir);
 
 private:
 	void SetConstantTable(LPD3DXEFFECT ptr_effect);
@@ -120,6 +126,9 @@ private:
 	Vector3 fire_range_pos_ = {};
 	bool zoom_ = false;
 	bool fire_ = false;
+	bool reload_ = false;
+	bool toss_ = false;
+	bool granade_toss_ = false;
 
 private:
 	Vector3 evade_dir_ = {};
@@ -136,6 +145,8 @@ private:
 	int hp_ = 0;
 	int max_bullet_ = 0;
 	int bullet_count_ = 0;
+	int max_granade_ = 0;
+	int granade_count_ = 0;
 	float shield_recovery_time_ = 0.f;
 	float damage_delay_ = 0.f;
 	float condition_ = 0.f;
@@ -162,6 +173,17 @@ private:
 private:
 	Vector4 color_[3] = {};
 
+private:
+	SoundSource* ptr_gun_sound_ = nullptr;
+	SoundSource* ptr_sword_sound_ = nullptr;
+	SoundSource* ptr_run_sound_ = nullptr;
+	SoundSource* ptr_evade_sound_ = nullptr;
+	SoundSource* ptr_reload_sound_ = nullptr;
+	SoundSource* ptr_toss_sound_ = nullptr;
+
+private:
+	class CUI_Aim* ptr_aim_ui_ = nullptr;
+	Engine::CGameObject* ptr_damage_ui_ = nullptr;
 #ifdef _DEBUG
 private:
 	void DebugRender();

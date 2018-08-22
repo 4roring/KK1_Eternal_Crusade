@@ -4,6 +4,7 @@
 #include "GameObject.h"
 #include "SpaceMarinObserver.h"
 #include "PlayerCamera.h"
+#include "LoadingScene.h"
 
 CEventManager::CEventManager()
 {
@@ -32,14 +33,14 @@ void CEventManager::SetEventCamera(CPlayerCamera * ptr_camera)
 	ptr_event_camera_ = ptr_camera;
 }
 
-void CEventManager::InitEvent()
+void CEventManager::InitEvent_For_Stage1()
 {
 	vec_object_.resize(21, nullptr);
 	Subject()->RegisterObserver(ptr_player_observer_);
 
 	event_list_.emplace_back([this]()->bool { if (player_cell_num_ == 37){ EnableObject(0, 2); return true; } else return false; });
-	event_list_.emplace_back([this]()->bool { if (player_cell_num_ == 63) { EnableObject(3, 13); return true; } else return false; });
-	event_list_.emplace_back([this]()->bool { if (player_cell_num_ == 152) { EnableObject(14, 19); return true; } else return false; });
+	//event_list_.emplace_back([this]()->bool { if (player_cell_num_ == 63) { EnableObject(3, 13); return true; } else return false; });
+	//event_list_.emplace_back([this]()->bool { if (player_cell_num_ == 152) { EnableObject(14, 19); return true; } else return false; });
 	
 	// 보스방. 이벤트카메라 생성.
 	event_list_.emplace_back([this]()->bool { if (player_cell_num_ == 222) { EnableObject(20, 20); EnableEvent(); return true; } else return false; });
@@ -48,6 +49,9 @@ void CEventManager::InitEvent()
 void CEventManager::CheckEvent(float delta_time)
 {
 	if (true == event_list_.empty()) return;
+
+	if (Engine::Input()->GetKeyDown(KEY::NUM2))
+		Engine::GameManager()->SetNextScene(CLoadingScene::Create(Engine::GraphicDevice()->GetDevice()));
 
 	player_cell_num_ = ptr_player_observer_->GetCurrentCell(0);
 	if (true == event_list_.front()()) event_list_.pop_front();
@@ -68,5 +72,6 @@ void CEventManager::EnableEvent()
 
 void CEventManager::Release()
 {
-	Subject()->RemoveObserver(ptr_player_observer_);
+	if (nullptr != ptr_player_observer_)
+		Subject()->RemoveObserver(ptr_player_observer_);
 }

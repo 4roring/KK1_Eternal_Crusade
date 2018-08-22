@@ -56,7 +56,7 @@ VS_OUT_DEFAULT VS_DEFAULT(VS_IN_DEFAULT vs_in)
 
     vs_out.position = world_pos;
     vs_out.texture_uv = vs_in.texture_uv;
-    vs_out.normal = mul(vs_in.normal, (float3x3) g_mat_world);
+    vs_out.normal = normalize(mul(vs_in.normal, (float3x3) g_mat_world));
     vs_out.proj_pos = vs_out.position;
 
     return vs_out;
@@ -190,6 +190,10 @@ technique Default_Technique
 {
     pass SetBumpMap
     {
+        AlphaTestEnable = true;
+        AlphaFunc = Greater;
+        AlphaRef = 0x1f;
+
         VertexShader = compile vs_3_0 VS_MAIN();
         PixelShader = compile ps_3_0 PS_MAIN();
     }
@@ -202,6 +206,10 @@ technique Default_Technique
 
 	pass Default
 	{
+        AlphaTestEnable = true;
+        AlphaFunc = Greater;
+        AlphaRef = 0x1f;
+
         VertexShader = compile vs_3_0 VS_DEFAULT();
 		PixelShader = compile ps_3_0 PS_DEFAULT();
     }

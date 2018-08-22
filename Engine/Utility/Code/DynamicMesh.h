@@ -11,6 +11,7 @@ struct MeshInfo
 };
 
 class CLoader;
+class CLoader_Soft;
 class CAnimController;
 
 class ENGINE_DLL CDynamicMesh
@@ -29,6 +30,7 @@ public:
 public:
 	virtual CResources* CloneComponent() override;
 	CAnimController* CloneAnimController() const;
+	void SetInitMatrix(const Matrix& mat_init);
 
 public:
 	void FrameMove(float delta_time, CAnimController* ptr_anim_ctrl);
@@ -37,12 +39,14 @@ public:
 
 public:
 	virtual void RenderMesh(LPD3DXEFFECT ptr_effect, uint32 pass_index);
+	void RenderMesh_Soft(LPD3DXEFFECT ptr_effect, uint32 pass_index);
 
 public:
 	virtual int Release();
 
 private:
 	HRESULT LoadMeshFromFile(const TCHAR* path, const TCHAR* file_name);
+	HRESULT LoadMeshFromFile_Soft(const TCHAR* path, const TCHAR* file_name);
 
 private:
 	void UpdateFrameMatrix(BoneFrame* ptr_frame, const Matrix* ptr_parent_matrix);
@@ -50,6 +54,7 @@ private:
 	void SetUpBoneMatrixPointer(BoneFrame* ptr_frame);
 	void FindMeshContainer(BoneFrame* ptr_frame, LPD3DXEFFECT ptr_effect);
 	void RenderMeshContainer(BoneMesh* ptr_mesh_container, LPD3DXEFFECT ptr_effect, uint32 pass_index);
+	void RenderMeshContainer_Soft(BoneMesh* ptr_mesh_container, LPD3DXEFFECT ptr_effect, uint32 pass_index);
 
 public:
 	static CDynamicMesh* Create(LPDIRECT3DDEVICE9 ptr_device
@@ -58,6 +63,7 @@ public:
 private:
 	LPD3DXFRAME ptr_root_bone_ = nullptr;
 	CLoader* ptr_loader_ = nullptr;
+	CLoader_Soft* ptr_loader_soft_ = nullptr;
 	CAnimController* ptr_anim_ctrl_ = nullptr;
 
 private:

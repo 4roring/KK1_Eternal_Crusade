@@ -15,12 +15,13 @@ public:
 public:
 	HRESULT InitNavLine(const Vector3& start_point, const Vector3& end_point);
 	bool CheckLine(const Vector2& move_point);
+	Vector2 normal();
 
 public:
 	static CNavLine* Create(const Vector3& start_point, const Vector3& end_point);
 
 public:
-	Vector3 SlidingDirection(const Vector3& in_vector);
+	Vector3 SlidingDirection(const Vector3& in_dir);
 
 private:
 	Vector2 start_point_ = Vector2(0.f, 0.f);

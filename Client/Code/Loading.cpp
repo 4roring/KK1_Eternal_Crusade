@@ -5,6 +5,7 @@
 #include "Texture.h"
 #include "LineTexture.h"
 #include "CubeTexture.h"
+#include "TrailColor.h"
 #include "StaticMesh.h"
 #include "DynamicMesh.h"
 #include "Shader.h"
@@ -14,6 +15,7 @@
 
 #include "Ork.h"
 #include "Ork_WarBoss.h"
+#include "Rioreus.h"
 
 #include "Stage.h"
 #include "LevelObject.h"
@@ -50,10 +52,6 @@ HRESULT CLoading::InitLoading()
 	thread_ = (HANDLE)_beginthreadex(nullptr, 0, LoadingFunction, this, 0, nullptr);
 	assert(nullptr != thread_ && "Loading Thread Create Failed");
 
-	Matrix mat_ortho;
-	D3DXMatrixOrthoLH(&mat_ortho, kWinCx, kWinCy, 0.f, 1.f);
-	Subject()->SetOrthoProjection(mat_ortho);
-
 	return S_OK;
 }
 
@@ -62,7 +60,7 @@ HRESULT CLoading::Stage_Loading()
 	lstrcpy(loading_message_, TEXT("Texture Loading"));
 	HRESULT hr = E_FAIL;
 
-	EventManager()->InitEvent();
+	EventManager()->InitEvent_For_Stage1();
 
 	// Shader
 	lstrcpy(loading_message_, TEXT("Shader Complie and Loading"));
@@ -90,11 +88,112 @@ HRESULT CLoading::Stage_Loading()
 			, TEXT("../../Reference/Shader/ParticleEffectShader.hlsl")));
 	assert(hr == S_OK && "Shader_Point_Effect Component Add Failed");
 
-	//hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
-	//	, TEXT("Shader_DynamicMesh_Color")
-	//	, Engine::CShader::Create(ptr_device_
-	//		, TEXT("../../Reference/Shader/DynamicMeshShaderColor.hlsl")));
-	//assert(hr == S_OK && "Shader_DynamicMesh_Color Component Add Failed");
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
+		, TEXT("Shader_NormalMap")
+		, Engine::CShader::Create(ptr_device_
+			, TEXT("../../Reference/Shader/Deferred/Deferred_StaticMeshShader.hlsl")));
+	assert(hr == S_OK && "Shader_NormalMap Component Add Failed");
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
+		, TEXT("Shader_Sky")
+		, Engine::CShader::Create(ptr_device_
+			, TEXT("../../Reference/Shader/SkyShader.hlsl")));
+	assert(hr == S_OK && "Shader_Sky Component Add Failed");
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
+		, TEXT("Shader_UI")
+		, Engine::CShader::Create(ptr_device_
+			, TEXT("../../Reference/Shader/UIShader.hlsl")));
+	assert(hr == S_OK && "Shader_UI Component Add Failed");
+
+
+	// Buffer or Mesh
+	lstrcpy(loading_message_, TEXT("Mesh Loading"));
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
+		, TEXT("Buffer_Line")
+		, Engine::CLineTexture::Create(ptr_device_));
+	assert(!FAILED(hr) && "Buffer_Line Add Failed");
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
+		, TEXT("Buffer_Cube")
+		, Engine::CCubeTexture::Create(ptr_device_));
+	assert(!FAILED(hr) && "Buffer_CubeTexture Add Failed");
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
+		, TEXT("Buffer_TrailColor")
+		, Engine::CTrailColor::Create(ptr_device_));
+	assert(!FAILED(hr) && "Buffer_TrailColor Add Failed");
+
+	hr = SpaceMarinLoad();
+	assert(!FAILED(hr) && "SpaceMarin Load Failed");
+	hr = OrkLoad();
+	assert(!FAILED(hr) && "Ork Load Failed");
+
+	// Texture
+	lstrcpy(loading_message_, TEXT("Texture Loading"));
+	hr = TextureLoad();
+	assert(!FAILED(hr) && "Texture Load Failed");
+
+	// Particle Effect
+	hr = EffectLoad();
+	assert(!FAILED(hr) && "Effect Load Failed");
+
+
+	//hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+	//	, TEXT("Tyranid_Mesh")
+	//	, Engine::CDynamicMesh::Create(ptr_device_
+	//		, TEXT("../bin/Resources/Mesh/Tyranid/")
+	//		, TEXT("Tyranid.X")));
+	//assert(hr == S_OK && "Tyranid Mesh Add Failed");
+
+	lstrcpy(loading_message_, TEXT("Scene Initializing"));
+	*pp_next_scene_ = CStage::Create(ptr_device_);
+
+	lstrcpy(loading_message_, TEXT("Stage Data Loading"));
+	//NavMeshDataLoad(TEXT("../bin/Data/StageData/Test_Nav.dat"));
+	//StageDataLoad(MAINTAIN_STAGE, TEXT("../bin/Data/StageData/Test.dat"));
+
+	NavMeshDataLoad(TEXT("../bin/Data/StageData/Stage_1_Nav.dat"));
+	StageDataLoad(MAINTAIN_STAGE, TEXT("../bin/Data/StageData/Stage_1.dat"));
+
+	lstrcpy(loading_message_, TEXT("Sound Loading"));
+	hr = Sound()->Initialize();
+	assert(hr == S_OK && "Sound Initialize Failed");
+
+	lstrcpy(loading_message_, TEXT("Loading Complete"));
+
+	return S_OK;
+}
+
+HRESULT CLoading::Stage_MH_Loading()
+{
+	HRESULT hr = E_FAIL;
+	/* =============================================================== */
+	lstrcpy(loading_message_, TEXT("Shader Complie and Loading"));
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
+		, TEXT("Shader_Mesh")
+		, Engine::CShader::Create(ptr_device_
+			, TEXT("../../Reference/Shader/MeshShader.hlsl")));
+	assert(hr == S_OK && "Shader_Mesh Component Add Failed");
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
+		, TEXT("Shader_DynamicMesh")
+		, Engine::CShader::Create(ptr_device_
+			, TEXT("../../Reference/Shader/Deferred/Deferred_DynamicMeshShader.hlsl")));
+	assert(hr == S_OK && "Shader_DynamicMesh Component Add Failed");
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
+		, TEXT("Shader_Mesh_Effect")
+		, Engine::CShader::Create(ptr_device_
+			, TEXT("../../Reference/Shader/MeshEffectShader.hlsl")));
+	assert(hr == S_OK && "Shader_Mesh_Effect Component Add Failed");
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
+		, TEXT("Shader_Point_Effect")
+		, Engine::CShader::Create(ptr_device_
+			, TEXT("../../Reference/Shader/ParticleEffectShader.hlsl")));
+	assert(hr == S_OK && "Shader_Point_Effect Component Add Failed");
 
 	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
 		, TEXT("Shader_NormalMap")
@@ -114,39 +213,7 @@ HRESULT CLoading::Stage_Loading()
 			, TEXT("../../Reference/Shader/UIShader.hlsl")));
 	assert(hr == S_OK && "Shader_UI Component Add Failed");
 
-	lstrcpy(loading_message_, TEXT("Texture Loading"));
-	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
-		, TEXT("Sky_Texture")
-		, Engine::CTexture::Create(ptr_device_, Engine::TEXTURETYPE::CUBE
-			, TEXT("../bin/Resources/Texture/Skybox/Skybox.dds"), 1));
 
-	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
-		, TEXT("Explosion_Texture")
-		, Engine::CTexture::Create(ptr_device_, Engine::TEXTURETYPE::NORMAL
-			, TEXT("../bin/Resources/Texture/Effect/T_ExplosionSeq4x4_001.tga"), 1));
-
-	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
-		, TEXT("LineSmoke_Texture")
-		, Engine::CTexture::Create(ptr_device_, Engine::TEXTURETYPE::NORMAL
-			, TEXT("../bin/Resources/Texture/Effect/T_RibbonSmoky.tga"), 1));
-
-	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
-		, TEXT("SkillRange_Texture")
-		, Engine::CTexture::Create(ptr_device_, Engine::TEXTURETYPE::NORMAL
-			, TEXT("../bin/Resources/Texture/Effect/Skill_Range.png"), 1));
-
-	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
-		, TEXT("HP_UI_Texture")
-		, Engine::CTexture::Create(ptr_device_, Engine::TEXTURETYPE::NORMAL
-			, TEXT("../bin/Resources/Texture/UI/HP_Panel%d.tga"), 2));
-
-	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
-		, TEXT("Shield_UI_Texture")
-		, Engine::CTexture::Create(ptr_device_, Engine::TEXTURETYPE::NORMAL
-			, TEXT("../bin/Resources/Texture/UI/Shield_Panel%d.tga"), 2));
-
-	
-	// Mesh
 	lstrcpy(loading_message_, TEXT("Mesh Loading"));
 
 	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
@@ -159,118 +226,43 @@ HRESULT CLoading::Stage_Loading()
 		, Engine::CCubeTexture::Create(ptr_device_));
 	assert(!FAILED(hr) && "Buffer_CubeTexture Add Failed");
 
-	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
-		, TEXT("SpaceMarin_Mesh")
-		, Engine::CDynamicMesh::Create(ptr_device_
-			, TEXT("../bin/Resources/Mesh/SpaceMarin/")
-			, TEXT("SpaceMarin.X")));
-	assert(hr == S_OK && "SpaceMarin Mesh Add Failed");
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
+		, TEXT("Buffer_TrailColor")
+		, Engine::CTrailColor::Create(ptr_device_));
+	assert(!FAILED(hr) && "Buffer_TrailColor Add Failed");
+ /* =============================================================== */
+
+
+	// Texture
+	lstrcpy(loading_message_, TEXT("Texture Loading"));
+	hr = TextureLoad();
+	assert(!FAILED(hr) && "Texture Load Failed");
+
+	// Buffer or Mesh
+	lstrcpy(loading_message_, TEXT("Mesh Loading"));
+	hr = SpaceMarinLoad();
+	assert(!FAILED(hr) && "SpaceMarin Load Failed");
 
 	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
-		, TEXT("Ork_Mesh")
+		, TEXT("Rioreus_Mesh")
 		, Engine::CDynamicMesh::Create(ptr_device_
-			, TEXT("../bin/Resources/Mesh/Ork/")
-			, TEXT("Ork.X")));
-	assert(hr == S_OK && "Ork Mesh Add Failed");
-	
-	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
-		, TEXT("Ork_WarBoss_Mesh")
-		, Engine::CDynamicMesh::Create(ptr_device_
-			, TEXT("../bin/Resources/Mesh/Ork_WarBoss/")
-			, TEXT("Ork_WarBoss.X")));
-	assert(hr == S_OK && "Ork Mesh Add Failed");
-
+			, TEXT("../bin/Resources/Mesh/Rioreus/")
+			, TEXT("Rioreus.X")));
+	assert(hr == S_OK && "Rioreus Mesh Add Failed");
 
 	// Particle Effect
-	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/HitBlood.dat"));
-	assert(hr == S_OK && "Effect Data Load Failed");
-	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/SwordHitBlood.dat"));
-	assert(hr == S_OK && "Effect Data Load Failed");
-	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/BulletHit.dat"));
-	assert(hr == S_OK && "Effect Data Load Failed");
-	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/ExecutionBlood.dat"));
-	assert(hr == S_OK && "Effect Data Load Failed");
-	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/Explosion_1.dat"));
-	assert(hr == S_OK && "Effect Data Load Failed");
-	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/Sword_Lightning.dat"));
-	assert(hr == S_OK && "Effect Data Load Failed");
-	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/Move_Dust.dat"));
-	assert(hr == S_OK && "Effect Data Load Failed");
-	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/WarBoss_Skill_Dust.dat"));
-	assert(hr == S_OK && "Effect Data Load Failed");
-	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/WarBoss_Skill_Mini_Stone.dat"));
-	assert(hr == S_OK && "Effect Data Load Failed");
-	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/WarBoss_Skill_Jump.dat"));
-	assert(hr == S_OK && "Effect Data Load Failed");
-
-
-	//hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
-	//	, TEXT("Tyranid_Mesh")
-	//	, Engine::CDynamicMesh::Create(ptr_device_
-	//		, TEXT("../bin/Resources/Mesh/Tyranid/")
-	//		, TEXT("Tyranid.X")));
-	//assert(hr == S_OK && "Tyranid Mesh Add Failed");
-
-	// Weapon
-	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
-		, TEXT("ChainSword_Mesh")
-		, Engine::CDynamicMesh::Create(ptr_device_
-			, TEXT("../bin/Resources/Mesh/Weapon/SpaceMarin_ChainSword/")
-			, TEXT("ChainSword.X")));
-	assert(hr == S_OK && "ChainSword_Mesh Add Failed");
-
-	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
-		, TEXT("Gun_Phobos_Mesh")
-		, Engine::CStaticMesh::Create(ptr_device_
-			, TEXT("..\\bin\\Resources\\Mesh\\Weapon\\Gun_Phobos\\")
-			, TEXT("Gun_Phobos.X"), MAINTAIN_STAGE));
-	assert(hr == S_OK && "Gun_Phobos Mesh Add Failed");
-
-	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
-		, TEXT("Ork_Gun_Mesh")
-		, Engine::CStaticMesh::Create(ptr_device_
-			, TEXT("..\\bin\\Resources\\Mesh\\Weapon\\Ork_Gun\\")
-			, TEXT("Ork_Gun.X"), MAINTAIN_STAGE));
-	assert(hr == S_OK && "Ork_Gun Mesh Add Failed");
-
-	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
-		, TEXT("Ork_Sword_Mesh")
-		, Engine::CStaticMesh::Create(ptr_device_
-			, TEXT("..\\bin\\Resources\\Mesh\\Weapon\\Ork_Sword\\")
-			, TEXT("Ork_Sword.X"), MAINTAIN_STAGE));
-	assert(hr == S_OK && "Ork_Sword Mesh Add Failed");
-
-	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
-		, TEXT("Ork_HeavyGun_Mesh")
-		, Engine::CStaticMesh::Create(ptr_device_
-			, TEXT("..\\bin\\Resources\\Mesh\\Weapon\\Ork_HeavyGun\\")
-			, TEXT("Ork_HeavyGun.X"), MAINTAIN_STAGE));
-	assert(hr == S_OK && "Ork_Sword Mesh Add Failed");
-	
-	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
-		, TEXT("Ork_Klaw_Mesh")
-		, Engine::CStaticMesh::Create(ptr_device_
-			, TEXT("..\\bin\\Resources\\Mesh\\Weapon\\Ork_PowerRippa\\")
-			, TEXT("Ork_PowerRippa.X"), MAINTAIN_STAGE));
-	assert(hr == S_OK && "Ork_Sword Mesh Add Failed");
+	hr = EffectLoad();
+	assert(!FAILED(hr) && "Effect Load Failed");
 
 	lstrcpy(loading_message_, TEXT("Scene Initializing"));
 	*pp_next_scene_ = CStage::Create(ptr_device_);
 
 	lstrcpy(loading_message_, TEXT("Stage Data Loading"));
-	//NavMeshDataLoad(TEXT("../bin/Data/StageData/Test_Nav.dat"));
-	//StageDataLoad(MAINTAIN_STAGE, TEXT("../bin/Data/StageData/Test.dat"));
-
-	NavMeshDataLoad(TEXT("../bin/Data/StageData/Stage_1_Nav.dat"));
-	StageDataLoad(MAINTAIN_STAGE, TEXT("../bin/Data/StageData/Stage_1.dat"));
+	NavMeshDataLoad(TEXT("../bin/Data/StageData/Stage_2_Nav.dat"));
+	StageDataLoad(MAINTAIN_STAGE, TEXT("../bin/Data/StageData/Stage_2.dat"));
 
 	lstrcpy(loading_message_, TEXT("Loading Complete"));
 
-	return S_OK;
-}
-
-HRESULT CLoading::Stage_Special_Loading()
-{
 	return S_OK;
 }
 
@@ -309,6 +301,12 @@ HRESULT CLoading::StageDataLoad(MAINTAINID stage_id, const TCHAR* path)
 		if (0 == lstrcmp(mesh_key, TEXT("Ork_WarBoss")))
 		{
 			AddOrkWarBoss(file, mesh_key, object_key, stage_id, byte);
+			continue;
+		}
+
+		if (0 == lstrcmp(mesh_key, TEXT("Rioreus")))
+		{
+			AddRioreus(file, mesh_key, object_key, stage_id, byte);
 			continue;
 		}
 
@@ -403,6 +401,22 @@ void CLoading::AddOrkWarBoss(HANDLE file, const TCHAR * mesh_key, const TCHAR * 
 	ReadFile(file, temp, sizeof(Vector3), &byte, nullptr);
 
 	EventManager()->AddEnemy(object_key, ptr_obj);
+}
+
+void CLoading::AddRioreus(HANDLE file, const TCHAR * mesh_key, const TCHAR * object_key, MAINTAINID stage_id, DWORD & byte)
+{
+	Engine::CGameObject* ptr_obj = CRioreus::Create(ptr_device_);
+	assert(nullptr != ptr_obj && "Ork Create Failed");
+
+	(*pp_next_scene_)->AddObject(stage_id, object_key, ptr_obj);
+
+	Vector3 temp;
+
+	ReadFile(file, ptr_obj->transform()->position(), sizeof(Vector3), &byte, nullptr);
+	ReadFile(file, ptr_obj->transform()->rotation(), sizeof(Vector3), &byte, nullptr);
+	ReadFile(file, temp, sizeof(Vector3), &byte, nullptr);
+
+	//EventManager()->AddEnemy(object_key, ptr_obj);
 }
 
 HRESULT CLoading::FindAndLoadMesh(MAINTAINID stage_id, const std::wstring & mesh_key, const std::wstring & path)
@@ -602,6 +616,207 @@ bool CLoading::ClockwiseCheckOfNavCell(std::array<Vector3, 3>& cell_point_array)
 	return true;
 }
 
+HRESULT CLoading::SpaceMarinLoad()
+{
+	HRESULT hr = E_FAIL;
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("SpaceMarin_Mesh")
+		, Engine::CDynamicMesh::Create(ptr_device_
+			, TEXT("../bin/Resources/Mesh/SpaceMarin/")
+			, TEXT("SpaceMarin.X")));
+	if (FAILED(hr)) return E_FAIL;
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("ChainSword_Mesh")
+		, Engine::CDynamicMesh::Create(ptr_device_
+			, TEXT("../bin/Resources/Mesh/Weapon/SpaceMarin_ChainSword/")
+			, TEXT("ChainSword.X")));
+	if (FAILED(hr)) return E_FAIL;
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("Gun_Phobos_Mesh")
+		, Engine::CStaticMesh::Create(ptr_device_
+			, TEXT("..\\bin\\Resources\\Mesh\\Weapon\\Gun_Phobos\\")
+			, TEXT("Gun_Phobos.X"), MAINTAIN_STAGE));
+	if (FAILED(hr)) return E_FAIL;
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("Granade_Mesh")
+		, Engine::CStaticMesh::Create(ptr_device_
+			, TEXT("..\\bin\\Resources\\Mesh\\Weapon\\Granade\\")
+			, TEXT("Granade.X"), MAINTAIN_STAGE));
+	if (FAILED(hr)) return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLoading::OrkLoad()
+{
+	HRESULT hr = E_FAIL;
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("Ork_Mesh")
+		, Engine::CDynamicMesh::Create(ptr_device_
+			, TEXT("../bin/Resources/Mesh/Ork/")
+			, TEXT("Ork.X")));
+	if (FAILED(hr)) return E_FAIL;
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("Ork_WarBoss_Mesh")
+		, Engine::CDynamicMesh::Create(ptr_device_
+			, TEXT("../bin/Resources/Mesh/Ork_WarBoss/")
+			, TEXT("Ork_WarBoss.X")));
+	if (FAILED(hr)) return E_FAIL;
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("Ork_Gun_Mesh")
+		, Engine::CStaticMesh::Create(ptr_device_
+			, TEXT("..\\bin\\Resources\\Mesh\\Weapon\\Ork_Gun\\")
+			, TEXT("Ork_Gun.X"), MAINTAIN_STAGE));
+	if (FAILED(hr)) return E_FAIL;
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("Ork_Sword_Mesh")
+		, Engine::CStaticMesh::Create(ptr_device_
+			, TEXT("..\\bin\\Resources\\Mesh\\Weapon\\Ork_Sword\\")
+			, TEXT("Ork_Sword.X"), MAINTAIN_STAGE));
+	if (FAILED(hr)) return E_FAIL;
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("Ork_HeavyGun_Mesh")
+		, Engine::CStaticMesh::Create(ptr_device_
+			, TEXT("..\\bin\\Resources\\Mesh\\Weapon\\Ork_HeavyGun\\")
+			, TEXT("Ork_HeavyGun.X"), MAINTAIN_STAGE));
+	if (FAILED(hr)) return E_FAIL;
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("Ork_Klaw_Mesh")
+		, Engine::CStaticMesh::Create(ptr_device_
+			, TEXT("..\\bin\\Resources\\Mesh\\Weapon\\Ork_PowerRippa\\")
+			, TEXT("Ork_PowerRippa.X"), MAINTAIN_STAGE));
+	if (FAILED(hr)) return E_FAIL;
+
+
+	return S_OK;
+}
+
+HRESULT CLoading::EffectLoad()
+{
+	HRESULT hr = E_FAIL;
+
+	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/HitBlood.dat"));
+	if (FAILED(hr)) return E_FAIL;
+	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/SwordHitBlood.dat"));
+	if (FAILED(hr)) return E_FAIL;
+	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/BulletHit.dat"));
+	if (FAILED(hr)) return E_FAIL;
+	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/ExecutionBlood.dat"));
+	if (FAILED(hr)) return E_FAIL;
+	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/Explosion_1.dat"));
+	if (FAILED(hr)) return E_FAIL;
+	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/Sword_Lightning.dat"));
+	if (FAILED(hr)) return E_FAIL;
+	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/Move_Dust.dat"));
+	if (FAILED(hr)) return E_FAIL;
+	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/WarBoss_Skill_Dust.dat"));
+	if (FAILED(hr)) return E_FAIL;
+	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/WarBoss_Skill_Mini_Stone.dat"));
+	if (FAILED(hr)) return E_FAIL;
+	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/WarBoss_Skill_Jump.dat"));
+	if (FAILED(hr)) return E_FAIL;
+	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/Bomb.dat"));
+	if (FAILED(hr)) return E_FAIL;
+	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/Bomb_Smoke.dat"));
+	if (FAILED(hr)) return E_FAIL;
+
+	return hr;
+}
+
+HRESULT CLoading::TextureLoad()
+{
+	HRESULT hr = E_FAIL;
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("Sky_Texture")
+		, Engine::CTexture::Create(ptr_device_, Engine::TEXTURETYPE::CUBE
+			, TEXT("../bin/Resources/Texture/Skybox/Skybox.dds"), 1));
+	if (FAILED(hr)) return E_FAIL;
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("Explosion_Texture")
+		, Engine::CTexture::Create(ptr_device_, Engine::TEXTURETYPE::NORMAL
+			, TEXT("../bin/Resources/Texture/Effect/T_ExplosionSeq4x4_001.tga"), 1));
+	if (FAILED(hr)) return E_FAIL;
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("LineSmoke_Texture")
+		, Engine::CTexture::Create(ptr_device_, Engine::TEXTURETYPE::NORMAL
+			, TEXT("../bin/Resources/Texture/Effect/T_RibbonSmoky.tga"), 1));
+	if (FAILED(hr)) return E_FAIL;
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("SkillRange_Texture")
+		, Engine::CTexture::Create(ptr_device_, Engine::TEXTURETYPE::NORMAL
+			, TEXT("../bin/Resources/Texture/Effect/Skill_Range.png"), 1));
+	if (FAILED(hr)) return E_FAIL;
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("HP_UI_Texture")
+		, Engine::CTexture::Create(ptr_device_, Engine::TEXTURETYPE::NORMAL
+			, TEXT("../bin/Resources/Texture/UI/HP_Panel%d.tga"), 2));
+	if (FAILED(hr)) return E_FAIL;
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("Shield_UI_Texture")
+		, Engine::CTexture::Create(ptr_device_, Engine::TEXTURETYPE::NORMAL
+			, TEXT("../bin/Resources/Texture/UI/Shield_Panel%d.tga"), 2));
+	if (FAILED(hr)) return E_FAIL;
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("Panel_UI_Texture")
+		, Engine::CTexture::Create(ptr_device_, Engine::TEXTURETYPE::NORMAL
+			, TEXT("../bin/Resources/Texture/UI/EquipmentPanel_I53.tga"), 1));
+	if (FAILED(hr)) return E_FAIL;
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("Granade_UI_Texture")
+		, Engine::CTexture::Create(ptr_device_, Engine::TEXTURETYPE::NORMAL
+			, TEXT("../bin/Resources/Texture/UI/CM_SM_Grenade_Frag.png"), 1));
+	if (FAILED(hr)) return E_FAIL;
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("CSM_Mark_UI_Texture")
+		, Engine::CTexture::Create(ptr_device_, Engine::TEXTURETYPE::NORMAL
+			, TEXT("../bin/Resources/Texture/UI/CSM.png"), 1));
+	if (FAILED(hr)) return E_FAIL;
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("Gun_UI_Texture")
+		, Engine::CTexture::Create(ptr_device_, Engine::TEXTURETYPE::NORMAL
+			, TEXT("../bin/Resources/Texture/UI/SM_Boltgun_TruekillBoltgun.png"), 1));
+	if (FAILED(hr)) return E_FAIL;
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("Sword_UI_Texture")
+		, Engine::CTexture::Create(ptr_device_, Engine::TEXTURETYPE::NORMAL
+			, TEXT("../bin/Resources/Texture/UI/CSM_Chainsword_FleshRipper.png"), 1));
+	if (FAILED(hr)) return E_FAIL;
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("Aim_UI_Texture")
+		, Engine::CTexture::Create(ptr_device_, Engine::TEXTURETYPE::NORMAL
+			, TEXT("../bin/Resources/Texture/UI/Aim_%d.png"), 2));
+	if (FAILED(hr)) return E_FAIL;
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("Damage_UI_Texture")
+		, Engine::CTexture::Create(ptr_device_, Engine::TEXTURETYPE::NORMAL
+			, TEXT("../bin/Resources/Texture/UI/DamageDisplay.tga"), 1));
+	if (FAILED(hr)) return E_FAIL;
+
+	return S_OK;
+}
+
 CLoading * CLoading::Create(LOADINGID loading_id, Engine::CScene** pp_scene_)
 {
 	CLoading* ptr_loading = new CLoading(loading_id, pp_scene_);
@@ -624,8 +839,8 @@ uint32 CLoading::LoadingFunction(void * ptr_arg)
 	case LOADINGID::STAGE:
 		hr = ptr_loading->Stage_Loading();
 		break;
-	case LOADINGID::STAGE_SPECIAL:
-		hr = ptr_loading->Stage_Special_Loading();
+	case LOADINGID::STAGE_MH:
+		hr = ptr_loading->Stage_MH_Loading();
 		break;
 	}
 	assert(!FAILED(hr) && "Loading Failed");

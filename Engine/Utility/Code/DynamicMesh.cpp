@@ -1,6 +1,7 @@
 #include "DynamicMesh.h"
 #include "AnimController.h"
 #include "Loader.h"
+#include "Loader_Soft.h"
 
 Engine::CDynamicMesh::CDynamicMesh(LPDIRECT3DDEVICE9 ptr_device)
 	: CMesh(ptr_device)
@@ -35,6 +36,11 @@ Engine::CAnimController * Engine::CDynamicMesh::CloneAnimController()  const
 	return ptr_anim_ctrl_->CloneAnimController();
 }
 
+void Engine::CDynamicMesh::SetInitMatrix(const Matrix & mat_init)
+{
+	mesh_info_.init_matrix = mat_init;
+}
+
 void Engine::CDynamicMesh::FrameMove(float delta_time, CAnimController* ptr_anim_ctrl)
 {
 	ptr_anim_ctrl->FrameMove(delta_time);
@@ -64,12 +70,25 @@ void Engine::CDynamicMesh::RenderMesh(LPD3DXEFFECT ptr_effect, uint32 pass_index
 	ptr_effect->End();
 }
 
+void Engine::CDynamicMesh::RenderMesh_Soft(LPD3DXEFFECT ptr_effect, uint32 pass_index)
+{
+	ptr_effect->Begin(nullptr, 0);
+	for (auto& bone_mesh : mesh_info_.data)
+		RenderMeshContainer_Soft(bone_mesh, ptr_effect, pass_index);
+	ptr_effect->End();
+}
+
 int Engine::CDynamicMesh::Release()
 {
 	if (--reference_count_ == 0)
 	{
-		ptr_loader_->DestroyFrame(ptr_root_bone_);
+		if (nullptr != ptr_loader_)
+			ptr_loader_->DestroyFrame(ptr_root_bone_);
+		if(nullptr != ptr_loader_soft_)
+			ptr_loader_soft_->DestroyFrame(ptr_root_bone_);
+
 		Safe_Delete(ptr_loader_);
+		Safe_Delete(ptr_loader_soft_);
 		Safe_Delete(ptr_anim_ctrl_);
 		return 0;
 	}
@@ -91,6 +110,38 @@ HRESULT Engine::CDynamicMesh::LoadMeshFromFile(const TCHAR * path, const TCHAR *
 	hr = D3DXLoadMeshHierarchyFromX(full_path
 		, D3DXMESH_MANAGED, ptr_device_
 		, ptr_loader_
+		, nullptr
+		, &ptr_root_bone_
+		, ptr_anim_ctrl_->GetAnimController());
+	assert(!FAILED(hr) && full_path && " Load Failed");
+
+	ptr_anim_ctrl_->SetMaxAnimSet();
+
+	Matrix mat_scale, mat_rot_y;
+	D3DXMatrixScaling(&mat_scale, 0.01f, 0.01f, 0.01f);
+	D3DXMatrixRotationY(&mat_rot_y, D3DXToRadian(179.99999f));
+	mesh_info_.init_matrix = mat_scale * mat_rot_y;
+
+	UpdateFrameMatrix((BoneFrame*)ptr_root_bone_, &mesh_info_.init_matrix);
+	SetUpBoneMatrixPointer((BoneFrame*)ptr_root_bone_);
+
+	return S_OK;
+}
+
+HRESULT Engine::CDynamicMesh::LoadMeshFromFile_Soft(const TCHAR * path, const TCHAR * file_name)
+{
+	HRESULT hr = E_FAIL;
+	TCHAR full_path[MAX_PATH] = L"";
+
+	lstrcpy(full_path, path);
+	lstrcat(full_path, file_name);
+
+	ptr_loader_soft_ = CLoader_Soft::Create(ptr_device_, path);
+	ptr_anim_ctrl_ = CAnimController::Create();
+
+	hr = D3DXLoadMeshHierarchyFromX(full_path
+		, D3DXMESH_MANAGED, ptr_device_
+		, ptr_loader_soft_
 		, nullptr
 		, &ptr_root_bone_
 		, ptr_anim_ctrl_->GetAnimController());
@@ -188,46 +239,6 @@ void Engine::CDynamicMesh::FindMeshContainer(BoneFrame * ptr_frame, LPD3DXEFFECT
 
 void Engine::CDynamicMesh::RenderMeshContainer(BoneMesh * ptr_bone_mesh, LPD3DXEFFECT ptr_effect, uint32 pass_index)
 {
-	// Software Skinning
-	//if (nullptr != ptr_mesh_container->pSkinInfo)
-	//{
-	//	DWORD num_bones = ptr_mesh_container->pSkinInfo->GetNumBones();
-
-	//	if (nullptr == ptr_mesh_container->ptr_result_matrix)
-	//		ptr_mesh_container->ptr_result_matrix = new Matrix[num_bones];
-
-	//	for (DWORD i = 0; i < num_bones; ++i)
-	//	{
-	//		ptr_mesh_container->ptr_result_matrix[i] = ptr_mesh_container->ptr_frame_offset_matrix[i]
-	//			* (*ptr_mesh_container->pp_frame_combined_matrix[i]);
-	//	}
-
-	//	BYTE* ptr_src;
-	//	BYTE* ptr_dst;
-
-	//	ptr_mesh_container->ptr_original_mesh->LockVertexBuffer(0, (void**)&ptr_src);
-	//	ptr_mesh_container->MeshData.pMesh->LockVertexBuffer(0, (void**)&ptr_dst);
-	//
-	//	ptr_mesh_container->pSkinInfo->UpdateSkinnedMesh(ptr_mesh_container->ptr_result_matrix
-	//		, nullptr, ptr_src, ptr_dst);
-
-	//	ptr_mesh_container->ptr_original_mesh->UnlockVertexBuffer();
-	//	ptr_mesh_container->MeshData.pMesh->UnlockVertexBuffer();
-
-	//	for (DWORD i = 0; i < ptr_mesh_container->NumMaterials; ++i)
-	//	{
-	//		ptr_device_->SetMaterial(&ptr_mesh_container->pMaterials[i].MatD3D);
-	//		if(nullptr == ptr_effect)
-	//			ptr_device_->SetTexture(0, ptr_mesh_container->pp_texture[i]);
-	//		else
-	//		{
-	//			ptr_effect->SetTexture("g_base_texture", ptr_mesh_container->pp_texture[i]);
-	//			ptr_effect->CommitChanges();
-	//		}
-	//		ptr_mesh_container->MeshData.pMesh->DrawSubset(i);
-	//	}
-	//}
-
 	if (nullptr != ptr_bone_mesh->pSkinInfo)
 	{
 		LPD3DXBONECOMBINATION ptr_bone_comb =
@@ -270,14 +281,63 @@ void Engine::CDynamicMesh::RenderMeshContainer(BoneMesh * ptr_bone_mesh, LPD3DXE
 	}
 }
 
+void Engine::CDynamicMesh::RenderMeshContainer_Soft(BoneMesh * ptr_bone_mesh, LPD3DXEFFECT ptr_effect, uint32 pass_index)
+{	
+	// Software Skinning
+	if (nullptr != ptr_bone_mesh->pSkinInfo)
+	{
+		DWORD num_bones = ptr_bone_mesh->pSkinInfo->GetNumBones();
+
+		if (nullptr == ptr_bone_mesh->ptr_result_matrix)
+			ptr_bone_mesh->ptr_result_matrix = new Matrix[num_bones];
+
+		for (DWORD i = 0; i < num_bones; ++i)
+		{
+			ptr_bone_mesh->ptr_result_matrix[i] = ptr_bone_mesh->ptr_frame_offset_matrix[i]
+				* (*ptr_bone_mesh->pp_frame_combined_matrix[i]);
+		}
+
+		BYTE* ptr_src;
+		BYTE* ptr_dst;
+
+		ptr_bone_mesh->ptr_original_mesh->LockVertexBuffer(0, (void**)&ptr_src);
+		ptr_bone_mesh->MeshData.pMesh->LockVertexBuffer(0, (void**)&ptr_dst);
+	
+		ptr_bone_mesh->pSkinInfo->UpdateSkinnedMesh(ptr_bone_mesh->ptr_result_matrix
+			, nullptr, ptr_src, ptr_dst);
+
+		ptr_bone_mesh->ptr_original_mesh->UnlockVertexBuffer();
+		ptr_bone_mesh->MeshData.pMesh->UnlockVertexBuffer();
+
+		ptr_effect->BeginPass(pass_index);
+		for (DWORD i = 0; i < ptr_bone_mesh->NumMaterials; ++i)
+		{
+			if (nullptr != ptr_bone_mesh->pp_color_texture[i])
+				ptr_effect->SetTexture("g_color_texture", ptr_bone_mesh->pp_color_texture[i]);
+		
+			ptr_effect->CommitChanges();
+			ptr_bone_mesh->MeshData.pMesh->DrawSubset(i);
+		}
+		ptr_effect->EndPass();
+	}
+}
+
 Engine::CDynamicMesh * Engine::CDynamicMesh::Create(LPDIRECT3DDEVICE9 ptr_device, const TCHAR * path, const TCHAR * file_name)
 {
 	CDynamicMesh* ptr_mesh = new CDynamicMesh(ptr_device);
-	if (FAILED(ptr_mesh->LoadMeshFromFile(path, file_name)))
+
+	HRESULT hr = E_FAIL;
+	if (0 == lstrcmp(file_name, TEXT("Rioreus.X")))
+		hr = ptr_mesh->LoadMeshFromFile_Soft(path, file_name);
+	else
+		hr = ptr_mesh->LoadMeshFromFile(path, file_name);
+
+	if (FAILED(hr))
 	{
 		Safe_Release_Delete(ptr_mesh);
 		assert(!"Dynamic Mesh Create Failed");
 	}
+
 	ptr_mesh->AddReferenceCount();
 	return ptr_mesh;
 }

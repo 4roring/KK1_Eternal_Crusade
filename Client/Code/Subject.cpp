@@ -44,10 +44,12 @@ const Matrix & CSubject::GetOrthoProjection()
 	return mat_ortho_proj_;
 }
 
-void CSubject::SetSpaceMarinData(int* ptr_shield, int* ptr_hp, int* ptr_current_cell, int ctrl_id)
+void CSubject::SetSpaceMarinData(int* ptr_shield, int* ptr_hp, int* ptr_bullet, int* ptr_granade, int* ptr_current_cell, int ctrl_id)
 {
 	space_marin_shield_[ctrl_id] = ptr_shield;
 	space_marin_hp_[ctrl_id] = ptr_hp;
+	space_marin_bullet_[ctrl_id] = ptr_bullet;
+	space_marin_granade_[ctrl_id] = ptr_granade;
 	space_marin_current_cell[ctrl_id] = ptr_current_cell;
 }
 
@@ -85,14 +87,24 @@ void CSubject::set_player_pos(Vector3 * player_pos)
 	player_pos_ = player_pos;
 }
 
-void CSubject::set_camera_shaking(bool is_shaking)
-{
-	camera_shaking_ = is_shaking;
-}
-
 void CSubject::SetOrthoProjection(const Matrix & mat_ortho)
 {
 	mat_ortho_proj_ = mat_ortho;
+}
+
+void CSubject::SetCameraShaking(bool is_shaking, float shaking_time, float shaking_power, const Vector3 && shaking_dir)
+{
+	camera_shaking_ = is_shaking;
+	shaking_time_ = shaking_time;
+	shaking_power_ = shaking_power;
+	shaking_dir_ = shaking_dir;
+}
+
+void CSubject::SetShakingInfo(float & out_shaking_time, float &out_shaking_power, Vector3 & out_shaking_dir)
+{
+	out_shaking_time = shaking_time_;
+	out_shaking_power = shaking_power_;
+	out_shaking_dir = shaking_dir_;
 }
 
 void CSubject::RegisterObserver(CSpaceMarinObserver *& ptr_observer)
@@ -137,7 +149,7 @@ void CSubject::Notify()
 				|| nullptr == space_marin_hp_[i] 
 				|| nullptr == space_marin_current_cell[i]) continue;
 
-			space_marin_observer->Update(space_marin_shield_[i], space_marin_hp_[i], space_marin_current_cell[i], i);
+			space_marin_observer->Update(space_marin_shield_[i], space_marin_hp_[i], space_marin_bullet_[i], space_marin_granade_[i], space_marin_current_cell[i], i);
 		}
 	}
 

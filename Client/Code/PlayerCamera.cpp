@@ -97,7 +97,11 @@ void CPlayerCamera::Update(float delta_time)
 	//ptr_sphere_coll_->SetSphereCollider(2.f, Vector3());
 
 	if (true == Subject()->camera_shaking())
+	{
+		Subject()->SetShakingInfo(shaking_time_, shaking_power_, shaking_dir_);
 		CameraShaking(delta_time);
+	}
+
 	CCamera::Update(delta_time);
 }
 
@@ -223,16 +227,16 @@ HRESULT CPlayerCamera::GetComponent(MAINTAINID stage_id)
 
 void CPlayerCamera::CameraShaking(float delta_time)
 {
-	shaking_time_ += delta_time;
+	shaking_acc_time_ += delta_time;
 
-	shaking_value_ = (shaking_value_ == 0.5f) ? -0.5f : 0.5f;
-	eye().y += shaking_value_;
-	at().y += shaking_value_;
+	shaking_value_ = (shaking_value_ == shaking_power_) ? -shaking_power_ : shaking_power_;
+	eye() += shaking_dir_ * shaking_value_;
+	at() += shaking_dir_ * shaking_value_;
 
-	if (shaking_time_ >= 0.7f)
+	if (shaking_acc_time_ >= shaking_time_)
 	{
-		Subject()->set_camera_shaking(false);
-		shaking_time_ = 0.f;
+		Subject()->SetCameraShaking(false, 0.f, 0.f, Vector3());
+		shaking_acc_time_ = 0.f;
 	}
 }
 
