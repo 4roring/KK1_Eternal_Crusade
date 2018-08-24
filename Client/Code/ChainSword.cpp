@@ -79,13 +79,16 @@ void CChainSword::Update(float delta_time)
 
 	if (true == ptr_sphere_coll_->enable_)
 		ptr_sphere_coll_->SetSphereCollider(0.5f, Vector3(0.f, 1.2f, 0.f));
+
+	if (hit_delay_ > 0.f)
+		hit_delay_ = max(hit_delay_ - delta_time, 0.f);
 }
 
 void CChainSword::LateUpdate()
 {
 	Engine::GameManager()->AddRenderLayer(Engine::RENDERLAYER::LAYER_NONEALPHA, this);
 	
-	if (true == ptr_sphere_coll_->enable_)
+	if (true == ptr_sphere_coll_->enable_ && hit_delay_ == 0.f)
 	{
 		const CollList& enemy_coll_list = CollSystem()->GetColliderList(TAG_ENEMY);
 		for (auto& enemy_coll : enemy_coll_list)
@@ -94,6 +97,7 @@ void CChainSword::LateUpdate()
 			{
 				enemy_coll->ptr_object()->ApplyDamage(100);
 				CreateHitEffect();
+				hit_delay_ = 0.1f;
 			}
 		}
 	}

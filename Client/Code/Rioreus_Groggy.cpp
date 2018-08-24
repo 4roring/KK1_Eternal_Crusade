@@ -8,12 +8,23 @@
 void CRioreus_Groggy::InitState(CRioreus * ptr_target, Engine::CTransform * ptr_transform, Engine::CAnimController * ptr_anim_ctrl)
 {
 	CRioreus_State::InitState(ptr_target, ptr_transform, ptr_anim_ctrl);
+	ptr_sound_ = Sound()->FindSound(TEXT("Rioreus_Fall_Start"));
 }
 
 void CRioreus_Groggy::Update(float delta_time)
 {
+	if (condition_ == 0.f)
+	{
+		Sound()->StopSound(Sound()->CHANNEL_ENEMY);
+		Sound()->PlaySound(ptr_sound_, Sound()->CHANNEL_ENEMY);
+		++condition_;
+	}
+
 	if (ptr_anim_ctrl_->CheckCurrentAnimationEnd(0.1))
+	{
 		ptr_target_->SetState(CRioreus::State::Idle);
+		condition_ = 0.f;
+	}
 	else if (false == ptr_anim_ctrl_->CheckCurrentAnimationEnd(6.0))
 	{
 		constexpr float back_speed = -2.f;

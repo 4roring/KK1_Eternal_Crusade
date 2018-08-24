@@ -17,4 +17,7 @@ public:
 
 private:
 	float walk_speed_ = 0.f;
+
+private:
+	SoundSource* ptr_sound_ = nullptr;
 };

@@ -11,6 +11,7 @@ public:
 
 public:
 	virtual void InitState(CRioreus* ptr_target, Engine::CTransform* ptr_transform, Engine::CAnimController* ptr_anim_ctrl) override;
+	virtual void Reset() override;
 
 public:
 	virtual void Update(float delta_time) override;
@@ -18,4 +19,7 @@ public:
 private:
 	float rotate_dir_ = 0.f;
 	float rotate_dist_ = 0.f;
+
+private:
+	SoundSource* ptr_sound_ = nullptr;
 };

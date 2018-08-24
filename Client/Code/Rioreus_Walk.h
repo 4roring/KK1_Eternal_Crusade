@@ -16,5 +16,8 @@ public:
 	virtual void Update(float delta_time) override;
 
 private:
+	void SetNextState();
+
+private:
 	float walk_speed_ = 0.f;
 };

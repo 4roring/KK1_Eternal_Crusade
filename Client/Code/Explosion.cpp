@@ -15,11 +15,11 @@ CExplosion::~CExplosion()
 	Release();
 }
 
-HRESULT CExplosion::Initialize(const Vector3 & position)
+HRESULT CExplosion::Initialize(const Vector3 & position, int effect_num)
 {
 	HRESULT hr = Engine::CGameObject::Initialize();
 	assert(!FAILED(hr) && "Explosion Initialize Falied");
-	hr = AddComponent();
+	hr = AddComponent(effect_num);
 	assert(!FAILED(hr) && "Explosion AddComponent Falied");
 
 	ptr_transform_->position() = position;
@@ -54,10 +54,10 @@ void CExplosion::Render()
 	ptr_effect->End();
 }
 
-CExplosion * CExplosion::Create(LPDIRECT3DDEVICE9 ptr_device, const Vector3 & position)
+CExplosion * CExplosion::Create(LPDIRECT3DDEVICE9 ptr_device, const Vector3 & position, int effect_num)
 {
 	CExplosion* ptr_obj = new CExplosion(ptr_device);
-	if (FAILED(ptr_obj->Initialize(position)))
+	if (FAILED(ptr_obj->Initialize(position, effect_num)))
 	{
 		Safe_Delete(ptr_obj);
 		assert(!"Explosion Create Failed");
@@ -66,7 +66,7 @@ CExplosion * CExplosion::Create(LPDIRECT3DDEVICE9 ptr_device, const Vector3 & po
 	return ptr_obj;
 }
 
-HRESULT CExplosion::AddComponent()
+HRESULT CExplosion::AddComponent(int effect_num)
 {
 	HRESULT hr = E_FAIL;
 
@@ -74,6 +74,10 @@ HRESULT CExplosion::AddComponent()
 	assert(!FAILED(hr) && "ReadyComponent Failed of FireEffect Tranform Component ");
 	hr = Ready_Component(MAINTAIN_STATIC, TEXT("Shader_Mesh_Effect"), TEXT("Shader"), ptr_shader_);
 	assert(!FAILED(hr) && "ReadyComponent Failed of FireEffect Shader Component");
+	
+	
+	TCHAR effect_key[64] = TEXT("");
+	wsprintf(effect_key, TEXT("Explosion_%d"), effect_num);
 	hr = Ready_Component(MAINTAIN_STAGE, TEXT("Explosion_1"), TEXT("Effect"), ptr_particle_);
 	assert(!FAILED(hr) && "ReadyComponent Failed of FireEffect ParticleSystem Component");
 

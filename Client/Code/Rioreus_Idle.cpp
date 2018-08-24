@@ -7,7 +7,7 @@
 void CRioreus_Idle::InitState(CRioreus * ptr_target, Engine::CTransform * ptr_transform, Engine::CAnimController * ptr_anim_ctrl)
 {
 	CRioreus_State::InitState(ptr_target, ptr_transform, ptr_anim_ctrl);
-	// TODO: 필요한 사운드들 초기화.
+	ptr_sound_ = Sound()->FindSound(TEXT("Rioreus_Idle_Motion"));
 }
 
 void CRioreus_Idle::Update(float delta_time)
@@ -19,6 +19,7 @@ void CRioreus_Idle::Update(float delta_time)
 	{
 		if (acc_idle_ == 5)
 		{
+			Sound()->PlaySound(ptr_sound_, Sound()->CHANNEL_ENEMY_ATTACK);
 			ptr_anim_ctrl_->SetAnimationTrack("Idle_Motion");
 			++acc_idle_;
 		}
@@ -35,7 +36,7 @@ void CRioreus_Idle::Update(float delta_time)
 	}
 	else if (condition_ >= next_state_time_)
 	{
-		ptr_target_->SetState(CRioreus::State::Groggy);
+		ptr_target_->SetState(CRioreus::State::Rotate);
 		++acc_idle_;
 		condition_ = 0.f;
 	}

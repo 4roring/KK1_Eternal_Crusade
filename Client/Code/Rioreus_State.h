@@ -15,6 +15,7 @@ public:
 
 public:
 	virtual void InitState(CRioreus* ptr_target, Engine::CTransform* ptr_transform, Engine::CAnimController* ptr_anim_ctrl);
+	virtual void Reset();
 
 public:
 	virtual void Update(float delta_time) PURE;

@@ -28,8 +28,13 @@ HRESULT CMainGame::InitGame()
 
 	srand((unsigned)time(nullptr));
 
+#ifdef _DEBUG
 	hr = Engine::GraphicDevice()->InitGraphicDevice(Engine::CGraphicDevice::MODE_WINDOW
 		, g_hwnd, kWinCx, kWinCy);
+#else
+	hr = Engine::GraphicDevice()->InitGraphicDevice(Engine::CGraphicDevice::MODE_FULL
+		, g_hwnd, kWinCx, kWinCy);
+#endif
 	assert(hr == S_OK && "Init Device Failed");
 
 	ptr_device_ = Engine::GraphicDevice()->GetDevice();
@@ -83,7 +88,10 @@ void CMainGame::Render()
 	ptr_device_->BeginScene();
 
 	ptr_game_manager_->Render();
+
+#ifdef _DEBUG
 	Render_FPS();
+#endif
 
 	ptr_device_->EndScene();
 	ptr_device_->Present(nullptr, nullptr, nullptr, nullptr);

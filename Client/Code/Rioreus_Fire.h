@@ -14,6 +14,7 @@ public:
 
 public:
 	virtual void InitState(CRioreus* ptr_target, Engine::CTransform* ptr_transform, Engine::CAnimController* ptr_anim_ctrl) override;
+	virtual void Reset() override;
 
 public:
 	virtual void Update(float delta_time) override;
@@ -30,4 +31,9 @@ private:
 
 private:
 	State fire_state_ = State::Setup;
+
+private:
+	SoundSource* ptr_sound_fire_ = nullptr;
+	SoundSource* ptr_sound_part_fire_ = nullptr;
+	SoundSource* ptr_sound_explosion_ = nullptr;
 };

@@ -18,4 +18,7 @@ public:
 private:
 	float next_state_time_ = 0.f;
 	int acc_idle_ = 0;
+
+private:
+	SoundSource* ptr_sound_ = nullptr;
 };

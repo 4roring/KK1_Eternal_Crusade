@@ -27,4 +27,9 @@ private:
 private:
 	bool dir_ = false;
 	float fall_speed_ = 0.f;
+
+private:
+	SoundSource* ptr_sound_start_ = nullptr;
+	SoundSource* ptr_sound_loop_ = nullptr;
+	SoundSource* ptr_sound_end_ = nullptr;
 };

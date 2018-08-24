@@ -33,12 +33,14 @@ HRESULT CPlayerCamera::InitCamera(MAINTAINID stage_id)
 	assert(!FAILED(hr) && "Camera GameObject Init Failed");
 
 	hr = GetComponent(stage_id);
+	assert(!FAILED(hr) && "Camera GetComponent Init Failed");
 
 	ptr_frustum_ = CFrustum::Create();
 	CollSystem()->SetFrustum(ptr_frustum_);
 	SetProjection(D3DXToRadian(60.f), float(kWinCx) / kWinCy, 0.2f, 500.f);
 
 	hr = AddComponent();
+	assert(!FAILED(hr) && "Camera AddComponent Init Failed");
 
 #ifdef _DEBUG
 	D3DXCreateLine(ptr_device_, &ptr_line_);
@@ -195,7 +197,10 @@ HRESULT CPlayerCamera::AddComponent()
 	ptr_sphere_coll_ = Engine::CCollider::Create(ptr_device_, this, ColliderType::Collider_Sphere);
 	if (nullptr == ptr_sphere_coll_) return E_FAIL;
 
+#ifdef _DEBUG
 	hr = Ready_Component(MAINTAIN_STATIC, TEXT("Shader_Default"), TEXT("Debug_Shader"), ptr_debug_shader_);
+#endif // _DEBUG
+
 
 	return S_OK;
 }
@@ -219,7 +224,10 @@ HRESULT CPlayerCamera::GetComponent(MAINTAINID stage_id)
 	ptr_player_transform_->AddReferenceCount();
 
 	ptr_boss_transform_ = Engine::GameManager()->GetComponent<Engine::CTransform>(stage_id, TEXT("Ork_WarBoss"), TEXT("Transform"));
+	if (nullptr == ptr_boss_transform_)
+		ptr_boss_transform_ = Engine::GameManager()->GetComponent<Engine::CTransform>(stage_id, TEXT("Rioreus"), TEXT("Transform"));
 	if (nullptr == ptr_boss_transform_) return E_FAIL;
+
 	ptr_boss_transform_->AddReferenceCount();
 
 	return S_OK;
@@ -244,16 +252,23 @@ void CPlayerCamera::EventCamera(float delta_time)
 {
 	Vector3 boss_forward = ptr_boss_transform_->Forward().Normalize();
 	Vector3 boss_up = ptr_boss_transform_->Up().Normalize();
-	Vector3 target_eye = ptr_boss_transform_->position() + boss_forward * 3.5f + boss_up * 2.f;
+	Vector3 target_eye = ptr_boss_transform_->position() + boss_forward * 10.f + boss_up * 2.f;
 	Vector3 target_at = ptr_boss_transform_->position();
 	target_at.y += 1.f;
 
 	event_time_ += delta_time * 0.5f;
 
-	if(event_time_ <= 1.f)
+	if (event_time_ <= 1.f)
+	{
 		D3DXVec3Lerp(&eye(), &next_eye_, &target_eye, event_time_);
-	else if(event_time_ >= 3.f)
+		D3DXVec3Lerp(&at(), &next_at_, &target_at, event_time_);
+
+	}
+	else if (event_time_ >= 3.f)
+	{
 		D3DXVec3Lerp(&eye(), &target_eye, &next_eye_, event_time_ - 3.f);
+		D3DXVec3Lerp(&at(), &target_at, &next_at_, event_time_ - 3.f);
+	}
 
 	if (event_time_ >= 4.f)
 		event_mode_ = false;

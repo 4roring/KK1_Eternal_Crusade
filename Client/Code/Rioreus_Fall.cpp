@@ -15,6 +15,10 @@ void CRioreus_Fall::InitState(CRioreus * ptr_target, Engine::CTransform * ptr_tr
 	CRioreus_State::InitState(ptr_target, ptr_transform, ptr_anim_ctrl);
 	dir_ = false;
 	fall_speed_ = (true == ptr_target_->rage()) ? 5.f : 4.f;
+
+	ptr_sound_start_ = Sound()->FindSound(TEXT("Rioreus_Fall_Start"));;
+	ptr_sound_loop_ = Sound()->FindSound(TEXT("Rioreus_Fall_Loop"));;
+	ptr_sound_end_ = Sound()->FindSound(TEXT("Rioreus_Fall_End"));;
 }
 
 void CRioreus_Fall::Update(float delta_time)
@@ -24,6 +28,7 @@ void CRioreus_Fall::Update(float delta_time)
 		const char*&& next_anim_key = (true == dir_) ? "Fall_Right_Start" : "Fall_Left_Start";
 		ptr_anim_ctrl_->SetAnimationTrack(next_anim_key);
 		++condition_;
+		Sound()->PlaySound(ptr_sound_start_, Sound()->CHANNEL_ENEMY);
 	}
 
 	if (condition_ == 1.f)
@@ -41,6 +46,7 @@ void CRioreus_Fall::FallStart(float delta_time)
 		const char*&& next_anim_key = (true == dir_) ? "Fall_Right_Loop" : "Fall_Left_Loop";
 		ptr_anim_ctrl_->SetAnimationTrack(next_anim_key);
 		condition_ = 2.f;
+		Sound()->PlaySound(ptr_sound_loop_, Sound()->CHANNEL_ENEMY);
 	}
 	else if (false == ptr_anim_ctrl_->CheckCurrentAnimationEnd(2.5))
 	{
@@ -61,12 +67,14 @@ void CRioreus_Fall::FallLoop(float delta_time)
 		{
 			++condition_;
 			ptr_anim_ctrl_->SetTrackPosition(0.0);
+			Sound()->PlaySound(ptr_sound_loop_, Sound()->CHANNEL_ENEMY);
 		}
 		else if (condition_ == 3.f)
 		{
 			const char*&& next_anim_key = (true == dir_) ? "Fall_Right_End" : "Fall_Left_End";
 			ptr_anim_ctrl_->SetAnimationTrack(next_anim_key);
 			condition_ = 4.f;
+			Sound()->PlaySound(ptr_sound_end_, Sound()->CHANNEL_ENEMY);
 		}
 	}
 }

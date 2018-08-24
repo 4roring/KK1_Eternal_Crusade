@@ -31,10 +31,8 @@ HRESULT CWarBossJump::Initialize(Vector3 * ptr_parent)
 void CWarBossJump::Update(float delta_time)
 {
 	ptr_transform_->position() = *ptr_parent_;
-
-	ComputeViewZ(*Subject()->camera_pos());
-
 	CGameObject::Update(delta_time);
+	ComputeViewZ(*Subject()->camera_pos());
 	ptr_transform_->LookAt(*Subject()->camera_pos());
 }
 

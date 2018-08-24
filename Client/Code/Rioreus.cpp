@@ -5,6 +5,11 @@
 #include "Shader.h"
 #include "DynamicMesh.h"
 #include "AnimController.h"
+#include "PartCollider.h"
+#include "EyeTrail.h"
+#include "Rioreus_Tail.h"
+
+#include "Font.h"
 
 CRioreus::CRioreus(LPDIRECT3DDEVICE9 ptr_device)
 	: Engine::CGameObject(ptr_device)
@@ -21,14 +26,34 @@ bool CRioreus::rage() const
 	return rage_;
 }
 
-float& CRioreus::pot_y()
-{
-	return pos_y_;
-}
-
 int & CRioreus::current_cell_index()
 {
 	return current_cell_index_;
+}
+
+int & CRioreus::head_condition()
+{
+	return head_condition_;
+}
+
+int & CRioreus::left_leg_condition()
+{
+	return left_leg_condition_;
+}
+
+int & CRioreus::right_leg_condition()
+{
+	return right_leg_condition_;
+}
+
+int & CRioreus::tail_condition()
+{
+	return tail_condition_;
+}
+
+const Matrix * CRioreus::ptr_mat_fire()
+{
+	return ptr_mat_fire_;
 }
 
 void CRioreus::SetState(State next_state)
@@ -41,6 +66,11 @@ void CRioreus::SetAnimSpeed(float anim_speed)
 	anim_speed_ = anim_speed;
 }
 
+void CRioreus::SetAttackState(PartColl part, bool attack_state)
+{
+	ptr_part_coll_[part]->SetAttackState(attack_state);
+}
+
 HRESULT CRioreus::Initialize()
 {
 	HRESULT hr = CGameObject::Initialize();
@@ -49,10 +79,22 @@ HRESULT CRioreus::Initialize()
 	hr = AddComponent();
 	assert(!FAILED(hr) && "AddComponent call failed in Rioreus");
 
-	SetTaleBone();
+	SetTail();
 
-	next_state_ = State::Idle;
-	anim_speed_ = 1.f;
+	next_state_ = State::Cry;
+	anim_speed_ = 1.2f;
+
+	ptr_mat_fire_ = ptr_mesh_->FindFrameMatrix("TN-00");
+
+	max_hp_ = 5000;
+	hp_ = max_hp_;
+
+	Subject()->SetBossHp(&hp_);
+	Subject()->SetBossPosition(&ptr_transform_->position());
+
+#ifdef _DEBUG
+	ptr_font_ = Engine::GraphicDevice()->GetFont(TEXT("바탕"));
+#endif // _DEBUG
 
 	return S_OK;
 }
@@ -61,6 +103,8 @@ void CRioreus::LateInit()
 {
 	if (current_cell_index_ == -1)
 		current_cell_index_ = Engine::GameManager()->FindCellIndex(ptr_transform_->position());
+
+	SetCollider();
 
 	// Static State Initializaion
 	state_idle_.InitState(this, ptr_transform_, ptr_anim_ctrl_);
@@ -72,12 +116,15 @@ void CRioreus::LateInit()
 	state_fall_.InitState(this, ptr_transform_, ptr_anim_ctrl_);
 	state_fire_.InitState(this, ptr_transform_, ptr_anim_ctrl_);
 	state_groggy_.InitState(this, ptr_transform_, ptr_anim_ctrl_);
+	state_somersault_.InitState(this, ptr_transform_, ptr_anim_ctrl_);
+	state_bite_attack_.InitState(this, ptr_transform_, ptr_anim_ctrl_);
+	state_tail_cut_.InitState(this, ptr_transform_, ptr_anim_ctrl_);
 
 	Matrix mat_scale, mat_rot, mat_init;
 	D3DXMatrixScaling(&mat_scale, 0.01f, 0.01f, 0.01f);
 	D3DXMatrixRotationY(&mat_rot, -1.57f);
 	mat_init = mat_scale * mat_rot;
-	mat_init._42 = -0.05f;
+	mat_init._42 = -0.03f;
 	ptr_mesh_->SetInitMatrix(mat_init);
 }
 
@@ -87,11 +134,18 @@ void CRioreus::Update(float delta_time)
 	anim_time_ = delta_time;
 	if (nullptr != ptr_state_)
 		ptr_state_->Update(delta_time);
+
+	if (damage_delay_ >= 0.f)
+		damage_delay_ = max(damage_delay_ - delta_time, 0.f);
+
+	if (current_state_ == State::Dead && ptr_anim_ctrl_->CheckCurrentAnimationEnd(0.1))
+		anim_speed_ = 0.f;
 }
 
 void CRioreus::LateUpdate()
 {
 	Engine::GameManager()->AddRenderLayer(Engine::RENDERLAYER::LAYER_NONEALPHA, this);
+	
 	UpdateState();
 }
 
@@ -102,12 +156,49 @@ void CRioreus::Render()
 
 	ptr_mesh_->FrameMove(anim_time_ * anim_speed_, ptr_anim_ctrl_);
 	ptr_mesh_->RenderMesh_Soft(ptr_effect, 2);
+
+#ifdef _DEBUG
+	TCHAR hp[128] = {};
+	wsprintf(hp, TEXT("Rioreusaws HP: %d"), hp_);
+	ptr_font_->Render(hp, D3DXCOLOR(1.f, 1.f, 1.f, 1.f), Vector3(float(kWinCx >> 1), 10.f, 0.f));
+#endif // _DEBUG
+
 }
 
 void CRioreus::ApplyDamage(int damage)
 {
-	// TODO 다리에 누적데미지에 따라 Fall 상태로 가면서 true는 오른다리, false는 왼다리 걸려넘어지기.
+	if (current_state_ == State::Dead) return;
 
+	if (damage_delay_ > 0.f)
+		damage = 0;
+	else if (damage >= 50)
+		damage_delay_ = 0.6f;
+
+	hp_ -= damage;
+
+	if (false == rage_ && hp_ < (max_hp_ >> 1))
+	{
+		rage_ = true;
+		const Matrix* ptr_target_local = ptr_mesh_->FindFrameMatrix("HD-102");
+
+		TCHAR obj_key[64] = TEXT("");
+		for (int i = 0; i < 2; ++i)
+		{
+			wsprintf(obj_key, TEXT("Eye_Trail_%d"), i);
+			ptr_eye_trail_[i] = CEyeTrail::Create(ptr_device_, ptr_target_local, &ptr_transform_->mat_world(), (i == 1));
+			Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, obj_key, ptr_eye_trail_[i]);
+			next_state_ = State::Cry;
+		}
+	}
+	
+	if(current_state_ != State::Somersault)
+		UpdateConditionState();
+
+	if (hp_ <= 0)
+	{
+		ptr_state_ = nullptr;
+		next_state_ = State::Dead;
+	}
 }
 
 CRioreus * CRioreus::Create(LPDIRECT3DDEVICE9 ptr_device)
@@ -153,6 +244,42 @@ void CRioreus::SetConstantTable(LPD3DXEFFECT ptr_effect)
 	ptr_effect->SetMatrix("g_mat_projection", &mat_proj);
 }
 
+void CRioreus::UpdateConditionState()
+{
+	if (current_state_ == State::TailCut) return;
+
+	if (current_state_ != State::Groggy &&left_leg_condition_ >= 15)
+	{
+		ptr_state_->Reset();
+		next_state_ = State::Fall;
+		state_fall_.SetFallDirection(false);
+		left_leg_condition_ = 0;
+		right_leg_condition_ = 0;
+	}
+	else if (current_state_ != State::Groggy &&right_leg_condition_ >= 15)
+	{
+		ptr_state_->Reset();
+		next_state_ = State::Fall;
+		state_fall_.SetFallDirection(true);
+		left_leg_condition_ = 0;
+		right_leg_condition_ = 0;
+	}
+	else if (current_state_ != State::Fall && head_condition_ >= 20)
+	{
+		ptr_state_->Reset();
+		next_state_ = State::Groggy;
+		head_condition_ = 0;
+	}
+
+	if (cut_tail_ == false && tail_condition_ >= 20)
+	{
+		ptr_state_->Reset();
+		next_state_ = State::TailCut;
+		CutTail();
+		cut_tail_ = true;
+	}
+}
+
 void CRioreus::UpdateState()
 {
 	if (current_state_ != next_state_)
@@ -178,15 +305,19 @@ void CRioreus::UpdateState()
 			ptr_state_ = &state_sprint_;
 			ptr_anim_ctrl_->SetAnimationTrack("Sprint");
 			break;
+		case CRioreus::State::Bite_Attack:
+			ptr_state_ = &state_bite_attack_;
+			ptr_anim_ctrl_->SetAnimationTrack("Bite_Attack");
+			break;
 		case CRioreus::State::TailAttack:
 			ptr_state_ = &state_tail_attack_;
 			break;
 		case CRioreus::State::Fire:
 			ptr_state_ = &state_fire_;
 			break;
-		case CRioreus::State::Glide:
-			break;
-		case CRioreus::State::Sumersault:
+		case CRioreus::State::Somersault:
+			ptr_state_ = &state_somersault_;
+			ptr_anim_ctrl_->SetAnimationTrack("Somersault_Attack_Start");
 			break;
 		case CRioreus::State::Fall:
 			ptr_state_ = &state_fall_;
@@ -196,35 +327,102 @@ void CRioreus::UpdateState()
 			ptr_anim_ctrl_->SetAnimationTrack("Groggy");
 			break;
 		case CRioreus::State::TailCut:
+			ptr_state_ = &state_tail_cut_;
+			ptr_anim_ctrl_->SetAnimationTrack("Tale_Cut");
 			break;
 		case CRioreus::State::Dead:
+			ptr_anim_ctrl_->SetAnimationTrack("Dead");
 			break;
 		case CRioreus::State::End:
 			break;
 		default:
 			break;
 		}
-
 		current_state_ = next_state_;
 	}
 }
 
-void CRioreus::SetTaleBone()
+void CRioreus::SetTail()
 {
-	Engine::BoneFrame* ptr_tail_ = ptr_mesh_->FindFrame("TL-05_t");
+	Engine::BoneFrame* ptr_tail = ptr_mesh_->FindFrame("TL-05_t");
 	Engine::BoneFrame* ptr_new_tail_parent = ptr_mesh_->FindFrame("TL-05");
-	ptr_new_tail_parent->pFrameFirstChild = ptr_tail_;
+	ptr_new_tail_parent->pFrameFirstChild = ptr_tail;
 
-	ptr_tail_ = ptr_mesh_->FindFrame("TL-04_t");
-	ptr_tail_->pFrameFirstChild = ptr_new_tail_parent;
+	ptr_tail = ptr_mesh_->FindFrame("TL-04_t");
+	ptr_tail->pFrameFirstChild = ptr_new_tail_parent;
 	ptr_new_tail_parent = ptr_mesh_->FindFrame("TL-04");
-	ptr_new_tail_parent->pFrameFirstChild = ptr_tail_;
+	ptr_new_tail_parent->pFrameFirstChild = ptr_tail;
 
-	ptr_tail_ = ptr_mesh_->FindFrame("TL-03_t");
-	ptr_tail_->pFrameFirstChild = ptr_new_tail_parent;
+	ptr_tail = ptr_mesh_->FindFrame("TL-03_t");
+	ptr_tail->pFrameFirstChild = ptr_new_tail_parent;
 	ptr_new_tail_parent = ptr_mesh_->FindFrame("TL-03");
-	ptr_new_tail_parent->pFrameFirstChild = ptr_tail_;
+	ptr_new_tail_parent->pFrameFirstChild = ptr_tail;
 
 	Engine::BoneFrame* ptr_old_tail_parent = ptr_mesh_->FindFrame("NULL_T");
 	ptr_old_tail_parent->pFrameFirstChild = nullptr;
+}
+
+void CRioreus::CutTail()
+{
+	Engine::BoneFrame* ptr_tail[3] = { nullptr };
+
+	ptr_tail[0] = ptr_mesh_->FindFrame("TL-03_t");
+	ptr_tail[1] = ptr_mesh_->FindFrame("TL-04_t");
+	ptr_tail[2] = ptr_mesh_->FindFrame("TL-05_t");
+
+	Engine::BoneFrame* ptr_tail_bone[3] = { nullptr };
+
+	ptr_tail_bone[0] = ptr_mesh_->FindFrame("TL-03");
+	ptr_tail_bone[1] = ptr_mesh_->FindFrame("TL-04");
+	ptr_tail_bone[2] = ptr_mesh_->FindFrame("TL-05");
+
+	ptr_tail[0]->pFrameFirstChild = ptr_tail[1];
+	ptr_tail[1]->pFrameFirstChild = ptr_tail[2];
+
+	ptr_tail_bone[0]->pFrameFirstChild = ptr_tail_bone[1];
+	ptr_tail_bone[1]->pFrameFirstChild = ptr_tail_bone[2];
+	ptr_tail_bone[2]->pFrameFirstChild = nullptr;
+
+	for (int i = 0; i < 3; ++i)
+	{
+		ptr_tail[i]->combined_matrix._42 = -999999.f;
+		//delete[] ptr_tail[i]->Name;
+		//delete ptr_tail[i];
+	}
+
+	ptr_part_coll_[Part_Tail]->SetPartMatrix(&ptr_tail_bone[0]->combined_matrix);
+
+	Vector3 tail_start_pos = *(Vector3*)&ptr_tail_bone[0]->combined_matrix.m[3][0];
+	D3DXVec3TransformCoord(&tail_start_pos, &tail_start_pos, &ptr_transform_->mat_world());
+	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, TEXT("Rioreus_Tail")
+		, CRioreus_Tail::Create(ptr_device_, tail_start_pos, ptr_transform_->rotation()));
+}
+
+void CRioreus::SetCollider()
+{
+	const Matrix* ptr_part_mat = ptr_mesh_->FindFrameMatrix("HD-01");
+	ptr_part_coll_[Part_Head] = CPartCollider::Create(ptr_device_, ptr_part_mat, Part_Head, this);
+
+	ptr_part_mat = ptr_mesh_->FindFrameMatrix("BD-00");
+	ptr_part_coll_[Part_Body] = CPartCollider::Create(ptr_device_, ptr_part_mat, Part_Body, this);
+
+	ptr_part_mat = ptr_mesh_->FindFrameMatrix("LL-01");
+	ptr_part_coll_[Part_Left_Leg] = CPartCollider::Create(ptr_device_, ptr_part_mat, Part_Left_Leg, this);
+	ptr_part_mat = ptr_mesh_->FindFrameMatrix("LR-01");
+	ptr_part_coll_[Part_Right_Leg] = CPartCollider::Create(ptr_device_, ptr_part_mat, Part_Right_Leg, this);
+	
+	ptr_part_mat = ptr_mesh_->FindFrameMatrix("AL-02");
+	ptr_part_coll_[Part_Left_Wing] = CPartCollider::Create(ptr_device_, ptr_part_mat, Part_Left_Wing, this);
+	ptr_part_mat = ptr_mesh_->FindFrameMatrix("AR-02");
+	ptr_part_coll_[Part_Right_Wing] = CPartCollider::Create(ptr_device_, ptr_part_mat, Part_Right_Wing, this);
+
+	ptr_part_mat = ptr_mesh_->FindFrameMatrix("TL-05");
+	ptr_part_coll_[Part_Tail] = CPartCollider::Create(ptr_device_, ptr_part_mat, Part_Tail, this);
+
+	TCHAR obj_key[128] = TEXT("");
+	for (int i = 0; i < Part_End; ++i)
+	{
+		wsprintf(obj_key, TEXT("Part_Collider_%d"), i);
+		Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, obj_key, ptr_part_coll_[i]);
+	}
 }

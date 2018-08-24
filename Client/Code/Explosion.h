@@ -16,7 +16,7 @@ public:
 	virtual ~CExplosion();
 
 private:
-	HRESULT Initialize(const Vector3& position);
+	HRESULT Initialize(const Vector3& position, int effect_num);
 
 public:
 	virtual void Update(float delta_time) override;
@@ -24,10 +24,10 @@ public:
 	virtual void Render() override;
 
 public:
-	static CExplosion* Create(LPDIRECT3DDEVICE9 ptr_device, const Vector3& position);
+	static CExplosion* Create(LPDIRECT3DDEVICE9 ptr_device, const Vector3& position, int effect_num);
 
 private:
-	HRESULT AddComponent();
+	HRESULT AddComponent(int effect_num);
 	void Release();
 
 private:

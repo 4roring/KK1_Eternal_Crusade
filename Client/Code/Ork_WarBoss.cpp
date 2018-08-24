@@ -900,7 +900,7 @@ void COrk_WarBoss::CreateExplosionEffect()
 {
 	TCHAR effect_key[64] = TEXT("");
 	wsprintf(effect_key, TEXT("OrkWarboss_Explosion_Effect"));
-	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, effect_key, CExplosion::Create(ptr_device_, ptr_transform_->position()));
+	Engine::GameManager()->GetCurrentScene()->AddObject(MAINTAIN_STAGE, effect_key, CExplosion::Create(ptr_device_, ptr_transform_->position(), 1));
 }
 
 void COrk_WarBoss::CreateSkillEffect()

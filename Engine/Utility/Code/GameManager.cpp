@@ -86,9 +86,9 @@ void Engine::CGameManager::Render()
 	if (nullptr == ptr_scene_) return;
 	ptr_renderer_->Render();
 
-#ifdef _DEBUG
-	if(nullptr != ptr_scene_)
+	if (nullptr != ptr_scene_)
 		ptr_scene_->Render();
+#ifdef _DEBUG
 	//if (nullptr != ptr_nav_mesh_agent_)
 	//	ptr_nav_mesh_agent_->Debug_Render();
 #endif	

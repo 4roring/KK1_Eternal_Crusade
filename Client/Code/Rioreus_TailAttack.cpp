@@ -9,6 +9,13 @@
 void CRioreus_TailAttack::InitState(CRioreus * ptr_target, Engine::CTransform * ptr_transform, Engine::CAnimController * ptr_anim_ctrl)
 {
 	CRioreus_State::InitState(ptr_target, ptr_transform, ptr_anim_ctrl);
+	ptr_sound_ = Sound()->FindSound(TEXT("Rioreus_Tail_Attack"));
+}
+
+void CRioreus_TailAttack::Reset()
+{
+	CRioreus_State::Reset();
+	ptr_target_->SetAttackState(CRioreus::Part_Tail, false);
 }
 
 void CRioreus_TailAttack::Update(float delta_time)
@@ -27,16 +34,22 @@ void CRioreus_TailAttack::Update(float delta_time)
 		const char*&& next_anim_key = (rotate_dir_ > 0.f) ? "Tale_Attack_Right" : "Tale_Attack_Left";
 		ptr_anim_ctrl_->SetAnimationTrack(next_anim_key);
 		++condition_;
+		Sound()->PlaySound(ptr_sound_, Sound()->CHANNEL_ENEMY_ATTACK);
 	}
 
 	if (false == ptr_anim_ctrl_->CheckCurrentAnimationEnd(0.3))
+	{
+		ptr_target_->SetAttackState(CRioreus::Part_Tail, true);
 		ptr_transform_->rotation().y += rotate_dir_ * delta_time;
+	}
 	else if (true == ptr_anim_ctrl_->CheckCurrentAnimationEnd(0.1))
 	{
+		ptr_target_->SetAttackState(CRioreus::Part_Tail, false);
 		if (condition_ < 2.f)
 		{
 			++condition_;
 			ptr_anim_ctrl_->SetTrackPosition(0.0);
+			Sound()->PlaySound(ptr_sound_, Sound()->CHANNEL_ENEMY_ATTACK);
 		}
 		else
 		{

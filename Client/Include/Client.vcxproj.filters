@@ -218,14 +218,8 @@
     <Filter Include="02.GameObject\ControlObject\Rioreus\Rioreus_State">
       <UniqueIdentifier>{fe171701-718d-45a1-9401-dd79d6ed6259}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\ControlObject\Rioreus\Rioreus_State\State_Rotate">
-      <UniqueIdentifier>{df046fcb-283b-47f0-b621-fd70821222a4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\ControlObject\Rioreus\Rioreus_State\Fall">
       <UniqueIdentifier>{f9780596-a8bd-4d9d-9d42-7ffd9e8e5aa5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\ControlObject\Rioreus\Rioreus_State\Glide">
-      <UniqueIdentifier>{b3a79834-772e-419d-8959-cde94822b28b}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\ControlObject\Rioreus\Rioreus_State\Fire">
       <UniqueIdentifier>{4000ff69-4a3d-42ab-94c1-beef8a698524}</UniqueIdentifier>
@@ -250,6 +244,30 @@
     </Filter>
     <Filter Include="02.GameObject\ControlObject\Rioreus\Rioreus_State\Walk">
       <UniqueIdentifier>{8039e0b5-d6b9-4c3b-8aac-5505450b7f6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject\Rioreus\Rioreus_State\BiteAttack">
+      <UniqueIdentifier>{b3a79834-772e-419d-8959-cde94822b28b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject\Rioreus\FireBall">
+      <UniqueIdentifier>{c6f1169e-44c4-405a-afda-dc4dc76e7790}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Effect\FireBallEffect">
+      <UniqueIdentifier>{14d3938e-7a5a-494b-b923-393f8a965e49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Effect\Rioreus_Explosion">
+      <UniqueIdentifier>{64da9c0a-0755-454f-aaea-7649a8fb4fbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Effect\EyeTrail">
+      <UniqueIdentifier>{5852d2c8-1eb4-40dc-9759-f9ee60b806bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject\Rioreus\Rioreus_State\Rotate">
+      <UniqueIdentifier>{df046fcb-283b-47f0-b621-fd70821222a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject\Rioreus\Rioreus_Tail">
+      <UniqueIdentifier>{75bce701-f07d-45de-a7ab-5ba708933dbb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\ControlObject\Rioreus\Rioreus_State\TailCut">
+      <UniqueIdentifier>{e06b6889-17ad-4aef-a98e-fe146b218ab7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -441,7 +459,7 @@
       <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\Idle</Filter>
     </ClInclude>
     <ClInclude Include="..\Code\Rioreus_Rotate.h">
-      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\State_Rotate</Filter>
+      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\Rotate</Filter>
     </ClInclude>
     <ClInclude Include="..\Code\Rioreus_Walk.h">
       <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\Walk</Filter>
@@ -466,6 +484,30 @@
     </ClInclude>
     <ClInclude Include="..\Code\Rioreus_Somersault.h">
       <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\Somersault</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Rioreus_BiteAttack.h">
+      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\BiteAttack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\PartCollider.h">
+      <Filter>02.GameObject\ControlObject\Rioreus\PartCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\FireBall.h">
+      <Filter>02.GameObject\ControlObject\Rioreus\FireBall</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\FireBallEffect.h">
+      <Filter>02.GameObject\Effect\FireBallEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Rioreus_Explosion.h">
+      <Filter>02.GameObject\Effect\Rioreus_Explosion</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\EyeTrail.h">
+      <Filter>02.GameObject\Effect\EyeTrail</Filter>
+    </ClInclude>
+    <ClInclude Include="Rioreus_Tail.h">
+      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_Tail</Filter>
+    </ClInclude>
+    <ClInclude Include="Rioreus_TailCut.h">
+      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\TailCut</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -636,7 +678,7 @@
       <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\Idle</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Rioreus_Rotate.cpp">
-      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\State_Rotate</Filter>
+      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\Rotate</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Rioreus_Walk.cpp">
       <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\Walk</Filter>
@@ -661,6 +703,30 @@
     </ClCompile>
     <ClCompile Include="..\Code\Rioreus_Somersault.cpp">
       <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\Somersault</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Rioreus_BiteAttack.cpp">
+      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\BiteAttack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\PartCollider.cpp">
+      <Filter>02.GameObject\ControlObject\Rioreus\PartCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\FireBall.cpp">
+      <Filter>02.GameObject\ControlObject\Rioreus\FireBall</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\FireBallEffect.cpp">
+      <Filter>02.GameObject\Effect\FireBallEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Rioreus_Explosion.cpp">
+      <Filter>02.GameObject\Effect\Rioreus_Explosion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\EyeTrail.cpp">
+      <Filter>02.GameObject\Effect\EyeTrail</Filter>
+    </ClCompile>
+    <ClCompile Include="Rioreus_Tail.cpp">
+      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_Tail</Filter>
+    </ClCompile>
+    <ClCompile Include="Rioreus_TailCut.cpp">
+      <Filter>02.GameObject\ControlObject\Rioreus\Rioreus_State\TailCut</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -155,6 +155,9 @@
   <ItemGroup>
     <ClInclude Include="..\Code\Bomb.h" />
     <ClInclude Include="..\Code\CUI_Damage.h" />
+    <ClInclude Include="..\Code\EyeTrail.h" />
+    <ClInclude Include="..\Code\FireBall.h" />
+    <ClInclude Include="..\Code\FireBallEffect.h" />
     <ClInclude Include="..\Code\Granade.h" />
     <ClInclude Include="..\Code\GranadeTrail.h" />
     <ClInclude Include="..\Code\HitEffect.h" />
@@ -184,12 +187,15 @@
     <ClInclude Include="..\Code\Ork_Klaw.h" />
     <ClInclude Include="..\Code\Ork_Sword.h" />
     <ClInclude Include="..\Code\Ork_WarBoss.h" />
+    <ClInclude Include="..\Code\PartCollider.h" />
     <ClInclude Include="..\Code\PlayerCamera.h" />
     <ClInclude Include="..\Code\PlayerController.h" />
     <ClInclude Include="..\Code\Rioreus.h" />
     <ClInclude Include="..\Code\Rioreus_Cry.h" />
+    <ClInclude Include="..\Code\Rioreus_Explosion.h" />
     <ClInclude Include="..\Code\Rioreus_Fall.h" />
     <ClInclude Include="..\Code\Rioreus_Fire.h" />
+    <ClInclude Include="..\Code\Rioreus_BiteAttack.h" />
     <ClInclude Include="..\Code\Rioreus_Groggy.h" />
     <ClInclude Include="..\Code\Rioreus_Idle.h" />
     <ClInclude Include="..\Code\Rioreus_Rotate.h" />
@@ -221,6 +227,8 @@
     <ClInclude Include="CollisionSystem.h" />
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Rioreus_Tail.h" />
+    <ClInclude Include="Rioreus_TailCut.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TestPlane.h" />
@@ -229,6 +237,9 @@
   <ItemGroup>
     <ClCompile Include="..\Code\Bomb.cpp" />
     <ClCompile Include="..\Code\CUI_Damage.cpp" />
+    <ClCompile Include="..\Code\EyeTrail.cpp" />
+    <ClCompile Include="..\Code\FireBall.cpp" />
+    <ClCompile Include="..\Code\FireBallEffect.cpp" />
     <ClCompile Include="..\Code\Granade.cpp" />
     <ClCompile Include="..\Code\GranadeTrail.cpp" />
     <ClCompile Include="..\Code\HitEffect.cpp" />
@@ -255,12 +266,15 @@
     <ClCompile Include="..\Code\Ork_Klaw.cpp" />
     <ClCompile Include="..\Code\Ork_Sword.cpp" />
     <ClCompile Include="..\Code\Ork_WarBoss.cpp" />
+    <ClCompile Include="..\Code\PartCollider.cpp" />
     <ClCompile Include="..\Code\PlayerCamera.cpp" />
     <ClCompile Include="..\Code\PlayerController.cpp" />
     <ClCompile Include="..\Code\Rioreus.cpp" />
     <ClCompile Include="..\Code\Rioreus_Cry.cpp" />
+    <ClCompile Include="..\Code\Rioreus_Explosion.cpp" />
     <ClCompile Include="..\Code\Rioreus_Fall.cpp" />
     <ClCompile Include="..\Code\Rioreus_Fire.cpp" />
+    <ClCompile Include="..\Code\Rioreus_BiteAttack.cpp" />
     <ClCompile Include="..\Code\Rioreus_Groggy.cpp" />
     <ClCompile Include="..\Code\Rioreus_Idle.cpp" />
     <ClCompile Include="..\Code\Rioreus_Rotate.cpp" />
@@ -289,6 +303,8 @@
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="CollisionSystem.cpp" />
     <ClCompile Include="Frustum.cpp" />
+    <ClCompile Include="Rioreus_Tail.cpp" />
+    <ClCompile Include="Rioreus_TailCut.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

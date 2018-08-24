@@ -7,3 +7,8 @@ void CRioreus_State::InitState(CRioreus * ptr_target, Engine::CTransform * ptr_t
 	ptr_transform_ = ptr_transform;
 	ptr_anim_ctrl_ = ptr_anim_ctrl;
 }
+
+void CRioreus_State::Reset()
+{
+	condition_ = 0.f;
+}

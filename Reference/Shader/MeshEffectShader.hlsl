@@ -127,6 +127,7 @@ technique Default_Technique
         SRCBLEND = SRCALPHA;
         DESTBLEND = INVSRCALPHA;
         CULLMODE = NONE;
+        ZWriteEnable = FALSE;
 
         VertexShader = compile vs_3_0 VS_MAIN();
         PixelShader = compile ps_3_0 PS_MAIN();
@@ -138,6 +139,7 @@ technique Default_Technique
         SRCBLEND = SRCALPHA;
         DESTBLEND = INVSRCALPHA;
         CULLMODE = NONE;
+        ZWriteEnable = FALSE;
 
         VertexShader = compile vs_3_0 VS_UV();
 		PixelShader = compile ps_3_0 PS_MAIN();
@@ -149,7 +151,8 @@ technique Default_Technique
         SRCBLEND = SRCALPHA;
         DESTBLEND = INVSRCALPHA;
         CULLMODE = NONE;
-
+        ZWriteEnable = FALSE;
+    
         VertexShader = compile vs_3_0 VS_MAIN();
         PixelShader = compile ps_3_0 PS_LINE();
     }

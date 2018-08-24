@@ -169,68 +169,73 @@ HRESULT CLoading::Stage_Loading()
 HRESULT CLoading::Stage_MH_Loading()
 {
 	HRESULT hr = E_FAIL;
-	/* =============================================================== */
-	lstrcpy(loading_message_, TEXT("Shader Complie and Loading"));
-	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
-		, TEXT("Shader_Mesh")
-		, Engine::CShader::Create(ptr_device_
-			, TEXT("../../Reference/Shader/MeshShader.hlsl")));
-	assert(hr == S_OK && "Shader_Mesh Component Add Failed");
 
-	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
-		, TEXT("Shader_DynamicMesh")
-		, Engine::CShader::Create(ptr_device_
-			, TEXT("../../Reference/Shader/Deferred/Deferred_DynamicMeshShader.hlsl")));
-	assert(hr == S_OK && "Shader_DynamicMesh Component Add Failed");
+	/* ======================TestCode====================== */
+	//lstrcpy(loading_message_, TEXT("Shader Complie and Loading"));
+	//hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
+	//	, TEXT("Shader_Mesh")
+	//	, Engine::CShader::Create(ptr_device_
+	//		, TEXT("../../Reference/Shader/MeshShader.hlsl")));
+	//assert(hr == S_OK && "Shader_Mesh Component Add Failed");
 
-	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
-		, TEXT("Shader_Mesh_Effect")
-		, Engine::CShader::Create(ptr_device_
-			, TEXT("../../Reference/Shader/MeshEffectShader.hlsl")));
-	assert(hr == S_OK && "Shader_Mesh_Effect Component Add Failed");
+	//hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
+	//	, TEXT("Shader_DynamicMesh")
+	//	, Engine::CShader::Create(ptr_device_
+	//		, TEXT("../../Reference/Shader/Deferred/Deferred_DynamicMeshShader.hlsl")));
+	//assert(hr == S_OK && "Shader_DynamicMesh Component Add Failed");
 
-	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
-		, TEXT("Shader_Point_Effect")
-		, Engine::CShader::Create(ptr_device_
-			, TEXT("../../Reference/Shader/ParticleEffectShader.hlsl")));
-	assert(hr == S_OK && "Shader_Point_Effect Component Add Failed");
+	//hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
+	//	, TEXT("Shader_Mesh_Effect")
+	//	, Engine::CShader::Create(ptr_device_
+	//		, TEXT("../../Reference/Shader/MeshEffectShader.hlsl")));
+	//assert(hr == S_OK && "Shader_Mesh_Effect Component Add Failed");
 
-	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
-		, TEXT("Shader_NormalMap")
-		, Engine::CShader::Create(ptr_device_
-			, TEXT("../../Reference/Shader/Deferred/Deferred_StaticMeshShader.hlsl")));
-	assert(hr == S_OK && "Shader_NormalMap Component Add Failed");
+	//hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
+	//	, TEXT("Shader_Point_Effect")
+	//	, Engine::CShader::Create(ptr_device_
+	//		, TEXT("../../Reference/Shader/ParticleEffectShader.hlsl")));
+	//assert(hr == S_OK && "Shader_Point_Effect Component Add Failed");
 
-	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
-		, TEXT("Shader_Sky")
-		, Engine::CShader::Create(ptr_device_
-			, TEXT("../../Reference/Shader/SkyShader.hlsl")));
-	assert(hr == S_OK && "Shader_Sky Component Add Failed");
+	//hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
+	//	, TEXT("Shader_NormalMap")
+	//	, Engine::CShader::Create(ptr_device_
+	//		, TEXT("../../Reference/Shader/Deferred/Deferred_StaticMeshShader.hlsl")));
+	//assert(hr == S_OK && "Shader_NormalMap Component Add Failed");
 
-	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
-		, TEXT("Shader_UI")
-		, Engine::CShader::Create(ptr_device_
-			, TEXT("../../Reference/Shader/UIShader.hlsl")));
-	assert(hr == S_OK && "Shader_UI Component Add Failed");
+	//hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
+	//	, TEXT("Shader_Sky")
+	//	, Engine::CShader::Create(ptr_device_
+	//		, TEXT("../../Reference/Shader/SkyShader.hlsl")));
+	//assert(hr == S_OK && "Shader_Sky Component Add Failed");
+
+	//hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
+	//	, TEXT("Shader_UI")
+	//	, Engine::CShader::Create(ptr_device_
+	//		, TEXT("../../Reference/Shader/UIShader.hlsl")));
+	//assert(hr == S_OK && "Shader_UI Component Add Failed");
 
 
-	lstrcpy(loading_message_, TEXT("Mesh Loading"));
+	//lstrcpy(loading_message_, TEXT("Mesh Loading"));
 
-	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
-		, TEXT("Buffer_Line")
-		, Engine::CLineTexture::Create(ptr_device_));
-	assert(!FAILED(hr) && "Buffer_Line Add Failed");
+	//hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
+	//	, TEXT("Buffer_Line")
+	//	, Engine::CLineTexture::Create(ptr_device_));
+	//assert(!FAILED(hr) && "Buffer_Line Add Failed");
 
-	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
-		, TEXT("Buffer_Cube")
-		, Engine::CCubeTexture::Create(ptr_device_));
-	assert(!FAILED(hr) && "Buffer_CubeTexture Add Failed");
+	//hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
+	//	, TEXT("Buffer_Cube")
+	//	, Engine::CCubeTexture::Create(ptr_device_));
+	//assert(!FAILED(hr) && "Buffer_CubeTexture Add Failed");
 
-	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
-		, TEXT("Buffer_TrailColor")
-		, Engine::CTrailColor::Create(ptr_device_));
-	assert(!FAILED(hr) && "Buffer_TrailColor Add Failed");
- /* =============================================================== */
+	//hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STATIC
+	//	, TEXT("Buffer_TrailColor")
+	//	, Engine::CTrailColor::Create(ptr_device_));
+	//assert(!FAILED(hr) && "Buffer_TrailColor Add Failed");
+
+	//lstrcpy(loading_message_, TEXT("Sound Loading"));
+	//hr = Sound()->Initialize();
+	//assert(hr == S_OK && "Sound Initialize Failed");
+	/* ======================TestCodeEnd=================== */
 
 
 	// Texture
@@ -250,6 +255,20 @@ HRESULT CLoading::Stage_MH_Loading()
 			, TEXT("Rioreus.X")));
 	assert(hr == S_OK && "Rioreus Mesh Add Failed");
 
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("FireBall_Mesh")
+		, Engine::CStaticMesh::Create(ptr_device_
+			, TEXT("..\\bin\\Resources\\Mesh\\Weapon\\FireBall\\")
+			, TEXT("FireBall.X"), MAINTAIN_STAGE));
+	if (FAILED(hr)) return E_FAIL;
+
+	hr = Engine::GameManager()->Add_Prototype(MAINTAIN_STAGE
+		, TEXT("RioreusTail_Mesh")
+		, Engine::CStaticMesh::Create(ptr_device_
+			, TEXT("..\\bin\\Resources\\Mesh\\Weapon\\Rioreus_Tail\\")
+			, TEXT("Rioreus_Tail.X"), MAINTAIN_STAGE));
+	if (FAILED(hr)) return E_FAIL;
+
 	// Particle Effect
 	hr = EffectLoad();
 	assert(!FAILED(hr) && "Effect Load Failed");
@@ -262,6 +281,11 @@ HRESULT CLoading::Stage_MH_Loading()
 	StageDataLoad(MAINTAIN_STAGE, TEXT("../bin/Data/StageData/Stage_2.dat"));
 
 	lstrcpy(loading_message_, TEXT("Loading Complete"));
+
+	SoundSource* ptr_bgm = Sound()->FindSound(TEXT("Rioreus_Theme"));
+	Sound()->PlayBGM(ptr_bgm);
+
+	EventManager()->InitEvent_For_Stage2();
 
 	return S_OK;
 }
@@ -416,7 +440,7 @@ void CLoading::AddRioreus(HANDLE file, const TCHAR * mesh_key, const TCHAR * obj
 	ReadFile(file, ptr_obj->transform()->rotation(), sizeof(Vector3), &byte, nullptr);
 	ReadFile(file, temp, sizeof(Vector3), &byte, nullptr);
 
-	//EventManager()->AddEnemy(object_key, ptr_obj);
+	EventManager()->AddEnemy(object_key, ptr_obj);
 }
 
 HRESULT CLoading::FindAndLoadMesh(MAINTAINID stage_id, const std::wstring & mesh_key, const std::wstring & path)
@@ -727,6 +751,13 @@ HRESULT CLoading::EffectLoad()
 	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/Bomb.dat"));
 	if (FAILED(hr)) return E_FAIL;
 	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/Bomb_Smoke.dat"));
+	if (FAILED(hr)) return E_FAIL;
+
+	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/Explosion_2.dat"));
+	if (FAILED(hr)) return E_FAIL;
+	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/Explosion_3.dat"));
+	if (FAILED(hr)) return E_FAIL;
+	hr = EffectDataLoad(TEXT("../bin/Data/EffectData/FireBall_Effect.dat"));
 	if (FAILED(hr)) return E_FAIL;
 
 	return hr;

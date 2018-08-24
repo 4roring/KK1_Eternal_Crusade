@@ -344,7 +344,7 @@ void CSpaceMarin::ApplyDamage(int damage)
 	if (damage_delay_ > 0.f)
 		damage = 0;
 	else if (damage >= 30)
-		damage_delay_ = 0.6f;
+		damage_delay_ = 1.f;
 
 	if (damage != 0)
 	{

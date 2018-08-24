@@ -65,4 +65,5 @@ private:
 	float anim_time_ = 0.f;
 	float anim_speed_ = 0.f;
 	float effect_time_ = 0.f;
+	float hit_delay_ = 0.f;
 };

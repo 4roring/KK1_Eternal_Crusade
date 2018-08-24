@@ -50,7 +50,7 @@ HRESULT CLogo::InitScene()
 	hr = Add_GameLogic_Layer();
 	assert(!FAILED(hr) && "Add_GameLogic_Layer Call Failed");
 
-	ptr_loading_ = CLoading::Create(CLoading::LOADINGID::STAGE_MH, &ptr_next_scene_);
+	ptr_loading_ = CLoading::Create(CLoading::LOADINGID::STAGE, &ptr_next_scene_);
 	assert(nullptr != ptr_loading_ && "Failed to Create Loading Instance");
 
 	ptr_loading_text_ = Engine::GraphicDevice()->GetFont(TEXT("πŸ≈¡"));

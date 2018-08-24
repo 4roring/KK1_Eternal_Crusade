@@ -9,10 +9,14 @@ END
 
 class CSpaceMarinObserver;
 class CPlayerCamera;
+class CEnemyObserver;
 
 class CEventManager
 	: public Engine::CSingleton<CEventManager>
 {
+private:
+	enum EventState { Stage_1, Stage_2, End };
+
 private:
 	friend CSingleton;
 	CEventManager();
@@ -24,6 +28,7 @@ public:
 
 public:
 	void InitEvent_For_Stage1();
+	void InitEvent_For_Stage2();
 	void CheckEvent(float delta_time);
 
 private:
@@ -40,7 +45,10 @@ private:
 
 private:
 	CSpaceMarinObserver* ptr_player_observer_ = nullptr;
+	CEnemyObserver* ptr_enemy_observer_ = nullptr;
 	int player_cell_num_ = 0;
+	float event_time_ = 0.f;
+	EventState event_state_ = EventState::End;
 };
 
 static CEventManager* EventManager() { return CEventManager::GetInstance(); }
