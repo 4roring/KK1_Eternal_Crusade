@@ -104,7 +104,6 @@ private:
 	float damage_delay_ = 0.f;
 
 private:
-	CRioreus_State* ptr_state_ = nullptr;
 	int left_leg_condition_ = 0;
 	int right_leg_condition_ = 0;
 	int head_condition_ = 0;
@@ -116,6 +115,7 @@ private:
 	Engine::CGameObject* ptr_eye_trail_[2] = { nullptr };
 
 private: // Static State
+	CRioreus_State* ptr_state_ = nullptr;
 	CRioreus_Idle state_idle_;
 	CRioreus_Rotate state_rotate_;
 	CRioreus_Walk state_walk_;

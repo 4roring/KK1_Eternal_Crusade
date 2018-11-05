@@ -41,6 +41,12 @@ HRESULT CPartCollider::Initialize(const Matrix * mat_part, CRioreus::PartColl pa
 
 void CPartCollider::Update(float delta_time)
 {
+	constexpr float head_coll_radius = 0.7f;
+	constexpr float body_coll_radius = 1.5f;
+	constexpr float leg_coll_radius = 0.8f;
+	constexpr float wing_coll_radius = 1.f;
+	constexpr float tail_coll_radius = 1.2f;
+
 	CGameObject::Update(delta_time);
 	ptr_transform_->mat_world() = ptr_target_->transform()->mat_world();
 
@@ -50,25 +56,25 @@ void CPartCollider::Update(float delta_time)
 	switch (part_)
 	{
 	case CRioreus::Part_Head:
-		ptr_collider_->SetSphereCollider(0.7f, *(Vector3*)&ptr_mat_part_->m[3][0]);
+		ptr_collider_->SetSphereCollider(head_coll_radius, *(Vector3*)&ptr_mat_part_->m[3][0]);
 		break;
 	case CRioreus::Part_Body:
-		ptr_collider_->SetSphereCollider(1.5f, *(Vector3*)&ptr_mat_part_->m[3][0]);
+		ptr_collider_->SetSphereCollider(body_coll_radius, *(Vector3*)&ptr_mat_part_->m[3][0]);
 		break;
 	case CRioreus::Part_Left_Leg:
-		ptr_collider_->SetSphereCollider(0.8f, *(Vector3*)&ptr_mat_part_->m[3][0]);
+		ptr_collider_->SetSphereCollider(leg_coll_radius, *(Vector3*)&ptr_mat_part_->m[3][0]);
 		break;
 	case CRioreus::Part_Right_Leg:
-		ptr_collider_->SetSphereCollider(0.8f, *(Vector3*)&ptr_mat_part_->m[3][0]);
+		ptr_collider_->SetSphereCollider(leg_coll_radius, *(Vector3*)&ptr_mat_part_->m[3][0]);
 		break;
 	case CRioreus::Part_Left_Wing:
-		ptr_collider_->SetSphereCollider(1.0f, *(Vector3*)&ptr_mat_part_->m[3][0]);
+		ptr_collider_->SetSphereCollider(wing_coll_radius, *(Vector3*)&ptr_mat_part_->m[3][0]);
 		break;
 	case CRioreus::Part_Right_Wing:
-		ptr_collider_->SetSphereCollider(1.0f, *(Vector3*)&ptr_mat_part_->m[3][0]);
+		ptr_collider_->SetSphereCollider(wing_coll_radius, *(Vector3*)&ptr_mat_part_->m[3][0]);
 		break;
 	case  CRioreus::Part_Tail:
-		ptr_collider_->SetSphereCollider(1.2f, *(Vector3*)&ptr_mat_part_->m[3][0]);
+		ptr_collider_->SetSphereCollider(tail_coll_radius, *(Vector3*)&ptr_mat_part_->m[3][0]);
 		break;
 	}
 	CollSystem()->AddColliderList(ptr_collider_, TAG_ENEMY);
@@ -109,34 +115,40 @@ void CPartCollider::Render()
 
 void CPartCollider::ApplyDamage(int damage)
 {
+	constexpr float head_damage_ratio = 1.3f;
+	constexpr float body_damage_ratio = 0.9f;
+	constexpr float leg_damage_ratio = 0.6f;
+	constexpr float wing_damage_ratio = 0.5f;
+	constexpr float tail_damage_ratio = 0.4f;
+
 	if (damage == 100 && damage_time_ != 0.f) return;
 	else if (damage == 100) damage_time_ = 0.7f;
 
 	switch (part_)
 	{
 	case CRioreus::Part_Head:
-		damage =  int(damage * 1.3f);
+		damage =  int(damage * head_damage_ratio);
 		++ptr_target_->head_condition();
 		break;
 	case CRioreus::Part_Body:
-		damage = int(damage * 0.9f);
+		damage = int(damage * body_damage_ratio);
 		break;
 	case  CRioreus::Part_Left_Leg:
-		damage = int(damage * 0.6f);
+		damage = int(damage * leg_damage_ratio);
 		++ptr_target_->left_leg_condition();
 		break;
 	case  CRioreus::Part_Right_Leg:
-		damage = int(damage * 0.6f);
+		damage = int(damage * leg_damage_ratio);
 		++ptr_target_->right_leg_condition();
 		break;
 	case  CRioreus::Part_Left_Wing:
-		damage = int(damage * 0.5f);
+		damage = int(damage * wing_damage_ratio);
 		break;
 	case  CRioreus::Part_Right_Wing:
-		damage = int(damage * 0.5f);
+		damage = int(damage * wing_damage_ratio);
 		break;
 	case  CRioreus::Part_Tail:
-		damage = int(damage * 0.4f);
+		damage = int(damage * tail_damage_ratio);
 		++ptr_target_->tail_condition();
 		break;
 	}

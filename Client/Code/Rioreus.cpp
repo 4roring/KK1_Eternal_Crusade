@@ -11,6 +11,8 @@
 
 #include "Font.h"
 
+const float hide_tail_pos_y = 999999.f;
+
 CRioreus::CRioreus(LPDIRECT3DDEVICE9 ptr_device)
 	: Engine::CGameObject(ptr_device)
 {
@@ -246,9 +248,13 @@ void CRioreus::SetConstantTable(LPD3DXEFFECT ptr_effect)
 
 void CRioreus::UpdateConditionState()
 {
+	constexpr int max_leg_condition = 15;
+	constexpr int max_head_condition = 20;
+	constexpr int max_tail_condition = 25;
+
 	if (current_state_ == State::TailCut) return;
 
-	if (current_state_ != State::Groggy &&left_leg_condition_ >= 15)
+	if (current_state_ != State::Groggy &&left_leg_condition_ >= max_leg_condition)
 	{
 		ptr_state_->Reset();
 		next_state_ = State::Fall;
@@ -256,7 +262,7 @@ void CRioreus::UpdateConditionState()
 		left_leg_condition_ = 0;
 		right_leg_condition_ = 0;
 	}
-	else if (current_state_ != State::Groggy &&right_leg_condition_ >= 15)
+	else if (current_state_ != State::Groggy &&right_leg_condition_ >= max_head_condition)
 	{
 		ptr_state_->Reset();
 		next_state_ = State::Fall;
@@ -264,14 +270,14 @@ void CRioreus::UpdateConditionState()
 		left_leg_condition_ = 0;
 		right_leg_condition_ = 0;
 	}
-	else if (current_state_ != State::Fall && head_condition_ >= 20)
+	else if (current_state_ != State::Fall && head_condition_ >= max_head_condition)
 	{
 		ptr_state_->Reset();
 		next_state_ = State::Groggy;
 		head_condition_ = 0;
 	}
 
-	if (cut_tail_ == false && tail_condition_ >= 20)
+	if (cut_tail_ == false && tail_condition_ >= max_tail_condition)
 	{
 		ptr_state_->Reset();
 		next_state_ = State::TailCut;
@@ -384,11 +390,7 @@ void CRioreus::CutTail()
 	ptr_tail_bone[2]->pFrameFirstChild = nullptr;
 
 	for (int i = 0; i < 3; ++i)
-	{
-		ptr_tail[i]->combined_matrix._42 = -999999.f;
-		//delete[] ptr_tail[i]->Name;
-		//delete ptr_tail[i];
-	}
+		ptr_tail[i]->combined_matrix._42 = -hide_tail_pos_y;
 
 	ptr_part_coll_[Part_Tail]->SetPartMatrix(&ptr_tail_bone[0]->combined_matrix);
 
